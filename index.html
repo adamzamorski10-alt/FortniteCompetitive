@@ -506,6 +506,13 @@
     padding:3px 9px;border-radius:999px;
     flex-shrink:0;
   }
+  .mod-badge{
+    font-size:10px;font-weight:700;letter-spacing:0.04em;
+    color:#04141a;
+    background:linear-gradient(90deg, var(--indigo), var(--cyan) 70%);
+    padding:3px 9px;border-radius:999px;
+    flex-shrink:0;
+  }
   .chev{color:var(--text-faint);flex-shrink:0;}
 
 
@@ -1050,15 +1057,17 @@
               <div class="admin-card-icon">🛡️</div>
               <div>
                 <h1>Panel Admina</h1>
-                <p class="form-sub">Zarządzaj użytkownikami FN Coach.</p>
+                <p class="form-sub" id="adminRoleSub">Zarządzaj użytkownikami FN Coach.</p>
               </div>
             </div>
 
-            <div class="admin-section-label">Nadaj uprawnienia po nicku</div>
-            <div class="form-msg" id="adminGrantMsg"></div>
-            <div class="admin-grant-row">
-              <input type="text" id="grantNickInput" placeholder="Nick użytkownika, któremu nadać admina" />
-              <button class="btn-primary" id="grantAdminBtn" type="button">Nadaj admina</button>
+            <div id="adminOnlySection">
+              <div class="admin-section-label">Nadaj uprawnienia po nicku</div>
+              <div class="form-msg" id="adminGrantMsg"></div>
+              <div class="admin-grant-row">
+                <input type="text" id="grantNickInput" placeholder="Nick użytkownika, któremu nadać admina" />
+                <button class="btn-primary" id="grantAdminBtn" type="button">Nadaj admina</button>
+              </div>
             </div>
 
             <div class="admin-section-label">Szukaj użytkownika</div>
@@ -1170,6 +1179,8 @@
   const pickNickBtn = document.getElementById('pickNickBtn');
 
   const adminNavLink = document.getElementById('adminNavLink');
+  const adminOnlySection = document.getElementById('adminOnlySection');
+  const adminRoleSub = document.getElementById('adminRoleSub');
   const grantNickInput = document.getElementById('grantNickInput');
   const grantAdminBtn = document.getElementById('grantAdminBtn');
   const adminGrantMsg = document.getElementById('adminGrantMsg');
@@ -1184,6 +1195,7 @@
 
   let suppressAuthHandler = false;
   let isCurrentUserAdmin = false;
+  let isCurrentUserModerator = false;
 
   // ---------- Tabs ----------
   function showLogin(){
@@ -1554,7 +1566,7 @@
           <div class="u-nick">${escapeHtml(u.nick || '(bez nicku)')}</div>
           <div class="u-meta">${escapeHtml(u.email || '')}${u.region ? ' · ' + escapeHtml(u.region) : ''}</div>
         </div>
-        ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
+        ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : (u.isModerator ? '<span class="mod-badge">MODERATOR</span>' : '')}
         <span class="chev">›</span>
       `;
       row.addEventListener('click', () => openUserModal(u));
@@ -1570,6 +1582,26 @@
 
   function openUserModal(u){
     const isProtected = u.email && SUPER_ADMIN_EMAILS.includes(u.email);
+    const roleLabel = u.isAdmin ? 'Admin' : (u.isModerator ? 'Moderator' : 'Użytkownik');
+
+    // Moderatorzy mają tylko podgląd — bez akcji, nawet dla zwykłych kont.
+    const canManage = isCurrentUserAdmin && !isProtected;
+
+    let actionsHtml;
+    if (isProtected) {
+      actionsHtml = '<div class="hint" style="text-align:center;">Ten użytkownik jest stałym super-adminem.</div>';
+    } else if (canManage) {
+      actionsHtml = `
+        <button class="btn-primary" id="toggleAdminBtn">${u.isAdmin ? 'Odbierz admina' : 'Nadaj admina'}</button>
+        <button class="btn-primary" id="toggleModBtn" style="margin-top:10px;background:linear-gradient(90deg, var(--indigo), var(--cyan) 70%);">${u.isModerator ? 'Odbierz moderatora' : 'Nadaj moderatora'}</button>
+        <button class="btn-danger-outline" id="deleteUserBtn" style="margin-top:10px;">Usuń konto z bazy</button>
+      `;
+    } else if (isCurrentUserModerator) {
+      actionsHtml = '<div class="hint" style="text-align:center;">Jako moderator masz tylko podgląd — nadawanie uprawnień i usuwanie kont są zarezerwowane dla adminów.</div>';
+    } else {
+      actionsHtml = '';
+    }
+
     modalContent.innerHTML = `
       <h2 class="form-title" style="margin-bottom:18px;">${escapeHtml(u.nick || '(bez nicku)')}</h2>
       <div class="modal-row"><span>E-mail</span><span>${escapeHtml(u.email || '—')}</span></div>
@@ -1578,61 +1610,74 @@
       <div class="modal-row"><span>Ulubiony tryb</span><span>${escapeHtml(u.mode || '—')}</span></div>
       <div class="modal-row"><span>Epic ID</span><span>${escapeHtml(u.epicId || '—')}</span></div>
       <div class="modal-row"><span>Sprzęt</span><span>${escapeHtml(u.input || '—')}</span></div>
-      <div class="modal-row"><span>Admin</span><span>${u.isAdmin ? 'Tak' : 'Nie'}</span></div>
+      <div class="modal-row"><span>Rola</span><span>${escapeHtml(roleLabel)}</span></div>
       <div class="modal-row"><span>Utworzono</span><span>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('pl-PL') : '—'}</span></div>
-      <div class="modal-actions">
-        ${isProtected
-          ? '<div class="hint" style="text-align:center;">Ten użytkownik jest stałym super-adminem.</div>'
-          : `<button class="btn-primary" id="toggleAdminBtn">${u.isAdmin ? 'Odbierz admina' : 'Nadaj admina'}</button>
-             <button class="btn-danger-outline" id="deleteUserBtn" style="margin-top:10px;">Usuń konto z bazy</button>`
-        }
-      </div>
+      <div class="modal-actions">${actionsHtml}</div>
     `;
     userModalOverlay.classList.remove('hidden');
 
-    if (!isProtected) {
-      document.getElementById('toggleAdminBtn').addEventListener('click', async () => {
-        try {
-          await withTimeout(updateDoc(doc(db, 'users', u.id), { isAdmin: !u.isAdmin }));
-          closeUserModal();
-          loadUsersList();
-        } catch (err) {
-          alert('Nie udało się zaktualizować uprawnień.');
-        }
-      });
+    if (!canManage) return;
 
-      document.getElementById('deleteUserBtn').addEventListener('click', async () => {
-        const ok = confirm(
-          `Na pewno usunąć konto „${u.nick || u.email || u.id}” z bazy?\n\n` +
-          `Uwaga: to usuwa profil i rezerwację nicku z Firestore, ale NIE usuwa samego konta logowania ` +
-          `z Firebase Authentication — to wymaga Admin SDK / Cloud Function po stronie serwera, ` +
-          `bo klient przeglądarki nie ma uprawnień, by kasować cudze konta logowania.`
-        );
-        if (!ok) return;
+    document.getElementById('toggleAdminBtn').addEventListener('click', async () => {
+      try {
+        const nextIsAdmin = !u.isAdmin;
+        // Nadanie admina automatycznie zwalnia rolę moderatora (admin ma pełne uprawnienia).
+        await withTimeout(updateDoc(doc(db, 'users', u.id), {
+          isAdmin: nextIsAdmin,
+          isModerator: nextIsAdmin ? false : u.isModerator === true
+        }));
+        closeUserModal();
+        loadUsersList();
+      } catch (err) {
+        alert('Nie udało się zaktualizować uprawnień.');
+      }
+    });
 
-        const btn = document.getElementById('deleteUserBtn');
-        btn.disabled = true;
-        btn.textContent = 'Usuwanie…';
-        try {
-          await withTimeout(deleteDoc(doc(db, 'users', u.id)));
-          if (u.nick) {
-            const key = normalizeNick(u.nick);
-            try {
-              const nickSnap = await withTimeout(getDoc(doc(db, 'nicknames', key)));
-              if (nickSnap.exists() && nickSnap.data().uid === u.id) {
-                await withTimeout(deleteDoc(doc(db, 'nicknames', key)));
-              }
-            } catch (e) { /* noop */ }
-          }
-          closeUserModal();
-          loadUsersList();
-        } catch (err) {
-          alert('Nie udało się usunąć konta. Sprawdź reguły Firestore (admin musi mieć prawo zapisu do cudzych dokumentów).');
-          btn.disabled = false;
-          btn.textContent = 'Usuń konto z bazy';
+    document.getElementById('toggleModBtn').addEventListener('click', async () => {
+      if (u.isAdmin) {
+        alert('Ten użytkownik jest już adminem — admin ma wszystkie uprawnienia moderatora.');
+        return;
+      }
+      try {
+        await withTimeout(updateDoc(doc(db, 'users', u.id), { isModerator: !u.isModerator }));
+        closeUserModal();
+        loadUsersList();
+      } catch (err) {
+        alert('Nie udało się zaktualizować uprawnień.');
+      }
+    });
+
+    document.getElementById('deleteUserBtn').addEventListener('click', async () => {
+      const ok = confirm(
+        `Na pewno usunąć konto „${u.nick || u.email || u.id}” z bazy?\n\n` +
+        `Uwaga: to usuwa profil i rezerwację nicku z Firestore, ale NIE usuwa samego konta logowania ` +
+        `z Firebase Authentication — to wymaga Admin SDK / Cloud Function po stronie serwera, ` +
+        `bo klient przeglądarki nie ma uprawnień, by kasować cudze konta logowania.`
+      );
+      if (!ok) return;
+
+      const btn = document.getElementById('deleteUserBtn');
+      btn.disabled = true;
+      btn.textContent = 'Usuwanie…';
+      try {
+        await withTimeout(deleteDoc(doc(db, 'users', u.id)));
+        if (u.nick) {
+          const key = normalizeNick(u.nick);
+          try {
+            const nickSnap = await withTimeout(getDoc(doc(db, 'nicknames', key)));
+            if (nickSnap.exists() && nickSnap.data().uid === u.id) {
+              await withTimeout(deleteDoc(doc(db, 'nicknames', key)));
+            }
+          } catch (e) { /* noop */ }
         }
-      });
-    }
+        closeUserModal();
+        loadUsersList();
+      } catch (err) {
+        alert('Nie udało się usunąć konta. Sprawdź reguły Firestore (admin musi mieć prawo zapisu do cudzych dokumentów).');
+        btn.disabled = false;
+        btn.textContent = 'Usuń konto z bazy';
+      }
+    });
   }
 
   function closeUserModal(){
@@ -1659,7 +1704,7 @@
         return;
       }
       const targetUid = nickSnap.data().uid;
-      await withTimeout(updateDoc(doc(db, 'users', targetUid), { isAdmin: true }));
+      await withTimeout(updateDoc(doc(db, 'users', targetUid), { isAdmin: true, isModerator: false }));
       adminGrantMsg.textContent = 'Nadano uprawnienia admina użytkownikowi „' + nickSnap.data().nick + '”.';
       adminGrantMsg.className = 'form-msg show ok';
       grantNickInput.value = '';
@@ -1696,7 +1741,15 @@
     heroDate.textContent = today.toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     isCurrentUserAdmin = SUPER_ADMIN_EMAILS.includes(user.email) || userData.isAdmin === true;
-    adminNavLink.classList.toggle('hidden', !isCurrentUserAdmin);
+    isCurrentUserModerator = !isCurrentUserAdmin && userData.isModerator === true;
+    const isStaff = isCurrentUserAdmin || isCurrentUserModerator;
+    adminNavLink.classList.toggle('hidden', !isStaff);
+    if (adminOnlySection) adminOnlySection.classList.toggle('hidden', !isCurrentUserAdmin);
+    if (adminRoleSub) {
+      adminRoleSub.textContent = isCurrentUserAdmin
+        ? 'Zarządzaj użytkownikami FN Coach.'
+        : 'Podgląd użytkowników FN Coach (moderator — bez nadawania uprawnień i usuwania kont).';
+    }
 
     appScreen.classList.remove('hidden');
     loadSettings(user, userData);
