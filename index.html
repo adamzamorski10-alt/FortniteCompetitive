@@ -949,6 +949,10 @@
               <button class="btn-primary" id="grantAdminBtn" type="button">Nadaj admina</button>
             </div>
 
+            <div class="admin-grant-row">
+              <input type="text" id="userSearchInput" placeholder="Szukaj po nicku…" autocomplete="off" />
+            </div>
+
             <div class="admin-subhead">Wszyscy użytkownicy <span id="userCountTag"></span></div>
             <div id="usersList" class="users-list">
               <div class="users-loading">Wczytywanie…</div>
@@ -992,8 +996,7 @@
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // Adresy e-mail, które ZAWSZE mają dostęp do Panelu Admina (niezależnie od danych w Firestore).
-  // Podmień na swój adres e-mail używany do logowania w FN Coach.
-  const SUPER_ADMIN_EMAILS = ["twoj-email@przyklad.pl"];
+  const SUPER_ADMIN_EMAILS = ["zamorski.adam.10@gmail.com"];
 
   const firebaseConfig = {
     apiKey: "AIzaSyCp82CWRb5-3Hjs8-mUDkKWCYadF_Yk044",
@@ -1058,6 +1061,8 @@
   const adminGrantMsg = document.getElementById('adminGrantMsg');
   const usersList = document.getElementById('usersList');
   const userCountTag = document.getElementById('userCountTag');
+  const userSearchInput = document.getElementById('userSearchInput');
+  let allUsersCache = [];
 
   const userModalOverlay = document.getElementById('userModalOverlay');
   const modalContent = document.getElementById('modalContent');
@@ -1384,34 +1389,50 @@
       snap.forEach(d => users.push({ id: d.id, ...d.data() }));
       users.sort((a, b) => (a.nick || '').localeCompare(b.nick || ''));
 
-      userCountTag.textContent = users.length + (users.length === 1 ? ' użytkownik' : ' użytkowników');
-
-      if (users.length === 0) {
-        usersList.innerHTML = '<div class="users-empty">Brak użytkowników.</div>';
-        return;
-      }
-
-      usersList.innerHTML = '';
-      users.forEach(u => {
-        const row = document.createElement('div');
-        row.className = 'user-row';
-        const initial = (u.nick || u.email || '?').charAt(0).toUpperCase();
-        row.innerHTML = `
-          <div class="uav">${initial}</div>
-          <div class="u-info">
-            <div class="u-nick">${escapeHtml(u.nick || '(bez nicku)')}</div>
-            <div class="u-meta">${escapeHtml(u.email || '')}${u.region ? ' · ' + escapeHtml(u.region) : ''}</div>
-          </div>
-          ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
-          <span class="chev">›</span>
-        `;
-        row.addEventListener('click', () => openUserModal(u));
-        usersList.appendChild(row);
-      });
+      allUsersCache = users;
+      renderUsersList(userSearchInput ? userSearchInput.value : '');
     } catch (err) {
       usersList.innerHTML = '<div class="users-empty">Nie udało się wczytać listy użytkowników. Sprawdź reguły Firestore.</div>';
     }
   }
+
+  function renderUsersList(filterText){
+    const q = normalizeNick(filterText || '');
+    const users = q
+      ? allUsersCache.filter(u => normalizeNick(u.nick || '').includes(q))
+      : allUsersCache;
+
+    userCountTag.textContent = users.length + (users.length === 1 ? ' użytkownik' : ' użytkowników');
+
+    if (allUsersCache.length === 0) {
+      usersList.innerHTML = '<div class="users-empty">Brak użytkowników.</div>';
+      return;
+    }
+    if (users.length === 0) {
+      usersList.innerHTML = '<div class="users-empty">Brak użytkowników pasujących do wyszukiwania.</div>';
+      return;
+    }
+
+    usersList.innerHTML = '';
+    users.forEach(u => {
+      const row = document.createElement('div');
+      row.className = 'user-row';
+      const initial = (u.nick || u.email || '?').charAt(0).toUpperCase();
+      row.innerHTML = `
+        <div class="uav">${initial}</div>
+        <div class="u-info">
+          <div class="u-nick">${escapeHtml(u.nick || '(bez nicku)')}</div>
+          <div class="u-meta">${escapeHtml(u.email || '')}${u.region ? ' · ' + escapeHtml(u.region) : ''}</div>
+        </div>
+        ${u.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
+        <span class="chev">›</span>
+      `;
+      row.addEventListener('click', () => openUserModal(u));
+      usersList.appendChild(row);
+    });
+  }
+
+  userSearchInput.addEventListener('input', () => renderUsersList(userSearchInput.value));
 
   function escapeHtml(str){
     return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1432,7 +1453,8 @@
       <div class="modal-actions">
         ${isProtected
           ? '<div class="hint" style="text-align:center;">Ten użytkownik jest stałym super-adminem.</div>'
-          : `<button class="btn-primary" id="toggleAdminBtn">${u.isAdmin ? 'Odbierz admina' : 'Nadaj admina'}</button>`
+          : `<button class="btn-primary" id="toggleAdminBtn">${u.isAdmin ? 'Odbierz admina' : 'Nadaj admina'}</button>
+             <button class="btn-danger-outline" id="deleteUserBtn" style="margin-top:10px;">Usuń konto z bazy</button>`
         }
       </div>
     `;
@@ -1446,6 +1468,38 @@
           loadUsersList();
         } catch (err) {
           alert('Nie udało się zaktualizować uprawnień.');
+        }
+      });
+
+      document.getElementById('deleteUserBtn').addEventListener('click', async () => {
+        const ok = confirm(
+          `Na pewno usunąć konto „${u.nick || u.email || u.id}” z bazy?\n\n` +
+          `Uwaga: to usuwa profil i rezerwację nicku z Firestore, ale NIE usuwa samego konta logowania ` +
+          `z Firebase Authentication — to wymaga Admin SDK / Cloud Function po stronie serwera, ` +
+          `bo klient przeglądarki nie ma uprawnień, by kasować cudze konta logowania.`
+        );
+        if (!ok) return;
+
+        const btn = document.getElementById('deleteUserBtn');
+        btn.disabled = true;
+        btn.textContent = 'Usuwanie…';
+        try {
+          await withTimeout(deleteDoc(doc(db, 'users', u.id)));
+          if (u.nick) {
+            const key = normalizeNick(u.nick);
+            try {
+              const nickSnap = await withTimeout(getDoc(doc(db, 'nicknames', key)));
+              if (nickSnap.exists() && nickSnap.data().uid === u.id) {
+                await withTimeout(deleteDoc(doc(db, 'nicknames', key)));
+              }
+            } catch (e) { /* noop */ }
+          }
+          closeUserModal();
+          loadUsersList();
+        } catch (err) {
+          alert('Nie udało się usunąć konta. Sprawdź reguły Firestore (admin musi mieć prawo zapisu do cudzych dokumentów).');
+          btn.disabled = false;
+          btn.textContent = 'Usuń konto z bazy';
         }
       });
     }
