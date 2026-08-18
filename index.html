@@ -993,7 +993,7 @@
 
   // Adresy e-mail, które ZAWSZE mają dostęp do Panelu Admina (niezależnie od danych w Firestore).
   // Podmień na swój adres e-mail używany do logowania w FN Coach.
-  const SUPER_ADMIN_EMAILS = ["zamorski.adam.10@gmail.com"];
+  const SUPER_ADMIN_EMAILS = ["twoj-email@przyklad.pl"];
 
   const firebaseConfig = {
     apiKey: "AIzaSyCp82CWRb5-3Hjs8-mUDkKWCYadF_Yk044",
@@ -1093,12 +1093,24 @@
     authMsg.className = 'form-msg show ' + type;
   }
 
+  // ---------- Guards against a hung Firestore connection (e.g. no database created yet) ----------
+  function withTimeout(promise, ms = 9000){
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => {
+        const e = new Error('firestore-timeout');
+        e.code = 'firestore-timeout';
+        reject(e);
+      }, ms))
+    ]);
+  }
+
   // ---------- Unique nick helpers ----------
   function normalizeNick(n){ return n.trim().toLowerCase(); }
   function isValidNick(n){ return /^[A-Za-z0-9_]{3,20}$/.test(n); }
 
   async function isNickTaken(nick, uid){
-    const snap = await getDoc(doc(db, 'nicknames', normalizeNick(nick)));
+    const snap = await withTimeout(getDoc(doc(db, 'nicknames', normalizeNick(nick))));
     return snap.exists() && snap.data().uid !== uid;
   }
 
@@ -1106,11 +1118,11 @@
   async function reserveNick(nick, uid, oldNick){
     const key = normalizeNick(nick);
     if (oldNick && normalizeNick(oldNick) === key) return; // unchanged
-    await setDoc(doc(db, 'nicknames', key), { uid, nick });
+    await withTimeout(setDoc(doc(db, 'nicknames', key), { uid, nick }));
     if (oldNick) {
       const oldKey = normalizeNick(oldNick);
       if (oldKey !== key) {
-        try { await deleteDoc(doc(db, 'nicknames', oldKey)); } catch (e) { /* noop */ }
+        try { await withTimeout(deleteDoc(doc(db, 'nicknames', oldKey))); } catch (e) { /* noop */ }
       }
     }
   }
@@ -1126,7 +1138,16 @@
       'auth/weak-password': 'Hasło musi mieć co najmniej 6 znaków.',
       'auth/missing-password': 'Podaj hasło.',
       'auth/too-many-requests': 'Zbyt wiele prób. Spróbuj ponownie za chwilę.',
-      'auth/network-request-failed': 'Błąd sieci. Sprawdź połączenie internetowe.'
+      'auth/network-request-failed': 'Błąd sieci. Sprawdź połączenie internetowe.',
+      'auth/unauthorized-domain': 'Ta strona nie jest autoryzowana w Firebase. W Firebase Console → Authentication → Settings → Authorized domains dodaj tę domenę.',
+      'auth/operation-not-allowed': 'Logowanie przez Google nie jest włączone. W Firebase Console → Authentication → Sign-in method włącz dostawcę Google.',
+      'auth/popup-blocked': 'Przeglądarka zablokowała okno logowania Google. Zezwól na wyskakujące okna dla tej strony i spróbuj ponownie.',
+      'auth/internal-error': 'Błąd konfiguracji Firebase. Sprawdź ustawienia projektu w Firebase Console.',
+      'permission-denied': 'Brak uprawnień do zapisu w bazie danych. Sprawdź reguły bezpieczeństwa Firestore w Firebase Console.',
+      'unavailable': 'Baza danych (Firestore) jest niedostępna. Sprawdź, czy Cloud Firestore zostało utworzone w Firebase Console.',
+      'not-found': 'Nie znaleziono bazy danych. Sprawdź, czy Cloud Firestore zostało utworzone w Firebase Console.',
+      'failed-precondition': 'Baza danych (Firestore) nie jest jeszcze gotowa. Spróbuj ponownie za chwilę.',
+      'firestore-timeout': 'Baza danych (Firestore) nie odpowiada. Sprawdź w Firebase Console, czy Cloud Firestore zostało utworzone i czy reguły bezpieczeństwa na to pozwalają.'
     };
     return map[code] || 'Coś poszło nie tak. Spróbuj ponownie.';
   }
@@ -1176,12 +1197,12 @@
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
       await reserveNick(name, cred.user.uid);
-      await setDoc(doc(db, 'users', cred.user.uid), {
+      await withTimeout(setDoc(doc(db, 'users', cred.user.uid), {
         nick: name,
         email: cred.user.email,
         isAdmin: false,
         createdAt: new Date().toISOString()
-      });
+      }));
 
       await enterApp(cred.user);
     } catch (err) {
@@ -1249,12 +1270,12 @@
       pickNickBtn.textContent = 'Zapisywanie…';
       await updateProfile(user, { displayName: nick });
       await reserveNick(nick, user.uid);
-      await setDoc(doc(db, 'users', user.uid), {
+      await withTimeout(setDoc(doc(db, 'users', user.uid), {
         nick,
         email: user.email,
         isAdmin: false,
         createdAt: new Date().toISOString()
-      });
+      }));
       await enterApp(user);
     } catch (err) {
       nickMsg.textContent = 'Nie udało się zapisać nicku. Spróbuj ponownie.';
@@ -1338,10 +1359,10 @@
         userAvatar.textContent = nick.charAt(0).toUpperCase();
       }
 
-      await setDoc(doc(db, 'users', user.uid), {
+      await withTimeout(setDoc(doc(db, 'users', user.uid), {
         nick, region, platform, mode, epicId, input,
         updatedAt: new Date().toISOString()
-      }, { merge: true });
+      }, { merge: true }));
 
       saveMsg.classList.add('show');
       setTimeout(() => saveMsg.classList.remove('show'), 2500);
@@ -1358,7 +1379,7 @@
   async function loadUsersList(){
     usersList.innerHTML = '<div class="users-loading">Wczytywanie…</div>';
     try {
-      const snap = await getDocs(collection(db, 'users'));
+      const snap = await withTimeout(getDocs(collection(db, 'users')));
       const users = [];
       snap.forEach(d => users.push({ id: d.id, ...d.data() }));
       users.sort((a, b) => (a.nick || '').localeCompare(b.nick || ''));
@@ -1420,7 +1441,7 @@
     if (!isProtected) {
       document.getElementById('toggleAdminBtn').addEventListener('click', async () => {
         try {
-          await updateDoc(doc(db, 'users', u.id), { isAdmin: !u.isAdmin });
+          await withTimeout(updateDoc(doc(db, 'users', u.id), { isAdmin: !u.isAdmin }));
           closeUserModal();
           loadUsersList();
         } catch (err) {
@@ -1447,14 +1468,14 @@
 
     grantAdminBtn.disabled = true;
     try {
-      const nickSnap = await getDoc(doc(db, 'nicknames', normalizeNick(nick)));
+      const nickSnap = await withTimeout(getDoc(doc(db, 'nicknames', normalizeNick(nick))));
       if (!nickSnap.exists()) {
         adminGrantMsg.textContent = 'Nie znaleziono użytkownika o tym nicku.';
         adminGrantMsg.className = 'form-msg show error';
         return;
       }
       const targetUid = nickSnap.data().uid;
-      await updateDoc(doc(db, 'users', targetUid), { isAdmin: true });
+      await withTimeout(updateDoc(doc(db, 'users', targetUid), { isAdmin: true }));
       adminGrantMsg.textContent = 'Nadano uprawnienia admina użytkownikowi „' + nickSnap.data().nick + '”.';
       adminGrantMsg.className = 'form-msg show ok';
       grantNickInput.value = '';
@@ -1476,9 +1497,11 @@
 
     let userData = {};
     try {
-      const snap = await getDoc(doc(db, 'users', user.uid));
+      const snap = await withTimeout(getDoc(doc(db, 'users', user.uid)));
       if (snap.exists()) userData = snap.data();
-    } catch (e) { /* noop */ }
+    } catch (e) {
+      console.warn('Nie udało się wczytać profilu z Firestore:', e);
+    }
 
     const displayName = userData.nick || user.displayName || (user.email ? user.email.split('@')[0] : 'Graczu');
     userName.textContent = displayName;
@@ -1500,11 +1523,22 @@
     if (suppressAuthHandler) return;
 
     if (user) {
-      let snap;
+      let snap = null;
+      let fetchError = null;
       try {
-        snap = await getDoc(doc(db, 'users', user.uid));
+        snap = await withTimeout(getDoc(doc(db, 'users', user.uid)));
       } catch (e) {
-        snap = null;
+        fetchError = e;
+      }
+
+      if (fetchError) {
+        // Firestore is unreachable (likely not created yet, or rules blocking reads) —
+        // don't misroute the user, show a clear error on the login screen instead.
+        appScreen.classList.add('hidden');
+        nickScreen.classList.add('hidden');
+        authScreen.classList.remove('hidden');
+        showMsg(friendlyError(fetchError.code || 'firestore-timeout'), 'error');
+        return;
       }
 
       if (!snap || !snap.exists()) {
