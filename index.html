@@ -357,13 +357,44 @@
     border-radius:var(--radius-lg);
     padding:36px 40px;
     max-width:760px;
+    position:relative;
+    overflow:hidden;
   }
-  .admin-card h1{font-size:24px;margin:0 0 4px;font-weight:700;}
+  .admin-card::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg, transparent, #f5c556, transparent);
+    opacity:.7;
+  }
+  .admin-card-head{
+    display:flex;align-items:center;gap:14px;
+    margin-bottom:6px;
+  }
+  .admin-card-icon{
+    width:44px;height:44px;border-radius:12px;
+    flex-shrink:0;
+    display:grid;place-items:center;
+    font-size:20px;
+    background:linear-gradient(160deg, rgba(245,197,86,0.22), rgba(245,197,86,0.05));
+    border:1px solid rgba(245,197,86,0.35);
+    box-shadow:0 0 24px -10px rgba(245,197,86,0.5);
+  }
+  .admin-card h1{font-size:24px;margin:0;font-weight:700;}
+  .admin-card .form-sub{margin:2px 0 0;}
+
+  .admin-section-label{
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    font-weight:700;
+    margin:26px 0 10px;
+  }
   .admin-grant-row{
     display:flex;gap:10px;
-    margin:20px 0 32px;
+    margin:0 0 4px;
   }
-  .admin-grant-row input{
+  .admin-grant-row input, .search-input-wrap input{
     flex:1;
     background:rgba(255,255,255,0.03);
     border:1px solid var(--border);
@@ -371,9 +402,30 @@
     padding:11px 14px;
     border-radius:var(--radius-sm);
     font-size:13.5px;
+    transition:.15s;
   }
-  .admin-grant-row input:focus{border-color:rgba(109,91,255,0.6);outline:none;}
-  .admin-grant-row .btn-primary{width:auto;margin-top:0;padding:11px 22px;white-space:nowrap;}
+  .admin-grant-row input:focus{border-color:rgba(245,197,86,0.55);outline:none;box-shadow:0 0 0 3px rgba(245,197,86,0.12);}
+  .admin-grant-row .btn-primary{
+    width:auto;margin-top:0;padding:11px 22px;white-space:nowrap;
+    background:linear-gradient(90deg, #b8860b, #f5c556 60%, #ffe08a);
+    box-shadow:0 10px 28px -12px rgba(245,197,86,0.6);
+    color:#1a1300;
+  }
+
+  .search-input-wrap{
+    position:relative;
+    margin:0 0 28px;
+  }
+  .search-input-wrap input{
+    width:100%;
+    padding-left:38px;
+  }
+  .search-input-wrap input:focus{border-color:rgba(109,91,255,0.55);outline:none;box-shadow:0 0 0 3px rgba(109,91,255,0.12);}
+  .search-input-wrap .search-ic{
+    position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    font-size:13px;color:var(--text-faint);
+    pointer-events:none;
+  }
 
   .admin-subhead{
     font-size:13px;
@@ -392,10 +444,41 @@
   }
 
   .users-list{display:flex;flex-direction:column;gap:8px;}
-  .users-loading, .users-empty{
+  .users-loading{
+    display:flex;align-items:center;gap:10px;
     font-size:13px;color:var(--text-faint);
-    padding:14px 4px;
+    padding:16px 4px;
   }
+  .mini-spinner{
+    width:15px;height:15px;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.15);
+    border-top-color:var(--cyan);
+    animation:spin 0.8s linear infinite;
+    flex-shrink:0;
+  }
+  .users-empty{
+    display:flex;align-items:flex-start;gap:12px;
+    font-size:13px;color:var(--text-dim);
+    padding:16px;
+    border-radius:var(--radius-sm);
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--border-soft);
+    line-height:1.5;
+  }
+  .users-empty.is-error{
+    color:#ffc7d3;
+    background:rgba(251,69,112,0.06);
+    border-color:rgba(251,69,112,0.3);
+  }
+  .users-empty .ue-ic{font-size:17px;flex-shrink:0;line-height:1.3;}
+  .users-empty .ue-title{font-weight:700;color:var(--text);margin-bottom:2px;}
+  .users-empty.is-error .ue-title{color:#ffb3c2;}
+  .users-empty code{
+    background:rgba(255,255,255,0.07);
+    padding:1px 6px;border-radius:5px;
+    font-size:12px;
+  }
+
   .user-row{
     display:flex;align-items:center;gap:12px;
     padding:12px 14px;
@@ -405,7 +488,7 @@
     cursor:pointer;
     transition:.15s;
   }
-  .user-row:hover{background:var(--surface-2);border-color:var(--border);}
+  .user-row:hover{background:var(--surface-2);border-color:var(--border);transform:translateX(2px);}
   .user-row .uav{
     width:32px;height:32px;border-radius:9px;
     background:var(--grad-main);
@@ -418,12 +501,13 @@
   .user-row .u-meta{font-size:12px;color:var(--text-faint);}
   .admin-badge{
     font-size:10px;font-weight:700;letter-spacing:0.04em;
-    color:#04050a;
-    background:var(--grad-main);
+    color:#1a1300;
+    background:linear-gradient(90deg, #b8860b, #f5c556 60%, #ffe08a);
     padding:3px 9px;border-radius:999px;
     flex-shrink:0;
   }
   .chev{color:var(--text-faint);flex-shrink:0;}
+
 
   .modal-overlay{
     position:fixed;inset:0;
@@ -626,6 +710,28 @@
     border-radius:999px;
   }
 
+  /* ---- Gold "Panel Admina" nav tile ---- */
+  .nav-link.admin-link{
+    color:#f3d488;
+    border-color:rgba(245,197,86,0.28);
+    background:linear-gradient(90deg, rgba(245,197,86,0.10), rgba(245,197,86,0.03));
+  }
+  .nav-link.admin-link .ic{
+    filter:drop-shadow(0 0 6px rgba(245,197,86,0.5));
+  }
+  .nav-link.admin-link:hover{
+    background:linear-gradient(90deg, rgba(245,197,86,0.16), rgba(245,197,86,0.05));
+    border-color:rgba(245,197,86,0.4);
+    color:#ffe6a8;
+  }
+  .nav-link.admin-link.active{
+    background:linear-gradient(90deg, #b8860b, #f5c556 55%, #ffe08a);
+    border-color:rgba(245,197,86,0.7);
+    color:#04050a;
+    font-weight:700;
+    box-shadow:0 8px 26px -10px rgba(245,197,86,0.55);
+  }
+
   .main{
     flex:1;
     padding:34px 36px;
@@ -824,7 +930,7 @@
           <div class="nav-link disabled"><span class="ic">🏆</span> Trening <span class="soon-tag">wkrótce</span></div>
         </div>
         <div class="sidebar-bottom">
-          <div class="nav-link hidden" data-page="admin" id="adminNavLink"><span class="ic">🛡️</span> Panel Admina</div>
+          <div class="nav-link admin-link hidden" data-page="admin" id="adminNavLink"><span class="ic">🛡️</span> Panel Admina</div>
           <div class="nav-link" data-page="settings"><span class="ic">⚙️</span> Ustawienia</div>
         </div>
       </div>
@@ -940,22 +1046,30 @@
 
         <div class="page hidden" id="page-admin">
           <div class="admin-card">
-            <h1>Panel Admina</h1>
-            <p class="form-sub">Zarządzaj użytkownikami FN Coach.</p>
+            <div class="admin-card-head">
+              <div class="admin-card-icon">🛡️</div>
+              <div>
+                <h1>Panel Admina</h1>
+                <p class="form-sub">Zarządzaj użytkownikami FN Coach.</p>
+              </div>
+            </div>
 
+            <div class="admin-section-label">Nadaj uprawnienia po nicku</div>
             <div class="form-msg" id="adminGrantMsg"></div>
             <div class="admin-grant-row">
               <input type="text" id="grantNickInput" placeholder="Nick użytkownika, któremu nadać admina" />
               <button class="btn-primary" id="grantAdminBtn" type="button">Nadaj admina</button>
             </div>
 
-            <div class="admin-grant-row">
+            <div class="admin-section-label">Szukaj użytkownika</div>
+            <div class="search-input-wrap">
+              <span class="search-ic">🔍</span>
               <input type="text" id="userSearchInput" placeholder="Szukaj po nicku…" autocomplete="off" />
             </div>
 
             <div class="admin-subhead">Wszyscy użytkownicy <span id="userCountTag"></span></div>
             <div id="usersList" class="users-list">
-              <div class="users-loading">Wczytywanie…</div>
+              <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>
             </div>
           </div>
         </div>
@@ -1382,7 +1496,7 @@
 
   // ---------- Admin: list users ----------
   async function loadUsersList(){
-    usersList.innerHTML = '<div class="users-loading">Wczytywanie…</div>';
+    usersList.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
     try {
       const snap = await withTimeout(getDocs(collection(db, 'users')));
       const users = [];
@@ -1392,7 +1506,15 @@
       allUsersCache = users;
       renderUsersList(userSearchInput ? userSearchInput.value : '');
     } catch (err) {
-      usersList.innerHTML = '<div class="users-empty">Nie udało się wczytać listy użytkowników. Sprawdź reguły Firestore.</div>';
+      usersList.innerHTML = `
+        <div class="users-empty is-error">
+          <span class="ue-ic">⚠️</span>
+          <div>
+            <div class="ue-title">Nie udało się wczytać listy użytkowników</div>
+            To zwykle oznacza, że reguły bezpieczeństwa Firestore blokują odczyt kolekcji <code>users</code> dla Twojego konta.
+            Otwórz Firebase Console → Firestore Database → Rules i upewnij się, że admin ma prawo odczytu tej kolekcji.
+          </div>
+        </div>`;
     }
   }
 
@@ -1405,11 +1527,19 @@
     userCountTag.textContent = users.length + (users.length === 1 ? ' użytkownik' : ' użytkowników');
 
     if (allUsersCache.length === 0) {
-      usersList.innerHTML = '<div class="users-empty">Brak użytkowników.</div>';
+      usersList.innerHTML = `
+        <div class="users-empty">
+          <span class="ue-ic">🗂️</span>
+          <div><div class="ue-title">Brak użytkowników</div>Jeszcze nikt nie założył konta w bazie.</div>
+        </div>`;
       return;
     }
     if (users.length === 0) {
-      usersList.innerHTML = '<div class="users-empty">Brak użytkowników pasujących do wyszukiwania.</div>';
+      usersList.innerHTML = `
+        <div class="users-empty">
+          <span class="ue-ic">🔍</span>
+          <div><div class="ue-title">Brak wyników</div>Żaden nick nie pasuje do wyszukiwania „${escapeHtml(filterText)}”.</div>
+        </div>`;
       return;
     }
 
