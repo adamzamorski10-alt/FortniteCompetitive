@@ -1233,7 +1233,8 @@
     updateDoc,
     deleteDoc,
     collection,
-    getDocs
+    getDocs,
+    writeBatch
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // Adresy e-mail, które ZAWSZE mają dostęp do Panelu Admina (niezależnie od danych w Firestore).
@@ -1596,69 +1597,104 @@
 
   // ================= TOURNAMENT CALENDAR =================
   function decodeIcsText(value){
-    return String(value || '').replace(/\\n/g,'\n').replace(/\\N/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+    return String(value || '')
+      .replace(/\\[nN]/g,'\n')
+      .replace(/\\,/g,',')
+      .replace(/\\;/g,';')
+      .replace(/\\\\/g,'\\');
   }
 
+  // RFC 5545: linie kontynuowane zaczynają się spacją lub tabulatorem.
   function unfoldIcs(text){
-    return String(text || '').replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n[ \t]/g,'');
+    return String(text || '')
+      .replace(/^\uFEFF/,'')
+      .replace(/\r\n/g,'\n')
+      .replace(/\r/g,'\n')
+      .replace(/\n[ \t]/g,'');
   }
 
   function parseIcsProperty(line){
-    const idx = line.indexOf(':');
-    if (idx < 0) return null;
-    const left = line.slice(0, idx);
-    const value = line.slice(idx + 1);
-    const parts = left.split(';');
-    const name = parts.shift().toUpperCase();
-    const params = {};
-    parts.forEach(p => { const i = p.indexOf('='); if(i > -1) params[p.slice(0,i).toUpperCase()] = p.slice(i+1); });
-    return {name, params, value};
+    const idx=line.indexOf(':');
+    if(idx<0) return null;
+    const left=line.slice(0,idx);
+    const value=line.slice(idx+1);
+    const parts=left.split(';');
+    const name=parts.shift().toUpperCase();
+    const params={};
+    parts.forEach(p=>{
+      const i=p.indexOf('=');
+      if(i>-1) params[p.slice(0,i).toUpperCase()]=p.slice(i+1).replace(/^"|"$/g,'');
+    });
+    return {name,params,value};
   }
 
-  function parseIcsDate(value, params={}){
-    if (!value) return null;
-    const raw = value.trim();
-    if (/^\d{8}$/.test(raw)) {
-      const y=+raw.slice(0,4), m=+raw.slice(4,6)-1, d=+raw.slice(6,8);
+  function parseIcsDate(value,params={}){
+    if(!value) return null;
+    const raw=String(value).trim();
+    if(/^\d{8}$/.test(raw)){
+      const y=+raw.slice(0,4),m=+raw.slice(4,6)-1,d=+raw.slice(6,8);
       return new Date(y,m,d,0,0,0,0);
     }
-    const m = raw.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/);
-    if (!m) return null;
-    const y=+m[1], mo=+m[2]-1, d=+m[3], h=+m[4], mi=+m[5], s=+m[6];
-    if (m[7] === 'Z') return new Date(Date.UTC(y,mo,d,h,mi,s));
-    // Most FortniteTracker calendars are UTC; for TZID values let the browser parse an ISO-like local date as a best-effort fallback.
-    return new Date(y,mo,d,h,mi,s,0);
+    const m=raw.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/);
+    if(!m) return null;
+    const y=+m[1],mo=+m[2]-1,d=+m[3],h=+m[4],mi=+m[5],sec=+m[6];
+    // DTSTART/DTEND w przesłanym kalendarzu są zapisane jako UTC (...Z).
+    if(m[7]==='Z') return new Date(Date.UTC(y,mo,d,h,mi,sec));
+    // Dla TZID zachowujemy lokalną godzinę kalendarza.
+    return new Date(y,mo,d,h,mi,sec,0);
   }
 
   function parseIcs(text){
-    const lines = unfoldIcs(text).split('\n');
-    const events=[]; let current=null; let calendarName='Fortnite Events Calendar';
-    for(const line of lines){
+    const unfolded=unfoldIcs(text);
+    const lines=unfolded.split('\n');
+    const events=[];
+    let current=null;
+    let calendarName='Fortnite Events Calendar';
+    let inCalendar=false;
+
+    for(const rawLine of lines){
+      const line=rawLine.trimEnd();
+      if(!line) continue;
       const prop=parseIcsProperty(line);
       if(!prop) continue;
-      if(prop.name==='X-WR-CALNAME') calendarName=decodeIcsText(prop.value);
-      if(prop.name==='BEGIN' && prop.value==='VEVENT'){ current={}; continue; }
-      if(prop.name==='END' && prop.value==='VEVENT'){ if(current && current.uid) events.push(current); current=null; continue; }
+
+      if(prop.name==='BEGIN' && prop.value.toUpperCase()==='VCALENDAR'){ inCalendar=true; continue; }
+      if(prop.name==='END' && prop.value.toUpperCase()==='VCALENDAR'){ inCalendar=false; continue; }
+      if(prop.name==='X-WR-CALNAME') { calendarName=decodeIcsText(prop.value).trim() || calendarName; continue; }
+
+      if(prop.name==='BEGIN' && prop.value.toUpperCase()==='VEVENT'){
+        current={};
+        continue;
+      }
+      if(prop.name==='END' && prop.value.toUpperCase()==='VEVENT'){
+        if(current && current.uid) events.push(current);
+        current=null;
+        continue;
+      }
       if(!current) continue;
-      if(prop.name==='SUMMARY') current.summary=decodeIcsText(prop.value);
-      else if(prop.name==='DESCRIPTION') current.description=decodeIcsText(prop.value);
-      else if(prop.name==='DTSTART') current.start=parseIcsDate(prop.value,prop.params);
-      else if(prop.name==='DTEND') current.end=parseIcsDate(prop.value,prop.params);
-      else if(prop.name==='UID') current.uid=decodeIcsText(prop.value);
-      else if(prop.name==='URL') current.url=decodeIcsText(prop.value);
-      else if(prop.name==='DTSTAMP') current.dtstamp=decodeIcsText(prop.value);
-      else if(prop.name==='SEQUENCE') current.sequence=prop.value;
-      else if(prop.name==='CLASS') current.className=prop.value;
-      else if(prop.name==='TRANSP') current.transp=prop.value;
+
+      switch(prop.name){
+        case 'SUMMARY': current.summary=decodeIcsText(prop.value); break;
+        case 'DESCRIPTION': current.description=decodeIcsText(prop.value); break;
+        case 'DTSTART': current.start=parseIcsDate(prop.value,prop.params); break;
+        case 'DTEND': current.end=parseIcsDate(prop.value,prop.params); break;
+        case 'UID': current.uid=decodeIcsText(prop.value).trim(); break;
+        case 'URL': current.url=decodeIcsText(prop.value).trim(); break;
+        case 'DTSTAMP': current.dtstamp=decodeIcsText(prop.value).trim(); break;
+        case 'SEQUENCE': current.sequence=prop.value.trim(); break;
+        case 'CLASS': current.className=prop.value.trim(); break;
+        case 'TRANSP': current.transp=prop.value.trim(); break;
+      }
     }
-    return {calendarName, events};
+    return {calendarName,events};
   }
 
   function cleanSummary(summary){
-    return String(summary || '').replace(/^\s*\[[^\]]+\]\s*/,'').replace(/\s+/g,' ').trim();
+    return String(summary||'').replace(/^\s*\[[^\]]+\]\s*/,'').replace(/\s+/g,' ').trim();
   }
   function getRegions(summary){
-    const m=String(summary||'').match(/^\s*\[([^\]]+)\]/); if(!m) return [];
+    const m=String(summary||'').match(/^\s*\[([^\]]+)\]/);
+    if(!m) return [];
     return m[1].split(',').map(x=>x.trim().toUpperCase()).filter(Boolean);
   }
   function inferTournamentType(name){
@@ -1682,156 +1718,169 @@
   function inferFormat(name){
     const s=name.toLowerCase();
     if(s.includes('solo')) return 'Solo';
-    if(s.includes('duos') || s.includes('duo')) return 'Duo';
-    if(s.includes('trios') || s.includes('trio')) return 'Trio';
-    if(s.includes('squads') || s.includes('squad')) return 'Squad';
+    if(s.includes('duos')||s.includes('duo')) return 'Duo';
+    if(s.includes('trios')||s.includes('trio')) return 'Trio';
+    if(s.includes('squads')||s.includes('squad')) return 'Squad';
     return '—';
   }
   function normalizeTournament(ev,calendarName){
     const name=cleanSummary(ev.summary);
     const regions=getRegions(ev.summary);
-    const start=ev.start || new Date();
-    const end=ev.end || null;
+    if(!ev.uid || !ev.start || Number.isNaN(ev.start.getTime())) return null;
+    const end=ev.end && !Number.isNaN(ev.end.getTime()) ? ev.end : null;
+    const mode=inferMode(name), format=inferFormat(name), tournamentType=inferTournamentType(name);
     return {
-      uid: ev.uid,
-      summary: name,
-      rawSummary: ev.summary || name,
-      description: ev.description || '',
-      startAt: start.toISOString(),
-      endAt: end ? end.toISOString() : null,
-      url: ev.url || '',
+      uid:ev.uid,
+      summary:name || 'Turniej Fortnite',
+      rawSummary:ev.summary || name || 'Turniej Fortnite',
+      description:ev.description || '',
+      startAt:ev.start.toISOString(),
+      endAt:end ? end.toISOString() : null,
+      url:ev.url || '',
       regions,
-      mode: inferMode(name),
-      format: inferFormat(name),
-      tournamentType: inferTournamentType(name),
+      mode,
+      format,
+      tournamentType,
       calendarName,
-      dtstamp: ev.dtstamp || '',
-      sequence: ev.sequence || '0',
-      importedAt: new Date().toISOString(),
-      searchText: [name, ev.description, regions.join(' '), inferMode(name), inferFormat(name), inferTournamentType(name)].join(' ').toLowerCase()
+      dtstamp:ev.dtstamp || '',
+      sequence:ev.sequence || '0',
+      importedAt:new Date().toISOString(),
+      searchText:[name,ev.description||'',regions.join(' '),mode,format,tournamentType].join(' ').toLowerCase()
     };
   }
-  function tournamentDocId(uid){ return String(uid || '').replace(/\//g,'_').slice(0,140) || ('event_'+Date.now()); }
+  function tournamentDocId(uid){
+    // UID z kalendarza może zawierać znaki niedozwolone/niepraktyczne w ID dokumentu.
+    return String(uid||'').replace(/[^A-Za-z0-9._-]/g,'_').slice(0,140) || ('event_'+Date.now());
+  }
   function formatTime(iso){ return new Date(iso).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'}); }
   function formatDateLong(date){ return date.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'}); }
   function formatDayNumber(date){ return date.toLocaleDateString('pl-PL',{day:'2-digit'}); }
   function formatMonthShort(date){ return date.toLocaleDateString('pl-PL',{month:'short'}).replace('.',''); }
-  function formatDuration(start,end){ if(!end) return ''; const ms=Math.max(0,new Date(end)-new Date(start)); const min=Math.round(ms/60000); if(min<60) return min+' min'; const h=Math.floor(min/60),m=min%60; return h+' h'+(m?' '+m+' min':''); }
+  function formatDuration(start,end){ if(!end)return ''; const ms=Math.max(0,new Date(end)-new Date(start)); const min=Math.round(ms/60000); if(min<60)return min+' min'; const h=Math.floor(min/60),m=min%60; return h+' h'+(m?' '+m+' min':''); }
   function isSameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
   function escapeAttr(s){ return escapeHtml(s).replace(/`/g,'&#96;'); }
 
   async function loadTournaments(){
-    if(!tournamentsList) return;
+    if(!tournamentsList)return;
     tournamentsList.innerHTML='<div class="tour-load"><span class="mini-spinner"></span>&nbsp; Wczytywanie harmonogramu…</div>';
     try{
       const snap=await withTimeout(getDocs(collection(db,'tournaments')));
       allTournamentsCache=[];
       snap.forEach(d=>allTournamentsCache.push({id:d.id,...d.data()}));
       allTournamentsCache.sort((a,b)=>new Date(a.startAt)-new Date(b.startAt));
-      populateTournamentFilters();
-      renderTournamentStats();
-      renderTournaments();
-      if(tournamentSyncText) tournamentSyncText.textContent='Ostatnia synchronizacja: '+new Date().toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+      populateTournamentFilters(); renderTournamentStats(); renderTournaments();
+      if(tournamentSyncText)tournamentSyncText.textContent='Ostatnia synchronizacja: '+new Date().toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
     }catch(err){
       console.error(err);
-      tournamentsList.innerHTML='<div class="tour-empty"><strong>Nie udało się wczytać harmonogramu</strong>Sprawdź, czy Firestore jest włączony i czy reguły pozwalają zalogowanym użytkownikom na odczyt kolekcji <code>tournaments</code>.</div>';
-      if(tournamentSyncText) tournamentSyncText.textContent='Błąd synchronizacji';
+      tournamentsList.innerHTML='<div class="tour-empty"><strong>Nie udało się wczytać harmonogramu</strong>Sprawdź reguły Firestore dla kolekcji <code>tournaments</code>.</div>';
+      if(tournamentSyncText)tournamentSyncText.textContent='Błąd synchronizacji';
     }
   }
   function populateTournamentFilters(){
-    const fill=(el,values,label)=>{ if(!el)return; const current=el.value; el.innerHTML='<option value="">'+label+'</option>'+values.sort((a,b)=>a.localeCompare(b,'pl')).map(v=>'<option value="'+escapeAttr(v)+'">'+escapeHtml(v)+'</option>').join(''); if([...el.options].some(o=>o.value===current)) el.value=current; };
+    const fill=(el,values,label)=>{ if(!el)return; const current=el.value; el.innerHTML='<option value="">'+label+'</option>'+values.sort((a,b)=>a.localeCompare(b,'pl')).map(v=>'<option value="'+escapeAttr(v)+'">'+escapeHtml(v)+'</option>').join(''); if([...el.options].some(o=>o.value===current))el.value=current; };
     fill(tourTypeFilter,[...new Set(allTournamentsCache.map(x=>x.tournamentType).filter(Boolean))],'Wszystkie typy');
     fill(tourModeFilter,[...new Set(allTournamentsCache.map(x=>x.mode).filter(Boolean))],'Wszystkie tryby');
   }
   function renderTournamentStats(){
-    const now=new Date(), today=allTournamentsCache.filter(x=>isSameDay(new Date(x.startAt),now));
+    const now=new Date(),today=allTournamentsCache.filter(x=>isSameDay(new Date(x.startAt),now));
     const next=allTournamentsCache.find(x=>new Date(x.startAt)>=now);
-    tourStatAll.textContent=allTournamentsCache.length;
-    tourStatToday.textContent=today.length;
+    tourStatAll.textContent=allTournamentsCache.length; tourStatToday.textContent=today.length;
     tourStatModes.textContent=new Set(allTournamentsCache.map(x=>x.mode).filter(Boolean)).size;
-    if(next){ tourStatNext.textContent=formatTime(next.startAt); tourStatNextSub.textContent=formatDateLong(new Date(next.startAt)); }
-    else { tourStatNext.textContent='—'; tourStatNextSub.textContent='brak nadchodzących sesji'; }
+    if(next){tourStatNext.textContent=formatTime(next.startAt);tourStatNextSub.textContent=formatDateLong(new Date(next.startAt));}
+    else{tourStatNext.textContent='—';tourStatNextSub.textContent='brak nadchodzących sesji';}
   }
   function getFilteredTournaments(){
-    const q=(tourSearch.value||'').trim().toLowerCase(), dateMode=tourDateFilter.value, type=tourTypeFilter.value, mode=tourModeFilter.value, region=tourRegionFilter.value;
-    const now=new Date(), end7=new Date(now.getTime()+7*86400000);
+    const q=(tourSearch.value||'').trim().toLowerCase(),dateMode=tourDateFilter.value,type=tourTypeFilter.value,mode=tourModeFilter.value,region=tourRegionFilter.value;
+    const now=new Date(),end7=new Date(now.getTime()+7*86400000);
     return allTournamentsCache.filter(x=>{
       const d=new Date(x.startAt);
-      if(q && !(x.searchText||'').includes(q)) return false;
-      if(type && x.tournamentType!==type) return false;
-      if(mode && x.mode!==mode) return false;
-      if(region && !(x.regions||[]).includes(region)) return false;
-      if(dateMode==='upcoming' && d<now) return false;
-      if(dateMode==='today' && !isSameDay(d,now)) return false;
-      if(dateMode==='week' && (d<now || d>end7)) return false;
+      if(q&&!(x.searchText||'').includes(q))return false;
+      if(type&&x.tournamentType!==type)return false;
+      if(mode&&x.mode!==mode)return false;
+      if(region&&!(x.regions||[]).includes(region))return false;
+      if(dateMode==='upcoming'&&d<now)return false;
+      if(dateMode==='today'&&!isSameDay(d,now))return false;
+      if(dateMode==='week'&&(d<now||d>end7))return false;
       return true;
     }).sort((a,b)=>new Date(a.startAt)-new Date(b.startAt));
   }
   function renderTournaments(){
     const items=getFilteredTournaments();
-    if(!items.length){ tournamentsList.innerHTML='<div class="tour-empty"><strong>Brak turniejów dla wybranych filtrów</strong>Spróbuj zmienić zakres dat, typ, tryb lub wyszukiwaną frazę.</div>'; return; }
-    const now=new Date(); let html=''; let lastKey=''; let nextMarked=false;
-    items.forEach((x,i)=>{
-      const d=new Date(x.startAt), key=d.toISOString().slice(0,10);
-      if(key!==lastKey){
-        if(lastKey) html+='</div></div>';
-        const today=isSameDay(d,now), tomorrow=isSameDay(d,new Date(now.getTime()+86400000));
-        const title=today?'Dzisiaj':tomorrow?'Jutro':formatDateLong(d);
-        html+='<div class="tour-section"><div class="tour-date-heading"><div class="date-box"><b>'+formatDayNumber(d)+'</b><small>'+formatMonthShort(d)+'</small></div><div class="tour-date-title">'+escapeHtml(title)+'<span>'+d.toLocaleDateString('pl-PL',{year:'numeric'})+'</span></div></div><div class="tour-list">';
-        lastKey=key;
-      }
-      const isNext=!nextMarked && d>=now; if(isNext) nextMarked=true;
+    if(!items.length){tournamentsList.innerHTML='<div class="tour-empty"><strong>Brak turniejów dla wybranych filtrów</strong>Spróbuj zmienić zakres dat, typ, tryb lub wyszukiwaną frazę.</div>';return;}
+    const now=new Date();let html='',lastKey='',nextMarked=false;
+    items.forEach(x=>{
+      const d=new Date(x.startAt),key=d.toISOString().slice(0,10);
+      if(key!==lastKey){if(lastKey)html+='</div></div>';const today=isSameDay(d,now),tomorrow=isSameDay(d,new Date(now.getTime()+86400000));const title=today?'Dzisiaj':tomorrow?'Jutro':formatDateLong(d);html+='<div class="tour-section"><div class="tour-date-heading"><div class="date-box"><b>'+formatDayNumber(d)+'</b><small>'+formatMonthShort(d)+'</small></div><div class="tour-date-title">'+escapeHtml(title)+'<span>'+d.toLocaleDateString('pl-PL',{year:'numeric'})+'</span></div></div><div class="tour-list">';lastKey=key;}
+      const isNext=!nextMarked&&d>=now;if(isNext)nextMarked=true;
       const tags=[];
-      if(x.tournamentType) tags.push('<span class="tour-tag accent">'+escapeHtml(x.tournamentType)+'</span>');
-      if(x.mode) tags.push('<span class="tour-tag purple">'+escapeHtml(x.mode)+'</span>');
-      if(x.format && x.format!=='—') tags.push('<span class="tour-tag">'+escapeHtml(x.format)+'</span>');
+      if(x.tournamentType)tags.push('<span class="tour-tag accent">'+escapeHtml(x.tournamentType)+'</span>');
+      if(x.mode)tags.push('<span class="tour-tag purple">'+escapeHtml(x.mode)+'</span>');
+      if(x.format&&x.format!=='—')tags.push('<span class="tour-tag">'+escapeHtml(x.format)+'</span>');
       (x.regions||[]).slice(0,5).forEach(r=>tags.push('<span class="tour-tag">'+escapeHtml(r)+'</span>'));
-      if((x.regions||[]).length>5) tags.push('<span class="tour-tag">+'+(x.regions.length-5)+'</span>');
-      html+='<div class="tour-card '+(isNext?'is-next':'')+'">'+
-        '<div class="tour-time">'+formatTime(x.startAt)+'<small>'+(x.endAt?'do '+formatTime(x.endAt)+' · '+formatDuration(x.startAt,x.endAt):'godzina startu')+'</small></div>'+
-        '<div class="tour-main"><div class="tour-name">'+escapeHtml(x.summary)+'</div><div class="tour-desc">'+escapeHtml((x.description||'').replace(/\n+/g,' ').slice(0,180))+'</div><div class="tour-tags">'+tags.join('')+'</div></div>'+
-        '<div class="tour-actions"><button class="tour-link" type="button" data-tour-id="'+escapeAttr(x.id)+'">Szczegóły&nbsp;›</button>'+(x.url?'<a class="tour-link" href="'+escapeAttr(x.url)+'" target="_blank" rel="noopener">Leaderboard&nbsp;↗</a>':'')+'</div>'+
-      '</div>';
+      if((x.regions||[]).length>5)tags.push('<span class="tour-tag">+'+(x.regions.length-5)+'</span>');
+      html+='<div class="tour-card '+(isNext?'is-next':'')+'"><div class="tour-time">'+formatTime(x.startAt)+'<small>'+(x.endAt?'do '+formatTime(x.endAt)+' · '+formatDuration(x.startAt,x.endAt):'godzina startu')+'</small></div><div class="tour-main"><div class="tour-name">'+escapeHtml(x.summary)+'</div><div class="tour-desc">'+escapeHtml((x.description||'').replace(/\n+/g,' ').slice(0,180))+'</div><div class="tour-tags">'+tags.join('')+'</div></div><div class="tour-actions"><button class="tour-link" type="button" data-tour-id="'+escapeAttr(x.id)+'">Szczegóły&nbsp;›</button>'+(x.url?'<a class="tour-link" href="'+escapeAttr(x.url)+'" target="_blank" rel="noopener">Leaderboard&nbsp;↗</a>':'')+'</div></div>';
     });
-    html+='</div></div>'; tournamentsList.innerHTML=html;
+    html+='</div></div>';tournamentsList.innerHTML=html;
     tournamentsList.querySelectorAll('[data-tour-id]').forEach(btn=>btn.addEventListener('click',()=>openTournamentModal(allTournamentsCache.find(x=>x.id===btn.dataset.tourId))));
   }
   [tourSearch,tourDateFilter,tourTypeFilter,tourModeFilter,tourRegionFilter].forEach(el=>el&&el.addEventListener('input',renderTournaments));
   function openTournamentModal(t){
     if(!t)return;
     const desc=escapeHtml(t.description||'Brak opisu.').replace(/\n/g,'<br>');
-    tournamentModalContent.innerHTML='<h2 class="tour-detail-title">'+escapeHtml(t.summary)+'</h2><div class="tour-detail-sub">'+formatDateLong(new Date(t.startAt))+' · '+formatTime(t.startAt)+(t.endAt?'–'+formatTime(t.endAt):'')+'</div><div class="tour-detail-grid">'+
-      '<div class="tour-detail-item"><label>Typ</label><div>'+escapeHtml(t.tournamentType||'—')+'</div></div><div class="tour-detail-item"><label>Tryb</label><div>'+escapeHtml(t.mode||'—')+'</div></div>'+
-      '<div class="tour-detail-item"><label>Format</label><div>'+escapeHtml(t.format||'—')+'</div></div><div class="tour-detail-item"><label>Regiony</label><div>'+escapeHtml((t.regions||[]).join(', ')||'—')+'</div></div>'+
-      '<div class="tour-detail-item"><label>Czas trwania</label><div>'+escapeHtml(formatDuration(t.startAt,t.endAt)||'—')+'</div></div><div class="tour-detail-item"><label>Źródło kalendarza</label><div>'+escapeHtml(t.calendarName||'—')+'</div></div>'+
-      '</div><div class="tour-description">'+desc+'</div>'+(t.url?'<div class="modal-actions"><a class="btn-primary" href="'+escapeAttr(t.url)+'" target="_blank" rel="noopener" style="display:block;text-align:center;">Otwórz leaderboard ↗</a></div>':'');
+    tournamentModalContent.innerHTML='<h2 class="tour-detail-title">'+escapeHtml(t.summary)+'</h2><div class="tour-detail-sub">'+formatDateLong(new Date(t.startAt))+' · '+formatTime(t.startAt)+(t.endAt?'–'+formatTime(t.endAt):'')+'</div><div class="tour-detail-grid"><div class="tour-detail-item"><label>Typ</label><div>'+escapeHtml(t.tournamentType||'—')+'</div></div><div class="tour-detail-item"><label>Tryb</label><div>'+escapeHtml(t.mode||'—')+'</div></div><div class="tour-detail-item"><label>Format</label><div>'+escapeHtml(t.format||'—')+'</div></div><div class="tour-detail-item"><label>Regiony</label><div>'+escapeHtml((t.regions||[]).join(', ')||'—')+'</div></div><div class="tour-detail-item"><label>Czas trwania</label><div>'+escapeHtml(formatDuration(t.startAt,t.endAt)||'—')+'</div></div><div class="tour-detail-item"><label>Źródło kalendarza</label><div>'+escapeHtml(t.calendarName||'—')+'</div></div></div><div class="tour-description">'+desc+'</div>'+(t.url?'<div class="modal-actions"><a class="btn-primary" href="'+escapeAttr(t.url)+'" target="_blank" rel="noopener" style="display:block;text-align:center;">Otwórz leaderboard ↗</a></div>':'');
     tournamentModalOverlay.classList.remove('hidden');
   }
-  function closeTournamentModal(){ tournamentModalOverlay.classList.add('hidden'); tournamentModalContent.innerHTML=''; }
+  function closeTournamentModal(){tournamentModalOverlay.classList.add('hidden');tournamentModalContent.innerHTML='';}
   tournamentModalClose.addEventListener('click',closeTournamentModal);
   tournamentModalOverlay.addEventListener('click',e=>{if(e.target===tournamentModalOverlay)closeTournamentModal();});
 
   // ---------- Admin: ICS import ----------
-  function showImportResult(text,type){ icsResult.textContent=text; icsResult.className='import-result show '+type; }
+  function showImportResult(text,type){icsResult.textContent=text;icsResult.className='import-result show '+type;}
+  function describeImportError(err){
+    console.error('FN Coach / import ICS:',err);
+    const code=err?.code||'';
+    if(code==='permission-denied') return 'Firebase zablokował zapis do kolekcji „tournaments”. Sprawdź reguły Firestore — administrator musi mieć create/update dla tournaments.';
+    if(code==='failed-precondition') return 'Firestore nie jest poprawnie skonfigurowany albo wymaga utworzenia bazy. Sprawdź Firebase Console → Firestore Database.';
+    if(code==='unavailable') return 'Firestore jest chwilowo niedostępny. Sprawdź połączenie i spróbuj ponownie.';
+    if(code==='firestore-timeout') return 'Firestore nie odpowiedział w wymaganym czasie. Sprawdź połączenie oraz reguły Firestore.';
+    if(code==='no-events') return 'Plik został odczytany, ale nie znaleziono w nim żadnych wydarzeń VEVENT.';
+    if(code==='invalid-ics') return 'Plik nie wygląda na poprawny kalendarz ICS (RFC 5545).';
+    if(code==='no-valid-events') return 'W pliku znaleziono wydarzenia, ale żadne nie miało poprawnego UID i DTSTART.';
+    return 'Nie udało się zaimportować kalendarza: '+(err?.message||'nieznany błąd')+'.';
+  }
   async function importIcsFile(file){
-    if(!isCurrentUserAdmin){ showImportResult('Tylko administrator może importować kalendarz turniejów.','error'); return; }
-    if(!file || !/\.ics$/i.test(file.name)){ showImportResult('Wybierz prawidłowy plik .ics.','error'); return; }
-    icsResult.className='import-result'; icsProgress.className='import-progress show'; icsProgress.innerHTML='<b>Analizowanie pliku…</b> '+escapeHtml(file.name);
+    if(!isCurrentUserAdmin){showImportResult('Tylko administrator może importować kalendarz turniejów.','error');return;}
+    if(!file||(!/\.ics$/i.test(file.name)&&file.type!=='text/calendar')){showImportResult('Wybierz prawidłowy plik .ics.','error');return;}
+    icsResult.className='import-result';icsProgress.className='import-progress show';icsProgress.innerHTML='<b>Analizowanie pliku…</b> '+escapeHtml(file.name);
     try{
       const text=await file.text();
+      if(!/BEGIN\s*:\s*VCALENDAR/i.test(text)||!/BEGIN\s*:\s*VEVENT/i.test(text)) throw Object.assign(new Error('invalid-ics'),{code:'invalid-ics'});
       const parsed=parseIcs(text);
-      if(!parsed.events.length) throw new Error('no-events');
-      const normalized=parsed.events.map(e=>normalizeTournament(e,parsed.calendarName)).filter(e=>e.uid && e.startAt);
-      icsProgress.innerHTML='<b>Znaleziono '+normalized.length+' sesji.</b> Zapisywanie do Firestore…';
+      if(!parsed.events.length) throw Object.assign(new Error('no-events'),{code:'no-events'});
+      const normalized=parsed.events.map(e=>normalizeTournament(e,parsed.calendarName)).filter(Boolean);
+      if(!normalized.length) throw Object.assign(new Error('no-valid-events'),{code:'no-valid-events'});
+      icsProgress.innerHTML='<b>Znaleziono '+normalized.length+' wydarzeń.</b> Zapisywanie do Firestore…';
+
+      // Batch zapisuje cały plik w jednej operacji. Jest szybszy i nie zostawia połowy kalendarza,
+      // gdy pojedynczy zapis zostanie odrzucony przez reguły Firestore.
+      const BATCH_SIZE=450;
       let saved=0;
-      for(const event of normalized){ await withTimeout(setDoc(doc(db,'tournaments',tournamentDocId(event.uid)),event,{merge:true})); saved++; icsProgress.innerHTML='<b>Importowanie…</b> '+saved+' / '+normalized.length; }
+      for(let i=0;i<normalized.length;i+=BATCH_SIZE){
+        const batch=writeBatch(db);
+        const chunk=normalized.slice(i,i+BATCH_SIZE);
+        chunk.forEach(event=>batch.set(doc(db,'tournaments',tournamentDocId(event.uid)),event,{merge:true}));
+        await withTimeout(batch.commit(),15000);
+        saved+=chunk.length;
+        icsProgress.innerHTML='<b>Importowanie…</b> '+saved+' / '+normalized.length;
+      }
+
       icsProgress.className='import-progress';
-      showImportResult('Gotowe. Zaimportowano lub zaktualizowano '+saved+' sesji turniejowych z kalendarza „'+parsed.calendarName+'”.','ok');
+      showImportResult('Gotowe. Zaimportowano lub zaktualizowano '+saved+' turniejów z kalendarza „'+parsed.calendarName+'”.','ok');
       await loadAdminTournamentList();
       await loadTournaments();
     }catch(err){
-      console.error(err); icsProgress.className='import-progress';
-      showImportResult(err.message==='no-events'?'Plik nie zawiera żadnych wydarzeń VEVENT.':'Nie udało się zaimportować kalendarza. Sprawdź format pliku i reguły Firestore.','error');
+      icsProgress.className='import-progress';
+      showImportResult(describeImportError(err),'error');
     }
   }
   chooseIcsBtn.addEventListener('click',e=>{e.stopPropagation();icsFileInput.click();});
@@ -1850,13 +1899,22 @@
       adminTournamentCount.textContent=list.length+' sesji';
       if(!list.length){adminTournamentList.innerHTML='<div class="tour-empty"><strong>Kalendarz jest pusty</strong>Wgraj plik .ics powyżej, aby dodać turnieje.</div>';return;}
       adminTournamentList.innerHTML=list.map(x=>'<div class="admin-event-row"><div class="d">'+new Date(x.startAt).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+formatTime(x.startAt)+'</div><div class="n" title="'+escapeAttr(x.summary)+'">'+escapeHtml(x.summary)+'</div><div class="r">'+escapeHtml((x.regions||[]).join(', ')||'—')+'</div></div>').join('');
-    }catch(err){adminTournamentList.innerHTML='<div class="users-empty is-error"><span class="ue-ic">⚠️</span><div><div class="ue-title">Nie udało się wczytać turniejów</div>Sprawdź reguły Firestore dla kolekcji <code>tournaments</code>.</div></div>';}
+    }catch(err){
+      console.error('FN Coach / admin tournament list:',err);
+      const msg=err?.code==='permission-denied'?'Brak prawa odczytu kolekcji „tournaments”.':'Sprawdź reguły Firestore dla kolekcji „tournaments”.';
+      adminTournamentList.innerHTML='<div class="users-empty is-error"><span class="ue-ic">⚠️</span><div><div class="ue-title">Nie udało się wczytać turniejów</div>'+escapeHtml(msg)+'</div></div>';
+    }
   }
   clearTournamentsBtn.addEventListener('click',async()=>{
     if(!isCurrentUserAdmin)return;
-    const ok=confirm('Usunąć cały zaimportowany harmonogram turniejów? Tej operacji nie można cofnąć.'); if(!ok)return;
+    const ok=confirm('Usunąć cały zaimportowany harmonogram turniejów? Tej operacji nie można cofnąć.');if(!ok)return;
     clearTournamentsBtn.disabled=true;clearTournamentsBtn.textContent='Usuwanie…';
-    try{const snap=await withTimeout(getDocs(collection(db,'tournaments')));for(const d of snap.docs)await withTimeout(deleteDoc(doc(db,'tournaments',d.id)));showImportResult('Kalendarz został wyczyszczony.','ok');await loadAdminTournamentList();await loadTournaments();}catch(e){showImportResult('Nie udało się wyczyścić kalendarza. Sprawdź reguły Firestore.','error');}finally{clearTournamentsBtn.disabled=false;clearTournamentsBtn.textContent='Wyczyść kalendarz';}
+    try{
+      const snap=await withTimeout(getDocs(collection(db,'tournaments')));
+      for(let i=0;i<snap.docs.length;i+=450){const batch=writeBatch(db);snap.docs.slice(i,i+450).forEach(d=>batch.delete(d.ref));await withTimeout(batch.commit(),15000);}
+      showImportResult('Kalendarz został wyczyszczony.','ok');await loadAdminTournamentList();await loadTournaments();
+    }catch(e){showImportResult(describeImportError(e),'error');}
+    finally{clearTournamentsBtn.disabled=false;clearTournamentsBtn.textContent='Wyczyść kalendarz';}
   });
 
   // ---------- Settings: load & save ----------
