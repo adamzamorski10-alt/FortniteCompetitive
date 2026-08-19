@@ -803,6 +803,61 @@
     .hero-card{flex-direction:column;text-align:center;padding:32px 24px;}
     .hero-card p{max-width:none;}
   }
+
+  /* ================= TOURNAMENTS ================= */
+  .tournaments-page{max-width:1200px;}
+  .tournaments-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:20px;}
+  .tournaments-head .eyebrow{font-size:11px;letter-spacing:.14em;color:var(--text-faint);font-weight:700;margin-bottom:8px;}
+  .tournaments-head h1{font-size:34px;margin:0 0 8px;font-weight:700;}
+  .tournaments-head p{margin:0;color:var(--text-dim);font-size:13.5px;line-height:1.6;max-width:650px;}
+  .tournament-sync{display:flex;align-items:center;gap:8px;color:var(--text-faint);font-size:11.5px;white-space:nowrap;}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 12px rgba(52,211,153,.55);}
+  .tournament-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+  .tour-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:17px 18px;position:relative;overflow:hidden;}
+  .tour-stat::after{content:"";position:absolute;inset:auto -30px -45px auto;width:100px;height:100px;border-radius:50%;background:rgba(109,91,255,.08);filter:blur(10px);}
+  .tour-stat .label{font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.09em;font-weight:700;}
+  .tour-stat .value{font:700 25px 'Space Grotesk',sans-serif;margin-top:5px;}
+  .tour-stat .sub{font-size:11px;color:var(--text-faint);margin-top:3px;}
+  .tour-filters{display:grid;grid-template-columns:minmax(180px,1.7fr) repeat(4,minmax(125px,1fr));gap:9px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:22px;}
+  .tour-filter{min-width:0;background:rgba(255,255,255,.025);border:1px solid var(--border-soft);color:var(--text);height:40px;border-radius:10px;padding:0 12px;font:500 12px Inter,sans-serif;outline:none;}
+  .tour-filter:focus{border-color:rgba(109,91,255,.55);box-shadow:0 0 0 3px rgba(109,91,255,.10);}
+  .tour-filter option{background:#0d111c;color:var(--text);}
+  .tour-search{padding-left:36px!important;}
+  .tour-search-wrap{position:relative;}
+  .tour-search-wrap span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-faint);font-size:13px;pointer-events:none;}
+  .tour-section{margin-bottom:28px;}
+  .tour-date-heading{display:flex;align-items:center;gap:12px;margin:0 0 10px;padding:0 2px;}
+  .tour-date-heading .date-box{width:45px;height:45px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(160deg,rgba(34,211,238,.14),rgba(109,91,255,.10));border:1px solid rgba(109,91,255,.25);}
+  .date-box b{font:700 17px 'Space Grotesk',sans-serif;line-height:1;}.date-box small{font-size:8px;color:var(--text-faint);text-transform:uppercase;}
+  .tour-date-title{font:700 15px 'Space Grotesk',sans-serif;}.tour-date-title span{color:var(--text-faint);font:500 11px Inter,sans-serif;margin-left:7px;}
+  .tour-list{display:flex;flex-direction:column;gap:8px;}
+  .tour-card{display:grid;grid-template-columns:105px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:15px 16px;transition:.18s;position:relative;overflow:hidden;}
+  .tour-card:hover{background:var(--surface-2);border-color:rgba(109,91,255,.32);transform:translateY(-1px);}
+  .tour-card.is-next{border-color:rgba(34,211,238,.38);box-shadow:0 12px 35px -25px rgba(34,211,238,.6);}
+  .tour-card.is-next::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:2px;background:var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.7);}
+  .tour-time{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;white-space:nowrap;}.tour-time small{display:block;color:var(--text-faint);font:500 10px Inter,sans-serif;margin-top:3px;}
+  .tour-main{min-width:0;}.tour-name{font-size:14px;font-weight:700;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.tour-desc{font-size:11.5px;color:var(--text-faint);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:850px;}
+  .tour-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}.tour-tag{font-size:9.5px;font-weight:700;padding:3px 7px;border-radius:999px;background:rgba(255,255,255,.045);border:1px solid var(--border-soft);color:var(--text-dim);}.tour-tag.accent{color:#a8f6ff;border-color:rgba(34,211,238,.24);background:rgba(34,211,238,.07);}.tour-tag.purple{color:#d7c9ff;border-color:rgba(168,85,247,.25);background:rgba(168,85,247,.07);}
+  .tour-actions{display:flex;align-items:center;gap:7px;}.tour-link{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,.035);font-size:11px;font-weight:700;color:var(--text-dim);white-space:nowrap;transition:.15s;}.tour-link:hover{color:var(--text);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.07);}
+  .tour-empty{padding:34px 20px;text-align:center;border:1px dashed var(--border);border-radius:var(--radius-md);color:var(--text-faint);}.tour-empty strong{display:block;color:var(--text-dim);margin-bottom:5px;}
+  .tour-load{display:flex;justify-content:center;padding:35px;color:var(--text-faint);font-size:13px;}
+  .tour-detail-overlay{z-index:60;}
+  .tour-detail-modal{max-width:650px;max-height:min(760px,90vh);overflow:auto;}
+  .tour-detail-title{font-size:22px;margin:0 30px 7px 0;line-height:1.25;}.tour-detail-sub{font-size:12px;color:var(--text-faint);margin-bottom:20px;}.tour-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border-soft);border:1px solid var(--border-soft);border-radius:12px;overflow:hidden;margin-bottom:18px;}.tour-detail-item{background:rgba(255,255,255,.025);padding:12px 13px;}.tour-detail-item label{display:block;color:var(--text-faint);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px;}.tour-detail-item div{font-size:12.5px;font-weight:600;}.tour-description{font-size:12.5px;color:var(--text-dim);line-height:1.65;white-space:pre-line;background:rgba(255,255,255,.025);border:1px solid var(--border-soft);border-radius:12px;padding:14px;}.tour-description a{color:var(--cyan);}
+
+  /* ================= ADMIN TOURNAMENTS ================= */
+  .admin-wide{max-width:1100px;}
+  .admin-tabs{display:flex;gap:5px;padding:4px;background:rgba(255,255,255,.035);border:1px solid var(--border-soft);border-radius:11px;width:max-content;margin:20px 0 22px;}
+  .admin-tab{border:0;background:transparent;color:var(--text-faint);padding:8px 14px;border-radius:8px;font:700 11.5px Inter,sans-serif;cursor:pointer;transition:.15s;}.admin-tab:hover{color:var(--text);}.admin-tab.active{background:var(--surface-2);color:var(--text);box-shadow:0 3px 12px rgba(0,0,0,.18);}
+  .admin-tour-panel{display:none;}.admin-tour-panel.active{display:block;}
+  .import-drop{border:1px dashed rgba(109,91,255,.45);border-radius:16px;padding:28px;text-align:center;background:radial-gradient(500px 180px at 50% 0%,rgba(109,91,255,.10),transparent 70%),rgba(255,255,255,.018);transition:.2s;cursor:pointer;}.import-drop:hover,.import-drop.dragover{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.04);}.import-icon{font-size:28px;margin-bottom:9px;}.import-drop h3{font-size:15px;margin:0 0 5px;}.import-drop p{font-size:11.5px;color:var(--text-faint);margin:0;line-height:1.5;}.import-drop .btn-primary{width:auto;display:inline-block;margin-top:15px;padding:10px 18px;font-size:12px;}
+  .import-progress{display:none;margin-top:14px;padding:12px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid var(--border-soft);font-size:12px;color:var(--text-dim);}.import-progress.show{display:block;}.import-progress b{color:var(--text);}
+  .import-result{display:none;margin-top:12px;padding:12px 14px;border-radius:10px;font-size:12px;line-height:1.5;}.import-result.show{display:block;}.import-result.ok{color:#a7f3d4;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.22);}.import-result.error{color:#ffb3c2;background:rgba(251,69,112,.07);border:1px solid rgba(251,69,112,.25);}
+  .admin-tour-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:26px 0 12px;}.admin-tour-head h3{font-size:13px;margin:0;}.admin-tour-count{font-size:10px;color:var(--text-faint);padding:4px 8px;border-radius:999px;background:var(--surface-2);}.btn-secondary{border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);border-radius:9px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;}.btn-secondary:hover{color:var(--text);border-color:rgba(255,255,255,.18);}.btn-secondary.danger:hover{border-color:rgba(251,69,112,.35);color:#ffb3c2;}
+  .admin-event-list{display:flex;flex-direction:column;gap:6px;max-height:430px;overflow:auto;padding-right:2px;}.admin-event-row{display:grid;grid-template-columns:95px minmax(0,1fr) 70px;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border-soft);background:rgba(255,255,255,.02);border-radius:9px;}.admin-event-row .d{font-size:10.5px;color:var(--text-faint);}.admin-event-row .n{font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.admin-event-row .r{font-size:9.5px;color:var(--text-faint);text-align:right;}
+  @media (max-width:900px){.tour-filters{grid-template-columns:1fr 1fr 1fr;}.tour-search-wrap{grid-column:1/-1;}.tournament-stats{grid-template-columns:1fr 1fr;}.tour-card{grid-template-columns:88px minmax(0,1fr);}.tour-actions{grid-column:2;}.tour-link{width:max-content;}.tournaments-head{align-items:flex-start;flex-direction:column;}}
+  @media (max-width:600px){.tour-filters{grid-template-columns:1fr;}.tour-search-wrap{grid-column:auto;}.tournament-stats{grid-template-columns:1fr 1fr;}.tour-card{grid-template-columns:1fr;gap:9px;padding:14px;}.tour-actions{grid-column:auto;}.tour-name{white-space:normal;}.tour-desc{white-space:normal;}.tour-detail-grid{grid-template-columns:1fr;}.admin-event-row{grid-template-columns:1fr;gap:3px;}.admin-event-row .r{text-align:left;}.admin-tabs{width:100%;}.admin-tab{flex:1;}.import-drop{padding:24px 15px;}}
+
 </style>
 </head>
 <body>
@@ -932,6 +987,7 @@
         <div class="sidebar-top">
           <div class="side-label">MENU</div>
           <div class="nav-link active" data-page="home"><span class="ic">🏠</span> Home</div>
+          <div class="nav-link" data-page="tournaments"><span class="ic">📅</span> Turnieje</div>
           <div class="nav-link disabled"><span class="ic">🎮</span> Mecze <span class="soon-tag">wkrótce</span></div>
           <div class="nav-link disabled"><span class="ic">📊</span> Statystyki <span class="soon-tag">wkrótce</span></div>
           <div class="nav-link disabled"><span class="ic">🏆</span> Trening <span class="soon-tag">wkrótce</span></div>
@@ -970,6 +1026,35 @@
               </div>
             </div>
           </div>
+        </div>
+
+
+        <div class="page hidden tournaments-page" id="page-tournaments">
+          <div class="tournaments-head">
+            <div>
+              <div class="eyebrow">COMPETITIVE CALENDAR</div>
+              <h1>Turnieje</h1>
+              <p>Pełny harmonogram turniejów z kalendarza FN Tracker. Sprawdzaj godziny, tryb, format, regiony, rundy i przechodź bezpośrednio do leaderboardów.</p>
+            </div>
+            <div class="tournament-sync"><span class="sync-dot"></span><span id="tournamentSyncText">Synchronizacja z bazą</span></div>
+          </div>
+
+          <div class="tournament-stats">
+            <div class="tour-stat"><div class="label">Wszystkie</div><div class="value" id="tourStatAll">—</div><div class="sub">zaimportowane sesje</div></div>
+            <div class="tour-stat"><div class="label">Najbliższy</div><div class="value" id="tourStatNext">—</div><div class="sub" id="tourStatNextSub">brak danych</div></div>
+            <div class="tour-stat"><div class="label">Dzisiaj</div><div class="value" id="tourStatToday">—</div><div class="sub">sesji turniejowych</div></div>
+            <div class="tour-stat"><div class="label">Tryby</div><div class="value" id="tourStatModes">—</div><div class="sub">różnych trybów</div></div>
+          </div>
+
+          <div class="tour-filters">
+            <div class="tour-search-wrap"><span>⌕</span><input class="tour-filter tour-search" id="tourSearch" placeholder="Szukaj turnieju, typu, rundy…" autocomplete="off"></div>
+            <select class="tour-filter" id="tourDateFilter"><option value="upcoming">Nadchodzące</option><option value="all">Wszystkie</option><option value="today">Dzisiaj</option><option value="week">Najbliższe 7 dni</option></select>
+            <select class="tour-filter" id="tourTypeFilter"><option value="">Wszystkie typy</option></select>
+            <select class="tour-filter" id="tourModeFilter"><option value="">Wszystkie tryby</option></select>
+            <select class="tour-filter" id="tourRegionFilter"><option value="">Wszystkie regiony</option><option>EU</option><option>NAE</option><option>NAW</option><option>OCE</option><option>BR</option><option>ASIA</option><option>ME</option><option>NAC</option></select>
+          </div>
+
+          <div id="tournamentsList"><div class="tour-load"><span class="mini-spinner"></span>&nbsp; Wczytywanie harmonogramu…</div></div>
         </div>
 
         <div class="page hidden" id="page-settings">
@@ -1052,7 +1137,7 @@
         </div>
 
         <div class="page hidden" id="page-admin">
-          <div class="admin-card">
+          <div class="admin-card admin-wide">
             <div class="admin-card-head">
               <div class="admin-card-icon">🛡️</div>
               <div>
@@ -1061,28 +1146,61 @@
               </div>
             </div>
 
-            <div id="adminOnlySection">
-              <div class="admin-section-label">Nadaj uprawnienia po nicku</div>
-              <div class="form-msg" id="adminGrantMsg"></div>
-              <div class="admin-grant-row">
-                <input type="text" id="grantNickInput" placeholder="Nick użytkownika, któremu nadać admina" />
-                <button class="btn-primary" id="grantAdminBtn" type="button">Nadaj admina</button>
+            <div class="admin-tabs">
+              <button class="admin-tab active" data-admin-tab="users" type="button">👥 Użytkownicy</button>
+              <button class="admin-tab" data-admin-tab="tournaments" type="button">📅 Turnieje</button>
+            </div>
+
+            <div class="admin-tour-panel" id="adminPanelUsers">
+              <div id="adminOnlySection">
+                <div class="admin-section-label">Nadaj uprawnienia po nicku</div>
+                <div class="form-msg" id="adminGrantMsg"></div>
+                <div class="admin-grant-row">
+                  <input type="text" id="grantNickInput" placeholder="Nick użytkownika, któremu nadać admina" />
+                  <button class="btn-primary" id="grantAdminBtn" type="button">Nadaj admina</button>
+                </div>
               </div>
+
+              <div class="admin-section-label">Szukaj użytkownika</div>
+              <div class="search-input-wrap">
+                <span class="search-ic">🔍</span>
+                <input type="text" id="userSearchInput" placeholder="Szukaj po nicku…" autocomplete="off" />
+              </div>
+
+              <div class="admin-subhead">Wszyscy użytkownicy <span id="userCountTag"></span></div>
+              <div id="usersList" class="users-list"><div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div></div>
             </div>
 
-            <div class="admin-section-label">Szukaj użytkownika</div>
-            <div class="search-input-wrap">
-              <span class="search-ic">🔍</span>
-              <input type="text" id="userSearchInput" placeholder="Szukaj po nicku…" autocomplete="off" />
-            </div>
+            <div class="admin-tour-panel" id="adminPanelTournaments">
+              <div class="admin-section-label">IMPORT KALENDARZA</div>
+              <div class="import-drop" id="icsDropZone">
+                <div class="import-icon">📅</div>
+                <h3>Wgraj kalendarz turniejów</h3>
+                <p>Przeciągnij tutaj plik <b>.ics</b> lub wybierz go z komputera.<br>Dane zostaną automatycznie odczytane, uporządkowane i zapisane w Firestore.</p>
+                <input type="file" id="icsFileInput" accept=".ics,text/calendar" hidden>
+                <button class="btn-primary" id="chooseIcsBtn" type="button">Wybierz plik .ics</button>
+              </div>
+              <div class="import-progress" id="icsProgress"></div>
+              <div class="import-result" id="icsResult"></div>
 
-            <div class="admin-subhead">Wszyscy użytkownicy <span id="userCountTag"></span></div>
-            <div id="usersList" class="users-list">
-              <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>
+              <div class="admin-tour-head">
+                <div><h3>ZAIMPORTOWANE TURNIEJE</h3><span class="admin-tour-count" id="adminTournamentCount">—</span></div>
+                <button class="btn-secondary danger" id="clearTournamentsBtn" type="button">Wyczyść kalendarz</button>
+              </div>
+              <div id="adminTournamentList" class="admin-event-list"><div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div></div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+
+  <!-- ================= TOURNAMENT DETAIL MODAL ================= -->
+  <div id="tournamentModalOverlay" class="modal-overlay tour-detail-overlay hidden">
+    <div class="modal-card tour-detail-modal">
+      <button class="modal-close" id="tournamentModalClose" type="button">✕</button>
+      <div id="tournamentModalContent"></div>
     </div>
   </div>
 
@@ -1192,6 +1310,34 @@
   const userModalOverlay = document.getElementById('userModalOverlay');
   const modalContent = document.getElementById('modalContent');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+  const tournamentsList = document.getElementById('tournamentsList');
+  const tournamentSyncText = document.getElementById('tournamentSyncText');
+  const tourSearch = document.getElementById('tourSearch');
+  const tourDateFilter = document.getElementById('tourDateFilter');
+  const tourTypeFilter = document.getElementById('tourTypeFilter');
+  const tourModeFilter = document.getElementById('tourModeFilter');
+  const tourRegionFilter = document.getElementById('tourRegionFilter');
+  const tourStatAll = document.getElementById('tourStatAll');
+  const tourStatNext = document.getElementById('tourStatNext');
+  const tourStatNextSub = document.getElementById('tourStatNextSub');
+  const tourStatToday = document.getElementById('tourStatToday');
+  const tourStatModes = document.getElementById('tourStatModes');
+  const tournamentModalOverlay = document.getElementById('tournamentModalOverlay');
+  const tournamentModalContent = document.getElementById('tournamentModalContent');
+  const tournamentModalClose = document.getElementById('tournamentModalClose');
+  const icsDropZone = document.getElementById('icsDropZone');
+  const icsFileInput = document.getElementById('icsFileInput');
+  const chooseIcsBtn = document.getElementById('chooseIcsBtn');
+  const icsProgress = document.getElementById('icsProgress');
+  const icsResult = document.getElementById('icsResult');
+  const adminTournamentList = document.getElementById('adminTournamentList');
+  const adminTournamentCount = document.getElementById('adminTournamentCount');
+  const clearTournamentsBtn = document.getElementById('clearTournamentsBtn');
+  const adminTabButtons = document.querySelectorAll('.admin-tab');
+  const adminPanelUsers = document.getElementById('adminPanelUsers');
+  const adminPanelTournaments = document.getElementById('adminPanelTournaments');
+  let allTournamentsCache = [];
 
   let suppressAuthHandler = false;
   let isCurrentUserAdmin = false;
@@ -1430,7 +1576,287 @@
       link.classList.add('active');
       pages.forEach(p => p.classList.add('hidden'));
       document.getElementById('page-' + target).classList.remove('hidden');
+      if (target === 'tournaments') loadTournaments();
+      if (target === 'admin') loadAdminTournamentList();
     });
+  });
+
+  // ---------- Admin tabs ----------
+  adminTabButtons.forEach(btn => btn.addEventListener('click', () => {
+    adminTabButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.adminTab;
+    adminPanelUsers.classList.toggle('active', tab === 'users');
+    adminPanelTournaments.classList.toggle('active', tab === 'tournaments');
+    if (tab === 'users') loadUsersList();
+    if (tab === 'tournaments') loadAdminTournamentList();
+  }));
+  adminPanelUsers.classList.add('active');
+
+
+  // ================= TOURNAMENT CALENDAR =================
+  function decodeIcsText(value){
+    return String(value || '').replace(/\\n/g,'\n').replace(/\\N/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+  }
+
+  function unfoldIcs(text){
+    return String(text || '').replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n[ \t]/g,'');
+  }
+
+  function parseIcsProperty(line){
+    const idx = line.indexOf(':');
+    if (idx < 0) return null;
+    const left = line.slice(0, idx);
+    const value = line.slice(idx + 1);
+    const parts = left.split(';');
+    const name = parts.shift().toUpperCase();
+    const params = {};
+    parts.forEach(p => { const i = p.indexOf('='); if(i > -1) params[p.slice(0,i).toUpperCase()] = p.slice(i+1); });
+    return {name, params, value};
+  }
+
+  function parseIcsDate(value, params={}){
+    if (!value) return null;
+    const raw = value.trim();
+    if (/^\d{8}$/.test(raw)) {
+      const y=+raw.slice(0,4), m=+raw.slice(4,6)-1, d=+raw.slice(6,8);
+      return new Date(y,m,d,0,0,0,0);
+    }
+    const m = raw.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/);
+    if (!m) return null;
+    const y=+m[1], mo=+m[2]-1, d=+m[3], h=+m[4], mi=+m[5], s=+m[6];
+    if (m[7] === 'Z') return new Date(Date.UTC(y,mo,d,h,mi,s));
+    // Most FortniteTracker calendars are UTC; for TZID values let the browser parse an ISO-like local date as a best-effort fallback.
+    return new Date(y,mo,d,h,mi,s,0);
+  }
+
+  function parseIcs(text){
+    const lines = unfoldIcs(text).split('\n');
+    const events=[]; let current=null; let calendarName='Fortnite Events Calendar';
+    for(const line of lines){
+      const prop=parseIcsProperty(line);
+      if(!prop) continue;
+      if(prop.name==='X-WR-CALNAME') calendarName=decodeIcsText(prop.value);
+      if(prop.name==='BEGIN' && prop.value==='VEVENT'){ current={}; continue; }
+      if(prop.name==='END' && prop.value==='VEVENT'){ if(current && current.uid) events.push(current); current=null; continue; }
+      if(!current) continue;
+      if(prop.name==='SUMMARY') current.summary=decodeIcsText(prop.value);
+      else if(prop.name==='DESCRIPTION') current.description=decodeIcsText(prop.value);
+      else if(prop.name==='DTSTART') current.start=parseIcsDate(prop.value,prop.params);
+      else if(prop.name==='DTEND') current.end=parseIcsDate(prop.value,prop.params);
+      else if(prop.name==='UID') current.uid=decodeIcsText(prop.value);
+      else if(prop.name==='URL') current.url=decodeIcsText(prop.value);
+      else if(prop.name==='DTSTAMP') current.dtstamp=decodeIcsText(prop.value);
+      else if(prop.name==='SEQUENCE') current.sequence=prop.value;
+      else if(prop.name==='CLASS') current.className=prop.value;
+      else if(prop.name==='TRANSP') current.transp=prop.value;
+    }
+    return {calendarName, events};
+  }
+
+  function cleanSummary(summary){
+    return String(summary || '').replace(/^\s*\[[^\]]+\]\s*/,'').replace(/\s+/g,' ').trim();
+  }
+  function getRegions(summary){
+    const m=String(summary||'').match(/^\s*\[([^\]]+)\]/); if(!m) return [];
+    return m[1].split(',').map(x=>x.trim().toUpperCase()).filter(Boolean);
+  }
+  function inferTournamentType(name){
+    const s=name.toLowerCase();
+    if(s.includes('fncs')) return 'FNCS';
+    if(s.includes('cash cup')) return 'Cash Cup';
+    if(s.includes('victory cup')) return 'Victory Cup';
+    if(s.includes('elite series')) return 'Elite Series';
+    if(s.includes('test cup')) return 'Test Cup';
+    if(s.includes('championship')) return 'Championship';
+    if(s.includes('cup')) return 'Cup';
+    return 'Tournament';
+  }
+  function inferMode(name){
+    const s=name.toLowerCase();
+    if(s.includes('reload')) return 'Reload';
+    if(/\bzb\b|zero build|zero-build/.test(s)) return 'Zero Build';
+    if(s.includes('battle royale')) return 'Battle Royale';
+    return 'Battle Royale';
+  }
+  function inferFormat(name){
+    const s=name.toLowerCase();
+    if(s.includes('solo')) return 'Solo';
+    if(s.includes('duos') || s.includes('duo')) return 'Duo';
+    if(s.includes('trios') || s.includes('trio')) return 'Trio';
+    if(s.includes('squads') || s.includes('squad')) return 'Squad';
+    return '—';
+  }
+  function normalizeTournament(ev,calendarName){
+    const name=cleanSummary(ev.summary);
+    const regions=getRegions(ev.summary);
+    const start=ev.start || new Date();
+    const end=ev.end || null;
+    return {
+      uid: ev.uid,
+      summary: name,
+      rawSummary: ev.summary || name,
+      description: ev.description || '',
+      startAt: start.toISOString(),
+      endAt: end ? end.toISOString() : null,
+      url: ev.url || '',
+      regions,
+      mode: inferMode(name),
+      format: inferFormat(name),
+      tournamentType: inferTournamentType(name),
+      calendarName,
+      dtstamp: ev.dtstamp || '',
+      sequence: ev.sequence || '0',
+      importedAt: new Date().toISOString(),
+      searchText: [name, ev.description, regions.join(' '), inferMode(name), inferFormat(name), inferTournamentType(name)].join(' ').toLowerCase()
+    };
+  }
+  function tournamentDocId(uid){ return String(uid || '').replace(/\//g,'_').slice(0,140) || ('event_'+Date.now()); }
+  function formatTime(iso){ return new Date(iso).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'}); }
+  function formatDateLong(date){ return date.toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'}); }
+  function formatDayNumber(date){ return date.toLocaleDateString('pl-PL',{day:'2-digit'}); }
+  function formatMonthShort(date){ return date.toLocaleDateString('pl-PL',{month:'short'}).replace('.',''); }
+  function formatDuration(start,end){ if(!end) return ''; const ms=Math.max(0,new Date(end)-new Date(start)); const min=Math.round(ms/60000); if(min<60) return min+' min'; const h=Math.floor(min/60),m=min%60; return h+' h'+(m?' '+m+' min':''); }
+  function isSameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+  function escapeAttr(s){ return escapeHtml(s).replace(/`/g,'&#96;'); }
+
+  async function loadTournaments(){
+    if(!tournamentsList) return;
+    tournamentsList.innerHTML='<div class="tour-load"><span class="mini-spinner"></span>&nbsp; Wczytywanie harmonogramu…</div>';
+    try{
+      const snap=await withTimeout(getDocs(collection(db,'tournaments')));
+      allTournamentsCache=[];
+      snap.forEach(d=>allTournamentsCache.push({id:d.id,...d.data()}));
+      allTournamentsCache.sort((a,b)=>new Date(a.startAt)-new Date(b.startAt));
+      populateTournamentFilters();
+      renderTournamentStats();
+      renderTournaments();
+      if(tournamentSyncText) tournamentSyncText.textContent='Ostatnia synchronizacja: '+new Date().toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+    }catch(err){
+      console.error(err);
+      tournamentsList.innerHTML='<div class="tour-empty"><strong>Nie udało się wczytać harmonogramu</strong>Sprawdź, czy Firestore jest włączony i czy reguły pozwalają zalogowanym użytkownikom na odczyt kolekcji <code>tournaments</code>.</div>';
+      if(tournamentSyncText) tournamentSyncText.textContent='Błąd synchronizacji';
+    }
+  }
+  function populateTournamentFilters(){
+    const fill=(el,values,label)=>{ if(!el)return; const current=el.value; el.innerHTML='<option value="">'+label+'</option>'+values.sort((a,b)=>a.localeCompare(b,'pl')).map(v=>'<option value="'+escapeAttr(v)+'">'+escapeHtml(v)+'</option>').join(''); if([...el.options].some(o=>o.value===current)) el.value=current; };
+    fill(tourTypeFilter,[...new Set(allTournamentsCache.map(x=>x.tournamentType).filter(Boolean))],'Wszystkie typy');
+    fill(tourModeFilter,[...new Set(allTournamentsCache.map(x=>x.mode).filter(Boolean))],'Wszystkie tryby');
+  }
+  function renderTournamentStats(){
+    const now=new Date(), today=allTournamentsCache.filter(x=>isSameDay(new Date(x.startAt),now));
+    const next=allTournamentsCache.find(x=>new Date(x.startAt)>=now);
+    tourStatAll.textContent=allTournamentsCache.length;
+    tourStatToday.textContent=today.length;
+    tourStatModes.textContent=new Set(allTournamentsCache.map(x=>x.mode).filter(Boolean)).size;
+    if(next){ tourStatNext.textContent=formatTime(next.startAt); tourStatNextSub.textContent=formatDateLong(new Date(next.startAt)); }
+    else { tourStatNext.textContent='—'; tourStatNextSub.textContent='brak nadchodzących sesji'; }
+  }
+  function getFilteredTournaments(){
+    const q=(tourSearch.value||'').trim().toLowerCase(), dateMode=tourDateFilter.value, type=tourTypeFilter.value, mode=tourModeFilter.value, region=tourRegionFilter.value;
+    const now=new Date(), end7=new Date(now.getTime()+7*86400000);
+    return allTournamentsCache.filter(x=>{
+      const d=new Date(x.startAt);
+      if(q && !(x.searchText||'').includes(q)) return false;
+      if(type && x.tournamentType!==type) return false;
+      if(mode && x.mode!==mode) return false;
+      if(region && !(x.regions||[]).includes(region)) return false;
+      if(dateMode==='upcoming' && d<now) return false;
+      if(dateMode==='today' && !isSameDay(d,now)) return false;
+      if(dateMode==='week' && (d<now || d>end7)) return false;
+      return true;
+    }).sort((a,b)=>new Date(a.startAt)-new Date(b.startAt));
+  }
+  function renderTournaments(){
+    const items=getFilteredTournaments();
+    if(!items.length){ tournamentsList.innerHTML='<div class="tour-empty"><strong>Brak turniejów dla wybranych filtrów</strong>Spróbuj zmienić zakres dat, typ, tryb lub wyszukiwaną frazę.</div>'; return; }
+    const now=new Date(); let html=''; let lastKey=''; let nextMarked=false;
+    items.forEach((x,i)=>{
+      const d=new Date(x.startAt), key=d.toISOString().slice(0,10);
+      if(key!==lastKey){
+        if(lastKey) html+='</div></div>';
+        const today=isSameDay(d,now), tomorrow=isSameDay(d,new Date(now.getTime()+86400000));
+        const title=today?'Dzisiaj':tomorrow?'Jutro':formatDateLong(d);
+        html+='<div class="tour-section"><div class="tour-date-heading"><div class="date-box"><b>'+formatDayNumber(d)+'</b><small>'+formatMonthShort(d)+'</small></div><div class="tour-date-title">'+escapeHtml(title)+'<span>'+d.toLocaleDateString('pl-PL',{year:'numeric'})+'</span></div></div><div class="tour-list">';
+        lastKey=key;
+      }
+      const isNext=!nextMarked && d>=now; if(isNext) nextMarked=true;
+      const tags=[];
+      if(x.tournamentType) tags.push('<span class="tour-tag accent">'+escapeHtml(x.tournamentType)+'</span>');
+      if(x.mode) tags.push('<span class="tour-tag purple">'+escapeHtml(x.mode)+'</span>');
+      if(x.format && x.format!=='—') tags.push('<span class="tour-tag">'+escapeHtml(x.format)+'</span>');
+      (x.regions||[]).slice(0,5).forEach(r=>tags.push('<span class="tour-tag">'+escapeHtml(r)+'</span>'));
+      if((x.regions||[]).length>5) tags.push('<span class="tour-tag">+'+(x.regions.length-5)+'</span>');
+      html+='<div class="tour-card '+(isNext?'is-next':'')+'">'+
+        '<div class="tour-time">'+formatTime(x.startAt)+'<small>'+(x.endAt?'do '+formatTime(x.endAt)+' · '+formatDuration(x.startAt,x.endAt):'godzina startu')+'</small></div>'+
+        '<div class="tour-main"><div class="tour-name">'+escapeHtml(x.summary)+'</div><div class="tour-desc">'+escapeHtml((x.description||'').replace(/\n+/g,' ').slice(0,180))+'</div><div class="tour-tags">'+tags.join('')+'</div></div>'+
+        '<div class="tour-actions"><button class="tour-link" type="button" data-tour-id="'+escapeAttr(x.id)+'">Szczegóły&nbsp;›</button>'+(x.url?'<a class="tour-link" href="'+escapeAttr(x.url)+'" target="_blank" rel="noopener">Leaderboard&nbsp;↗</a>':'')+'</div>'+
+      '</div>';
+    });
+    html+='</div></div>'; tournamentsList.innerHTML=html;
+    tournamentsList.querySelectorAll('[data-tour-id]').forEach(btn=>btn.addEventListener('click',()=>openTournamentModal(allTournamentsCache.find(x=>x.id===btn.dataset.tourId))));
+  }
+  [tourSearch,tourDateFilter,tourTypeFilter,tourModeFilter,tourRegionFilter].forEach(el=>el&&el.addEventListener('input',renderTournaments));
+  function openTournamentModal(t){
+    if(!t)return;
+    const desc=escapeHtml(t.description||'Brak opisu.').replace(/\n/g,'<br>');
+    tournamentModalContent.innerHTML='<h2 class="tour-detail-title">'+escapeHtml(t.summary)+'</h2><div class="tour-detail-sub">'+formatDateLong(new Date(t.startAt))+' · '+formatTime(t.startAt)+(t.endAt?'–'+formatTime(t.endAt):'')+'</div><div class="tour-detail-grid">'+
+      '<div class="tour-detail-item"><label>Typ</label><div>'+escapeHtml(t.tournamentType||'—')+'</div></div><div class="tour-detail-item"><label>Tryb</label><div>'+escapeHtml(t.mode||'—')+'</div></div>'+
+      '<div class="tour-detail-item"><label>Format</label><div>'+escapeHtml(t.format||'—')+'</div></div><div class="tour-detail-item"><label>Regiony</label><div>'+escapeHtml((t.regions||[]).join(', ')||'—')+'</div></div>'+
+      '<div class="tour-detail-item"><label>Czas trwania</label><div>'+escapeHtml(formatDuration(t.startAt,t.endAt)||'—')+'</div></div><div class="tour-detail-item"><label>Źródło kalendarza</label><div>'+escapeHtml(t.calendarName||'—')+'</div></div>'+
+      '</div><div class="tour-description">'+desc+'</div>'+(t.url?'<div class="modal-actions"><a class="btn-primary" href="'+escapeAttr(t.url)+'" target="_blank" rel="noopener" style="display:block;text-align:center;">Otwórz leaderboard ↗</a></div>':'');
+    tournamentModalOverlay.classList.remove('hidden');
+  }
+  function closeTournamentModal(){ tournamentModalOverlay.classList.add('hidden'); tournamentModalContent.innerHTML=''; }
+  tournamentModalClose.addEventListener('click',closeTournamentModal);
+  tournamentModalOverlay.addEventListener('click',e=>{if(e.target===tournamentModalOverlay)closeTournamentModal();});
+
+  // ---------- Admin: ICS import ----------
+  function showImportResult(text,type){ icsResult.textContent=text; icsResult.className='import-result show '+type; }
+  async function importIcsFile(file){
+    if(!isCurrentUserAdmin){ showImportResult('Tylko administrator może importować kalendarz turniejów.','error'); return; }
+    if(!file || !/\.ics$/i.test(file.name)){ showImportResult('Wybierz prawidłowy plik .ics.','error'); return; }
+    icsResult.className='import-result'; icsProgress.className='import-progress show'; icsProgress.innerHTML='<b>Analizowanie pliku…</b> '+escapeHtml(file.name);
+    try{
+      const text=await file.text();
+      const parsed=parseIcs(text);
+      if(!parsed.events.length) throw new Error('no-events');
+      const normalized=parsed.events.map(e=>normalizeTournament(e,parsed.calendarName)).filter(e=>e.uid && e.startAt);
+      icsProgress.innerHTML='<b>Znaleziono '+normalized.length+' sesji.</b> Zapisywanie do Firestore…';
+      let saved=0;
+      for(const event of normalized){ await withTimeout(setDoc(doc(db,'tournaments',tournamentDocId(event.uid)),event,{merge:true})); saved++; icsProgress.innerHTML='<b>Importowanie…</b> '+saved+' / '+normalized.length; }
+      icsProgress.className='import-progress';
+      showImportResult('Gotowe. Zaimportowano lub zaktualizowano '+saved+' sesji turniejowych z kalendarza „'+parsed.calendarName+'”.','ok');
+      await loadAdminTournamentList();
+      await loadTournaments();
+    }catch(err){
+      console.error(err); icsProgress.className='import-progress';
+      showImportResult(err.message==='no-events'?'Plik nie zawiera żadnych wydarzeń VEVENT.':'Nie udało się zaimportować kalendarza. Sprawdź format pliku i reguły Firestore.','error');
+    }
+  }
+  chooseIcsBtn.addEventListener('click',e=>{e.stopPropagation();icsFileInput.click();});
+  icsDropZone.addEventListener('click',e=>{if(e.target!==chooseIcsBtn)icsFileInput.click();});
+  icsFileInput.addEventListener('change',e=>{if(e.target.files[0])importIcsFile(e.target.files[0]);e.target.value='';});
+  ['dragenter','dragover'].forEach(type=>icsDropZone.addEventListener(type,e=>{e.preventDefault();icsDropZone.classList.add('dragover');}));
+  ['dragleave','drop'].forEach(type=>icsDropZone.addEventListener(type,e=>{e.preventDefault();icsDropZone.classList.remove('dragover');}));
+  icsDropZone.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)importIcsFile(f);});
+
+  async function loadAdminTournamentList(){
+    if(!adminTournamentList)return;
+    adminTournamentList.innerHTML='<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
+    try{
+      const snap=await withTimeout(getDocs(collection(db,'tournaments')));
+      const list=[];snap.forEach(d=>list.push({id:d.id,...d.data()}));list.sort((a,b)=>new Date(a.startAt)-new Date(b.startAt));
+      adminTournamentCount.textContent=list.length+' sesji';
+      if(!list.length){adminTournamentList.innerHTML='<div class="tour-empty"><strong>Kalendarz jest pusty</strong>Wgraj plik .ics powyżej, aby dodać turnieje.</div>';return;}
+      adminTournamentList.innerHTML=list.map(x=>'<div class="admin-event-row"><div class="d">'+new Date(x.startAt).toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+formatTime(x.startAt)+'</div><div class="n" title="'+escapeAttr(x.summary)+'">'+escapeHtml(x.summary)+'</div><div class="r">'+escapeHtml((x.regions||[]).join(', ')||'—')+'</div></div>').join('');
+    }catch(err){adminTournamentList.innerHTML='<div class="users-empty is-error"><span class="ue-ic">⚠️</span><div><div class="ue-title">Nie udało się wczytać turniejów</div>Sprawdź reguły Firestore dla kolekcji <code>tournaments</code>.</div></div>';}
+  }
+  clearTournamentsBtn.addEventListener('click',async()=>{
+    if(!isCurrentUserAdmin)return;
+    const ok=confirm('Usunąć cały zaimportowany harmonogram turniejów? Tej operacji nie można cofnąć.'); if(!ok)return;
+    clearTournamentsBtn.disabled=true;clearTournamentsBtn.textContent='Usuwanie…';
+    try{const snap=await withTimeout(getDocs(collection(db,'tournaments')));for(const d of snap.docs)await withTimeout(deleteDoc(doc(db,'tournaments',d.id)));showImportResult('Kalendarz został wyczyszczony.','ok');await loadAdminTournamentList();await loadTournaments();}catch(e){showImportResult('Nie udało się wyczyścić kalendarza. Sprawdź reguły Firestore.','error');}finally{clearTournamentsBtn.disabled=false;clearTournamentsBtn.textContent='Wyczyść kalendarz';}
   });
 
   // ---------- Settings: load & save ----------
@@ -1717,7 +2143,11 @@
     }
   });
 
-  adminNavLink.addEventListener('click', loadUsersList);
+  adminNavLink.addEventListener('click', () => {
+    const activeAdminTab = document.querySelector('.admin-tab.active');
+    if (activeAdminTab && activeAdminTab.dataset.adminTab === 'tournaments') loadAdminTournamentList();
+    else loadUsersList();
+  });
 
   // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
   async function enterApp(user){
@@ -1745,6 +2175,12 @@
     const isStaff = isCurrentUserAdmin || isCurrentUserModerator;
     adminNavLink.classList.toggle('hidden', !isStaff);
     if (adminOnlySection) adminOnlySection.classList.toggle('hidden', !isCurrentUserAdmin);
+    const tournamentAdminTab = document.querySelector('[data-admin-tab="tournaments"]');
+    if (tournamentAdminTab) {
+      tournamentAdminTab.disabled = !isCurrentUserAdmin;
+      tournamentAdminTab.style.opacity = isCurrentUserAdmin ? '1' : '.45';
+      tournamentAdminTab.title = isCurrentUserAdmin ? 'Importuj kalendarz turniejów' : 'Tylko administrator';
+    }
     if (adminRoleSub) {
       adminRoleSub.textContent = isCurrentUserAdmin
         ? 'Zarządzaj użytkownikami FN Coach.'
@@ -1753,6 +2189,7 @@
 
     appScreen.classList.remove('hidden');
     loadSettings(user, userData);
+    loadTournaments();
   }
 
   // ---------- Auth state ----------
