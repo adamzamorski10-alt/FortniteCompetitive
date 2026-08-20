@@ -2486,6 +2486,74 @@
       padding: 0 !important;
     }
 
+    .pill-checkbox {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      color: var(--text-dim);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill-checkbox:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .pill-checkbox.active {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #0c0f17;
+      font-weight: 600;
+    }
+
+    .pill-checkbox.failure-pill.active {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .admin-collapsible-card {
+      background: rgba(255, 255, 255, 0.012);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .admin-collapsible-card:hover {
+      border-color: var(--border);
+    }
+
+    .admin-collapsible-head {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255, 255, 255, 0.005);
+    }
+
+    .admin-collapsible-body {
+      padding: 24px;
+      border-top: 1px solid var(--border-soft);
+      display: block;
+    }
+
+    .admin-collapsible-body.collapsed {
+      display: none;
+    }
+
     .category-card[data-category="Offspawn"] {
       border-color: rgba(34, 211, 238, 0.25);
       background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(5, 7, 13, 0.1));
@@ -2840,67 +2908,7 @@
               </div>
             </div>
 
-            <!-- PANEL TESTOWY DLA GRACZA (Do Wyboru) -->
-            <div style="margin-top: 36px; border-top: 1px solid var(--border-soft); padding-top: 24px;">
-              <h3
-                style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--purple);">
-                🔥 Strefa Testowa (Wybierz co zostawić)</h3>
-              <p style="color: var(--text-dim); font-size: 13px; margin: 0 0 20px 0;">Sprawdź poniższe widżety i daj
-                znać w kolejnej wiadomości, które chcesz zachować.</p>
 
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-                <!-- TEST 1: ASYSTENT BURZY & PRZEŻYCIA -->
-                <div class="matches-card" style="padding: 20px; margin-top: 0;">
-                  <h4 style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 10px 0; color: var(--cyan);">⚡
-                    Kalkulator Storm Surge</h4>
-                  <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Wpisz liczbę żywych graczy,
-                    aby sprawdzić szacowany próg Surge w meczu turniejowym.</p>
-                  <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                    <input type="number" id="testSurgePlayers" value="70" class="field input"
-                      style="height:36px; padding:6px; font-size:13px;" />
-                    <button type="button" class="btn-primary" id="btnTestSurgeCalc"
-                      style="width:auto; margin:0; padding:0 14px; font-size:12px;">Oblicz</button>
-                  </div>
-                  <div id="testSurgeResult"
-                    style="padding:10px; border-radius:var(--radius-sm); font-size:12px; background:rgba(255,255,255,0.02); border:1px dashed var(--border-soft);">
-                    Wpisz liczbę graczy powyżej.
-                  </div>
-                </div>
-
-                <!-- TEST 2: CHECKLISTA PRZED MECZEM -->
-                <div class="matches-card" style="padding: 20px; margin-top: 0;">
-                  <h4 style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 10px 0; color: var(--indigo);">
-                    🧠 Pre-match Focus Checklist</h4>
-                  <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Zaznacz te punkty przed
-                    startem busa, aby upewnić się, że masz profesjonalny mindset.</p>
-                  <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;">
-                      <input type="checkbox" /> <span>Mam 100% energii i skupienia (brak tiltu)</span>
-                    </label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;">
-                      <input type="checkbox" /> <span>Wiem dokładnie, gdzie ląduję i znam trasę lootu</span>
-                    </label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;">
-                      <input type="checkbox" /> <span>Będę unikać bezsensownych walk 50/50 w mid-game</span>
-                    </label>
-                  </div>
-                </div>
-
-                <!-- TEST 3: AIM WARMUP TIMER -->
-                <div class="matches-card" style="padding: 20px; margin-top: 0;">
-                  <h4 style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 10px 0; color: var(--success);">
-                    ⏱️ Szybki Warmup Timer</h4>
-                  <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Rozpocznij krótki 2-minutowy
-                    timer przedturniejowej rozgrzewki dłoni.</p>
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <button type="button" class="btn-secondary" id="btnTestWarmupStart"
-                      style="font-size:12px; padding:6px 12px;">Start Warmup</button>
-                    <span id="testWarmupTimer"
-                      style="font-family:'Space Grotesk'; font-weight:700; font-size:16px; color:var(--text);">02:00</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- SUBTAB 2: MOJE TURNIEJE -->
@@ -2925,14 +2933,19 @@
                   <p style="color: var(--text-dim); margin: 0; font-size: 12.5px;">Automatyczne podsumowanie Twoich
                     logów z podziałem na tryb rozgrywek.</p>
                 </div>
-                <div class="analysis-format-tabs"
-                  style="display: flex; gap: 4px; padding: 3px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-soft); border-radius: var(--radius-md);">
-                  <button type="button" class="tab-btn active" data-analysis-format="Battle Royale"
-                    style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Battle Royale</button>
-                  <button type="button" class="tab-btn" data-analysis-format="Reload"
-                    style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Reload</button>
-                  <button type="button" class="tab-btn" data-analysis-format="Zero Build"
-                    style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Zero Budowania</button>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div class="analysis-format-tabs"
+                    style="display: flex; gap: 4px; padding: 3px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-soft); border-radius: var(--radius-md);">
+                    <button type="button" class="tab-btn active" data-analysis-format="Battle Royale"
+                      style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Battle Royale</button>
+                    <button type="button" class="tab-btn" data-analysis-format="Reload"
+                      style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Reload</button>
+                    <button type="button" class="tab-btn" data-analysis-format="Zero Build"
+                      style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Zero Budowania</button>
+                  </div>
+                  <button type="button" class="btn-secondary" id="btnRefreshAnalysis"
+                    style="margin: 0; padding: 8px 12px; font-size: 12px; height: 34px; border-radius: var(--radius-md); font-weight: 700; display: flex; align-items: center; gap: 6px;">🔄
+                    Odśwież</button>
                 </div>
               </div>
 
@@ -3209,88 +3222,137 @@
               </div>
             </div>
 
-            <!-- TAB 3: ADMIN MATCH TIPS & DEATH CAUSES MANAGER -->
+            <!-- TAB 3: ADMIN MATCH TIPS, DEATH CAUSES & FAILURES MANAGER -->
             <div class="admin-tour-panel" id="adminPanelMatches" style="display:none; max-width: 100%;">
               <div
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 36px; align-items: start;">
-                <!-- SEKCJA 1: PORADY -->
-                <div
-                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 24px; border-radius: var(--radius-md);">
-                  <div class="admin-section-label" style="margin-top:0;">DODAJ NOWĄ PORADĘ</div>
-                  <div class="form-msg" id="adminTipMsg"></div>
-                  <form id="adminTipForm">
-                    <div class="field">
-                      <label for="tipTitle">Tytuł Porady</label>
-                      <input type="text" id="tipTitle" placeholder="np. Korzystaj z prawego kąta (Right-hand peek)"
-                        required autocomplete="off" />
-                    </div>
-
-                    <div class="field">
-                      <label for="tipContent">Treść Porady</label>
-                      <textarea id="tipContent" class="field input"
-                        style="height: 100px; resize: vertical; font-family: inherit;"
-                        placeholder="Wpisz szczegółową treść porady taktycznej..." required></textarea>
-                    </div>
-
-                    <div class="settings-grid" style="margin-bottom: 16px;">
-                      <div class="field">
-                        <label for="tipCategory">Kategoria / Etap gry</label>
-                        <select id="tipCategory" required>
-                          <option value="">Wybierz kategorię</option>
-                          <option value="Offspawn">Offspawn (Etap gry)</option>
-                          <option value="Mid-game">Mid-game (Etap gry)</option>
-                          <option value="End-game">End-game (Etap gry)</option>
-                          <option value="Fight">Fight (Inna)</option>
-                          <option value="Rotate">Rotate (Inna)</option>
-                          <option value="Surge">Surge (Inna)</option>
-                        </select>
-                      </div>
-                      <div class="field">
-                        <label for="tipImportance">Ważność porady (1-5)</label>
-                        <select id="tipImportance" required>
-                          <option value="1">⭐ (Bardzo niska)</option>
-                          <option value="2">⭐⭐ (Niska)</option>
-                          <option value="3">⭐⭐⭐ (Średnia)</option>
-                          <option value="4">⭐⭐⭐⭐ (Wysoka)</option>
-                          <option value="5" selected>⭐⭐⭐⭐⭐ (Krytyczna)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <button class="btn-primary" type="submit" id="saveTipBtn">Dodaj Poradę</button>
-                  </form>
-
-                  <div class="admin-tour-head" style="margin-top: 32px;">
-                    <div>
-                      <h3>ZAPISANE PORADY</h3><span class="admin-tour-count" id="adminTipCount">0</span>
-                    </div>
+                <!-- SEKCJA 1: PORADY (MENEDŻER PORAD) -->
+                <div class="admin-collapsible-card">
+                  <div class="admin-collapsible-head" onclick="toggleAdminCollapse('tipManagerBody')">
+                    <h3
+                      style="font-family:'Space Grotesk'; font-size:16px; margin:0; font-weight:700; color: var(--cyan);">
+                      <span class="ic">💡</span> Menedżer Porad taktycznych</h3>
+                    <span id="tipManagerBody_indicator">▼</span>
                   </div>
-                  <div id="adminTipsList" class="users-list">
-                    <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie porad…</div>
+                  <div id="tipManagerBody" class="admin-collapsible-body">
+                    <div class="admin-section-label" style="margin-top:0;">DODAJ NOWĄ PORADĘ</div>
+                    <div class="form-msg" id="adminTipMsg"></div>
+                    <form id="adminTipForm">
+                      <div class="field">
+                        <label for="tipTitle">Tytuł Porady</label>
+                        <input type="text" id="tipTitle" placeholder="np. Korzystaj z prawego kąta (Right-hand peek)"
+                          required autocomplete="off" />
+                      </div>
+
+                      <div class="field">
+                        <label for="tipContent">Treść Porady</label>
+                        <textarea id="tipContent" class="field input"
+                          style="height: 100px; resize: vertical; font-family: inherit;"
+                          placeholder="Wpisz szczegółową treść porady taktycznej..." required></textarea>
+                      </div>
+
+                      <div class="settings-grid" style="margin-bottom: 16px; grid-template-columns: 1fr 1fr;">
+                        <div class="field">
+                          <label for="tipCategory">Kategoria / Etap gry</label>
+                          <select id="tipCategory" required>
+                            <option value="">Wybierz kategorię</option>
+                            <option value="Offspawn">Offspawn (Etap gry)</option>
+                            <option value="Mid-game">Mid-game (Etap gry)</option>
+                            <option value="End-game">End-game (Etap gry)</option>
+                            <option value="Fight">Fight (Inna)</option>
+                            <option value="Rotate">Rotate (Inna)</option>
+                            <option value="Surge">Surge (Inna)</option>
+                          </select>
+                        </div>
+                        <div class="field">
+                          <label for="tipImportance">Ważność porady (1-5)</label>
+                          <select id="tipImportance" required>
+                            <option value="1">⭐ (Bardzo niska)</option>
+                            <option value="2">⭐⭐ (Niska)</option>
+                            <option value="3">⭐⭐⭐ (Średnia)</option>
+                            <option value="4">⭐⭐⭐⭐ (Wysoka)</option>
+                            <option value="5" selected>⭐⭐⭐⭐⭐ (Krytyczna)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <button class="btn-primary" type="submit" id="saveTipBtn">Dodaj Poradę</button>
+                    </form>
+
+                    <div class="admin-tour-head" style="margin-top: 32px;">
+                      <div>
+                        <h3>ZAPISANE PORADY</h3><span class="admin-tour-count" id="adminTipCount">0</span>
+                      </div>
+                    </div>
+                    <div id="adminTipsList" class="users-list"
+                      style="display: flex; flex-direction: column; gap: 16px;">
+                      <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie porad…</div>
+                    </div>
                   </div>
                 </div>
 
-                <!-- SEKCJA 2: TYPY ŚMIERCI -->
-                <div
-                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 24px; border-radius: var(--radius-md);">
-                  <div class="admin-section-label" style="margin-top:0;">DODAJ NOWY POWÓD ŚMIERCI</div>
-                  <div class="form-msg" id="adminDeathMsg"></div>
-                  <form id="adminDeathForm">
-                    <div class="field">
-                      <label for="deathName">Nazwa Powodu Śmierci</label>
-                      <input type="text" id="deathName" placeholder="np. Zły timing rotacji, Brak matsów" required
-                        autocomplete="off" />
+                <!-- PRAWA KOLUMNA: POWODY ŚMIERCI I RZECZY KTÓRE ZAWIODŁY -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                  <!-- PODSEKCJA A: TYPY ŚMIERCI -->
+                  <div class="admin-collapsible-card">
+                    <div class="admin-collapsible-head" onclick="toggleAdminCollapse('deathManagerBody')">
+                      <h3
+                        style="font-family:'Space Grotesk'; font-size:16px; margin:0; font-weight:700; color: var(--danger);">
+                        <span class="ic">💀</span> Menedżer Powodów Śmierci</h3>
+                      <span id="deathManagerBody_indicator">▲</span>
                     </div>
-                    <button class="btn-primary" type="submit" id="saveDeathBtn">Dodaj Powód</button>
-                  </form>
+                    <div id="deathManagerBody" class="admin-collapsible-body collapsed">
+                      <div class="admin-section-label" style="margin-top:0;">DODAJ NOWY POWÓD ŚMIERCI</div>
+                      <div class="form-msg" id="adminDeathMsg"></div>
+                      <form id="adminDeathForm">
+                        <div class="field">
+                          <label for="deathName">Nazwa Powodu Śmierci</label>
+                          <input type="text" id="deathName" placeholder="np. Zły timing rotacji, Brak matsów" required
+                            autocomplete="off" />
+                        </div>
+                        <button class="btn-primary" type="submit" id="saveDeathBtn">Dodaj Powód</button>
+                      </form>
 
-                  <div class="admin-tour-head" style="margin-top: 32px;">
-                    <div>
-                      <h3>DOSTĘPNE POWODY ŚMIERCI</h3><span class="admin-tour-count" id="adminDeathCount">0</span>
+                      <div class="admin-tour-head" style="margin-top: 32px;">
+                        <div>
+                          <h3>DOSTĘPNE POWODY ŚMIERCI</h3><span class="admin-tour-count" id="adminDeathCount">0</span>
+                        </div>
+                      </div>
+                      <div id="adminDeathsList" class="users-list">
+                        <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie powodów…</div>
+                      </div>
                     </div>
                   </div>
-                  <div id="adminDeathsList" class="users-list">
-                    <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie powodów…</div>
+
+                  <!-- PODSEKCJA B: RZECZY KTÓRE ZAWIODŁY -->
+                  <div class="admin-collapsible-card">
+                    <div class="admin-collapsible-head" onclick="toggleAdminCollapse('failureManagerBody')">
+                      <h3
+                        style="font-family:'Space Grotesk'; font-size:16px; margin:0; font-weight:700; color: var(--purple);">
+                        <span class="ic">⚙️</span> Menedżer Błędów (Co zawiodło)</h3>
+                      <span id="failureManagerBody_indicator">▲</span>
+                    </div>
+                    <div id="failureManagerBody" class="admin-collapsible-body collapsed">
+                      <div class="admin-section-label" style="margin-top:0;">DODAJ NOWĄ RZECZ, KTÓRA ZAWIODŁA</div>
+                      <div class="form-msg" id="adminFailureMsg"></div>
+                      <form id="adminFailureForm">
+                        <div class="field">
+                          <label for="failureName">Nazwa błędu / aspektu gry</label>
+                          <input type="text" id="failureName" placeholder="np. Słaby Aim, Panic Build, Tilt" required
+                            autocomplete="off" />
+                        </div>
+                        <button class="btn-primary" type="submit" id="saveFailureBtn">Dodaj Aspekt</button>
+                      </form>
+
+                      <div class="admin-tour-head" style="margin-top: 32px;">
+                        <div>
+                          <h3>ZAPISANE ASPEKTY</h3><span class="admin-tour-count" id="adminFailureCount">0</span>
+                        </div>
+                      </div>
+                      <div id="adminFailuresList" class="users-list">
+                        <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie aspektów…</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3800,6 +3862,7 @@
       if (tab === 'matches') {
         loadAdminTipsList();
         loadAdminDeathsList();
+        loadAdminFailuresList();
       }
     }));
     adminPanelUsers.classList.add('active');
@@ -3811,6 +3874,7 @@
       else if (tab === 'matches') {
         loadAdminTipsList();
         loadAdminDeathsList();
+        loadAdminFailuresList();
       }
       else loadUsersList();
     }
@@ -4486,6 +4550,19 @@
     });
 
     // ================= MATCHES LOGIC =================
+    let editingLogId = null;
+    let currentAnalysisFormat = "Battle Royale";
+
+    window.toggleAdminCollapse = (bodyId) => {
+      const body = document.getElementById(bodyId);
+      const indicator = document.getElementById(bodyId + '_indicator');
+      if (body) {
+        body.classList.toggle('collapsed');
+        const isCollapsed = body.classList.contains('collapsed');
+        if (indicator) indicator.textContent = isCollapsed ? '▲' : '▼';
+      }
+    };
+
     async function loadAdminTipsList() {
       const list = document.getElementById('adminTipsList');
       const count = document.getElementById('adminTipCount');
@@ -4493,26 +4570,48 @@
       list.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
       try {
         const tips = await getTipsFromDbOrLocal();
-        tips.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         if (count) count.textContent = tips.length;
         if (tips.length === 0) {
           list.innerHTML = '<div class="tour-empty">Brak zapisanych porad w bazie.</div>';
           return;
         }
-        list.innerHTML = tips.map(tip => `
-          <div class="admin-tip-row">
-            <div style="flex: 1; min-width: 0;">
-              <div style="font-weight: 700; color: var(--cyan);">${escapeHtml(tip.title)}</div>
-              <div style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">${escapeHtml(tip.content)}</div>
-              <div style="font-size: 10px; color: var(--text-faint); margin-top: 4px;">Kategoria: <b>${escapeHtml(tip.category)}</b> | Ważność: ${'⭐'.repeat(tip.importance)}</div>
+
+        // Group tips by category
+        const groups = {};
+        tips.forEach(tip => {
+          const cat = tip.category || 'Inne';
+          if (!groups[cat]) groups[cat] = [];
+          groups[cat].push(tip);
+        });
+
+        const sortedCats = Object.keys(groups).sort();
+        let htmlContent = '';
+        sortedCats.forEach(cat => {
+          htmlContent += `
+            <div style="margin-top: 14px; border-bottom: 1px solid var(--border-soft); padding-bottom: 6px;">
+              <h4 style="font-family: 'Space Grotesk'; font-size: 13.5px; font-weight: 700; color: var(--cyan); margin: 0;">📁 ${escapeHtml(cat)} (${groups[cat].length})</h4>
             </div>
-            <button class="btn-secondary danger" style="padding: 4px 8px; font-size: 11px; margin-left: 12px;" onclick="deleteTip('${tip.id}')">Usuń</button>
-          </div>
-        `).join('');
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+          `;
+          groups[cat].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          htmlContent += groups[cat].map(tip => `
+            <div class="admin-tip-row" style="margin-left: 10px;">
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 700; color: var(--text);">${escapeHtml(tip.title)}</div>
+                <div style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">${escapeHtml(tip.content)}</div>
+                <div style="font-size: 10px; color: var(--text-faint); margin-top: 4px;">Ważność: ${'⭐'.repeat(tip.importance)}</div>
+              </div>
+              <button class="btn-secondary danger" style="padding: 4px 8px; font-size: 11px; margin-left: 12px;" onclick="deleteTip('${tip.id}')">Usuń</button>
+            </div>
+          `).join('');
+          htmlContent += `</div>`;
+        });
+        list.innerHTML = htmlContent;
       } catch (err) {
         list.innerHTML = '<div class="tour-empty">Błąd wczytywania porad: ' + err.message + '</div>';
       }
     }
+
     window.deleteTip = async (id) => {
       if (confirm('Czy na pewno chcesz usunąć tę poradę?')) {
         try {
@@ -4574,10 +4673,14 @@
 
       if (btnOpenTourModal && tourModalOverlay) {
         btnOpenTourModal.addEventListener('click', () => {
+          editingLogId = null;
+          document.getElementById('tournamentModalTitle').textContent = 'Dodaj Turniej do Dziennika';
+          document.getElementById('saveTournamentLogBtn').textContent = 'Zapisz Turniej';
+          document.getElementById('addTournamentLogForm').reset();
+          document.getElementById('gamesInputsContainer').innerHTML = '';
           populateLoggedTournamentSelect();
           tourModalOverlay.classList.remove('hidden');
 
-          // Reset custom fields visibility & required attribute
           if (selectTour && customTourFields) {
             selectTour.value = 'custom';
             customTourFields.style.display = 'block';
@@ -4587,7 +4690,12 @@
         });
       }
       if (tourModalClose && tourModalOverlay) {
-        tourModalClose.addEventListener('click', () => tourModalOverlay.classList.add('hidden'));
+        tourModalClose.addEventListener('click', () => {
+          tourModalOverlay.classList.add('hidden');
+          editingLogId = null;
+          document.getElementById('tournamentModalTitle').textContent = 'Dodaj Turniej do Dziennika';
+          document.getElementById('saveTournamentLogBtn').textContent = 'Zapisz Turniej';
+        });
       }
       if (selectTour && customTourFields) {
         selectTour.addEventListener('change', () => {
@@ -4612,51 +4720,11 @@
         });
       });
 
-      // Test widget: Surge calc
-      const testSurgeInp = document.getElementById('testSurgePlayers');
-      const testSurgeBtn = document.getElementById('btnTestSurgeCalc');
-      const testSurgeRes = document.getElementById('testSurgeResult');
-      if (testSurgeBtn && testSurgeInp && testSurgeRes) {
-        testSurgeBtn.addEventListener('click', () => {
-          const players = parseInt(testSurgeInp.value || 0);
-          if (players > 70) {
-            testSurgeRes.innerHTML = '🔴 <b>Wysoki Surge (Limit 3 strefy):</b> Potrzebujesz min. <b>+450 DMG</b>. Szukaj tagów z AR/Snajpy!';
-          } else if (players >= 50) {
-            testSurgeRes.innerHTML = '🟡 <b>Średni Surge (Limit 5 strefy):</b> Potrzebujesz ok. <b>+200 DMG</b>. Graj na deadside strefy.';
-          } else {
-            testSurgeRes.innerHTML = '🟢 <b>Bezpiecznie:</b> Brak progu Storm Surge na serwerze. Skup się w pełni na rotacji.';
-          }
-        });
-      }
-
-      // Test widget: Warmup timer
-      const timerBtn = document.getElementById('btnTestWarmupStart');
-      const timerText = document.getElementById('testWarmupTimer');
-      let warmupInterval = null;
-      if (timerBtn && timerText) {
-        timerBtn.addEventListener('click', () => {
-          if (warmupInterval) {
-            clearInterval(warmupInterval);
-            warmupInterval = null;
-            timerBtn.textContent = 'Start Warmup';
-            timerText.textContent = '02:00';
-            return;
-          }
-          let timeLeft = 120;
-          timerBtn.textContent = 'Stop';
-          warmupInterval = setInterval(() => {
-            timeLeft--;
-            const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-            const secs = String(timeLeft % 60).padStart(2, '0');
-            timerText.textContent = `${mins}:${secs}`;
-            if (timeLeft <= 0) {
-              clearInterval(warmupInterval);
-              warmupInterval = null;
-              timerBtn.textContent = 'Start Warmup';
-              timerText.textContent = '02:00';
-              alert('Rozgrzewka zakończona! Powodzenia w turnieju!');
-            }
-          }, 1000);
+      // Refresh Analysis button
+      const btnRefresh = document.getElementById('btnRefreshAnalysis');
+      if (btnRefresh) {
+        btnRefresh.addEventListener('click', () => {
+          renderTournamentAnalysis();
         });
       }
 
@@ -4712,11 +4780,61 @@
         });
       }
 
+      // Admin Save Failure Aspect submit handler
+      const failureForm = document.getElementById('adminFailureForm');
+      if (failureForm) {
+        failureForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const msg = document.getElementById('adminFailureMsg');
+          msg.className = 'form-msg';
+          const name = document.getElementById('failureName').value.trim();
+
+          const saveBtn = document.getElementById('saveFailureBtn');
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Zapisywanie…';
+
+          try {
+            const failId = 'fail_' + Date.now();
+            let savedToFirestore = false;
+            try {
+              await setDoc(doc(db, 'failures', failId), {
+                id: failId,
+                name: name,
+                createdAt: new Date().toISOString()
+              });
+              savedToFirestore = true;
+            } catch (fsErr) {
+              console.warn('Brak uprawnień Firestore, zapis do localStorage:', fsErr);
+              const localFailures = JSON.parse(localStorage.getItem('fn_local_failures') || '[]');
+              if (!localFailures.includes(name)) {
+                localFailures.unshift(name);
+                localStorage.setItem('fn_local_failures', JSON.stringify(localFailures));
+              }
+            }
+
+            if (savedToFirestore) {
+              msg.textContent = 'Pomyślnie dodano aspekt do bazy!';
+              msg.className = 'form-msg show ok';
+            } else {
+              msg.innerHTML = '⚠️ Zapisano lokalnie w przeglądarce (błąd uprawnień Firestore). Aby udostępnić go wszystkim, wklej tę regułę w Firebase Console:<br><code style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 4px; display:block; margin-top:4px;">match /failures/{id} { allow read, write: if true; }</code>';
+              msg.className = 'form-msg show ok';
+            }
+            failureForm.reset();
+            loadAdminFailuresList();
+          } catch (err) {
+            msg.textContent = 'Błąd zapisu: ' + err.message;
+            msg.className = 'form-msg show error';
+          } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Dodaj Aspekt';
+          }
+        });
+      }
 
       // Game row addition inside modal
       const btnAddGameRow = document.getElementById('btnAddGameRow');
       if (btnAddGameRow) {
-        btnAddGameRow.addEventListener('click', addGameInputRow);
+        btnAddGameRow.addEventListener('click', () => addGameInputRow());
       }
 
       // Tournament Form Submit
@@ -4740,20 +4858,28 @@
           const placement = parseInt(document.getElementById('logTournamentPlacement').value || 1);
 
           const games = [];
-          const placements = document.querySelectorAll('input[name="gamePlacement"]');
-          const kills = document.querySelectorAll('input[name="gameKills"]');
-          const causes = document.querySelectorAll('input[name="gameCause"]');
-          for (let i = 0; i < placements.length; i++) {
+          const rows = document.querySelectorAll('#gamesInputsContainer .game-log-card');
+          rows.forEach((row, i) => {
+            const pVal = parseInt(row.querySelector('input[name="gamePlacement"]').value || 0);
+            const kVal = parseInt(row.querySelector('input[name="gameKills"]').value || 0);
+
+            const selectedCauses = [...row.querySelectorAll('.death-causes-picker-area .pill-checkbox.active')]
+              .map(el => el.dataset.value);
+            const selectedFailures = [...row.querySelectorAll('.failures-picker-area .pill-checkbox.active')]
+              .map(el => el.dataset.value);
+
             games.push({
               num: i + 1,
-              placement: parseInt(placements[i].value),
-              kills: parseInt(kills[i].value),
-              cause: causes[i].value.trim()
+              placement: pVal,
+              kills: kVal,
+              causes: selectedCauses,
+              failures: selectedFailures,
+              cause: selectedCauses.join(', ') || 'Wszystko Dobrze'
             });
-          }
+          });
 
           const log = {
-            id: 'tour_log_' + Date.now(),
+            id: editingLogId || ('tour_log_' + Date.now()),
             name,
             mode,
             format,
@@ -4764,7 +4890,13 @@
           };
 
           const existingLogs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
-          existingLogs.unshift(log);
+          if (editingLogId) {
+            const idx = existingLogs.findIndex(l => l.id === editingLogId);
+            if (idx > -1) existingLogs[idx] = log;
+            editingLogId = null;
+          } else {
+            existingLogs.unshift(log);
+          }
           localStorage.setItem('fn_logged_tournaments', JSON.stringify(existingLogs));
 
           // Close and reset
@@ -4772,7 +4904,10 @@
           addTourForm.reset();
           document.getElementById('gamesInputsContainer').innerHTML = '';
           customTourFields.style.display = 'block';
+          document.getElementById('tournamentModalTitle').textContent = 'Dodaj Turniej do Dziennika';
+          document.getElementById('saveTournamentLogBtn').textContent = 'Zapisz Turniej';
           renderLoggedTournaments();
+          renderTournamentAnalysis();
         });
       }
 
@@ -4938,7 +5073,7 @@
           }
         });
 
-        let html = '';
+        let htmlContent = '';
         const cats = Object.keys(allTips);
         if (cats.length === 0) {
           container.innerHTML = '<div class="tour-empty">Zapisane porady nie istnieją już w bazie.</div>';
@@ -4946,8 +5081,8 @@
         }
 
         cats.forEach(cat => {
-          html += `<h4 style="margin: 16px 0 8px 0; color: var(--cyan); border-bottom: 1px solid var(--border-soft); padding-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Kategoria: ${cat}</h4>`;
-          html += allTips[cat].map(tip => `
+          htmlContent += `<h4 style="margin: 16px 0 8px 0; color: var(--cyan); border-bottom: 1px solid var(--border-soft); padding-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Kategoria: ${cat}</h4>`;
+          htmlContent += allTips[cat].map(tip => `
             <div class="tip-card-item">
               <div class="tip-card-title">${escapeHtml(tip.title)}</div>
               <div class="tip-card-content">${escapeHtml(tip.content)}</div>
@@ -4959,7 +5094,7 @@
           `).join('');
         });
 
-        container.innerHTML = html;
+        container.innerHTML = htmlContent;
       } catch (err) {
         container.innerHTML = '<div class="tour-empty">Błąd wczytywania: ' + err.message + '</div>';
       }
@@ -4973,20 +5108,68 @@
     }
 
     let gameCount = 0;
-    function addGameInputRow() {
+    async function addGameInputRow(prefilledData = null) {
       gameCount++;
       const container = document.getElementById('gamesInputsContainer');
       const row = document.createElement('div');
-      row.className = 'game-row-input';
+      row.className = 'game-log-card';
       row.id = `game_input_row_${gameCount}`;
+      row.style.cssText = "background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 18px; border-radius: var(--radius-md); margin-bottom: 14px;";
+
+      const placementsVal = prefilledData ? prefilledData.placement : '';
+      const killsVal = prefilledData ? prefilledData.kills : '';
+      const activeCauses = prefilledData ? (Array.isArray(prefilledData.causes) ? prefilledData.causes : [prefilledData.cause].filter(Boolean)) : [];
+      const activeFailures = prefilledData ? (Array.isArray(prefilledData.failures) ? prefilledData.failures : []) : [];
+
       row.innerHTML = `
-        <input type="number" placeholder="Miejsce" class="field input" style="padding: 6px; font-size: 12px; height: 32px;" required min="1" max="100" name="gamePlacement" />
-        <input type="number" placeholder="Kille" class="field input" style="padding: 6px; font-size: 12px; height: 32px;" required min="0" name="gameKills" />
-        <input type="text" list="causeOfDeathList" placeholder="Wyszukaj powód śmierci..." class="field input" style="padding: 6px; font-size: 12px; height: 32px;" name="gameCause" required />
-        <button type="button" class="btn-secondary danger" style="padding: 0; font-size: 12px; height: 32px; width: 32px; display: grid; place-items: center;" onclick="document.getElementById('game_input_row_${gameCount}').remove()">✕</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h4 style="margin: 0; font-family: 'Space Grotesk'; font-size: 14px; color: var(--cyan); font-weight:700;">Gra #${container.children.length + 1}</h4>
+          <button type="button" class="btn-secondary danger" style="padding: 4px 10px; font-size: 11px; width: auto; margin:0;" onclick="document.getElementById('game_input_row_${gameCount}').remove(); reindexGameRows();">✕ Usuń grę</button>
+        </div>
+        <div class="settings-grid" style="margin-bottom: 14px; grid-template-columns: 1fr 1fr;">
+          <div class="field">
+            <label>Zajęte miejsce</label>
+            <input type="number" name="gamePlacement" class="field input" style="height:34px; padding:6px; font-size:13px;" required min="1" max="100" value="${placementsVal}" />
+          </div>
+          <div class="field">
+            <label>Eliminacje (Kille)</label>
+            <input type="number" name="gameKills" class="field input" style="height:34px; padding:6px; font-size:13px;" required min="0" value="${killsVal}" />
+          </div>
+        </div>
+        <div class="field" style="margin-bottom: 14px;">
+          <label style="margin-bottom: 6px; display:block;">Przyczyny śmierci (Zaznacz wszystkie pasujące)</label>
+          <div class="death-causes-picker-area" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+        </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label style="margin-bottom: 6px; display:block;">Co zawiodło w tym meczu? (Zaznacz wszystkie pasujące)</label>
+          <div class="failures-picker-area" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+        </div>
       `;
       container.appendChild(row);
+
+      const deathCausesPicker = row.querySelector('.death-causes-picker-area');
+      const failuresPicker = row.querySelector('.failures-picker-area');
+
+      const causes = await getDeathCausesFromDbOrLocal();
+      deathCausesPicker.innerHTML = causes.map(c => {
+        const isActive = activeCauses.includes(c);
+        return `<span class="pill-checkbox ${isActive ? 'active' : ''}" data-value="${escapeAttr(c)}" onclick="this.classList.toggle('active')">${escapeHtml(c)}</span>`;
+      }).join('');
+
+      const failures = await getFailuresFromDbOrLocal();
+      failuresPicker.innerHTML = failures.map(f => {
+        const isActive = activeFailures.includes(f);
+        return `<span class="pill-checkbox failure-pill ${isActive ? 'active' : ''}" data-value="${escapeAttr(f)}" onclick="this.classList.toggle('active')">${escapeHtml(f)}</span>`;
+      }).join('');
     }
+
+    window.reindexGameRows = () => {
+      const container = document.getElementById('gamesInputsContainer');
+      [...container.children].forEach((row, idx) => {
+        const title = row.querySelector('h4');
+        if (title) title.textContent = `Gra #${idx + 1}`;
+      });
+    };
 
     function renderLoggedTournaments() {
       const list = document.getElementById('loggedTournamentsList');
@@ -5012,12 +5195,19 @@
           const isOk = g.cause.toLowerCase().trim() === 'wszystko dobrze';
           const causeLabel = isOk
             ? `<span style="color: var(--success); font-weight: 700;">Status: Wszystko Dobrze</span>`
-            : `<span style="color: var(--danger); font-weight: 700;">Powód śmierci: ${escapeHtml(g.cause)}</span>`;
+            : `<span style="color: var(--danger); font-weight: 700;">Przyczyny: ${escapeHtml(Array.isArray(g.causes) ? g.causes.join(', ') : g.cause)}</span>`;
+
+          const failuresLabel = (Array.isArray(g.failures) && g.failures.length > 0)
+            ? `<div style="font-size: 11.5px; color: var(--purple); margin-top: 4px;"><b>Błędy:</b> ${escapeHtml(g.failures.join(', '))}</div>`
+            : '';
 
           return `
-            <div class="modal-row" style="padding: 8px 0; border-bottom: 1px solid var(--border-soft);">
-              <span>Gra #${g.num} (Miejsce: <b>#${g.placement}</b> | Kille: <b>${g.kills}</b>)</span>
-              ${causeLabel}
+            <div class="modal-row" style="padding: 10px 0; border-bottom: 1px solid var(--border-soft); display:block;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <span>Gra #${g.num} (Miejsce: <b>#${g.placement}</b> | Kille: <b>${g.kills}</b>)</span>
+                ${causeLabel}
+              </div>
+              ${failuresLabel}
             </div>
           `;
         }).join('');
@@ -5044,8 +5234,9 @@
               <div style="max-width: 100%;">
                 ${gamesHtml || '<div class="tour-empty" style="padding: 10px;">Nie dodano szczegółów żadnej gry dla tego turnieju.</div>'}
               </div>
-              <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
-                <button type="button" class="btn-secondary danger" style="padding: 6px 14px; font-size: 11px; font-weight: 700;" onclick="deleteTournamentLog('${log.id}')">Usuń Log</button>
+              <div style="display: flex; justify-content: flex-end; margin-top: 14px; gap: 8px;">
+                <button type="button" class="btn-secondary" style="padding: 6px 14px; font-size: 11px; font-weight: 700; margin: 0;" onclick="editTournamentLog('${log.id}')">Edytuj Log</button>
+                <button type="button" class="btn-secondary danger" style="padding: 6px 14px; font-size: 11px; font-weight: 700; margin: 0;" onclick="deleteTournamentLog('${log.id}')">Usuń Log</button>
               </div>
             </div>
           </div>
@@ -5068,6 +5259,55 @@
         renderLoggedTournaments();
         renderTournamentAnalysis();
       }
+    };
+
+    window.editTournamentLog = (id) => {
+      const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
+      const log = logs.find(l => l.id === id);
+      if (!log) return;
+
+      editingLogId = id;
+      document.getElementById('tournamentModalTitle').textContent = 'Edytuj Turniej';
+      document.getElementById('saveTournamentLogBtn').textContent = 'Zapisz zmiany';
+
+      const select = document.getElementById('logTournamentSelect');
+      const customNameInp = document.getElementById('logTournamentName');
+      const customModeSelect = document.getElementById('logTournamentMode');
+      const customFormatSelect = document.getElementById('logTournamentFormat');
+      const pointsInp = document.getElementById('logTournamentPoints');
+      const placementInp = document.getElementById('logTournamentPlacement');
+      const customFields = document.getElementById('customTournamentFields');
+
+      const foundInCalendar = allTournamentsCache.find(x => x.summary === log.name);
+      if (foundInCalendar && select) {
+        select.value = foundInCalendar.id;
+        if (customFields) customFields.style.display = 'none';
+        const nameInput = document.getElementById('logTournamentName');
+        if (nameInput) nameInput.removeAttribute('required');
+      } else {
+        if (select) select.value = 'custom';
+        if (customFields) customFields.style.display = 'block';
+        if (customNameInp) {
+          customNameInp.value = log.name;
+          customNameInp.setAttribute('required', '');
+        }
+        if (customModeSelect) customModeSelect.value = log.mode;
+        if (customFormatSelect) customFormatSelect.value = log.format;
+      }
+
+      if (pointsInp) pointsInp.value = log.points;
+      if (placementInp) placementInp.value = log.placement;
+
+      const container = document.getElementById('gamesInputsContainer');
+      container.innerHTML = '';
+      if (Array.isArray(log.games)) {
+        log.games.forEach(g => {
+          addGameInputRow(g);
+        });
+      }
+
+      const tourModalOverlay = document.getElementById('addTournamentModalOverlay');
+      if (tourModalOverlay) tourModalOverlay.classList.remove('hidden');
     };
 
     const STATIC_DEATH_CAUSES = [
@@ -5139,6 +5379,64 @@
       }
     };
 
+    const STATIC_FAILURES = [
+      "Aim", "Edycja", "Budowanie", "Komunikacja", "Pozycjonowanie", "Decyzje", "Gierka psychiczna (Tilt)", "FPS / Ping"
+    ];
+
+    async function getFailuresFromDbOrLocal() {
+      let list = [];
+      try {
+        const snap = await getDocs(collection(db, 'failures'));
+        snap.forEach(d => {
+          const data = d.data();
+          if (data && data.name) list.push(data.name);
+        });
+      } catch (err) {
+        console.warn('Firestore failures read failed, loading from local:', err);
+      }
+      const localFailures = JSON.parse(localStorage.getItem('fn_local_failures') || '[]');
+      const unique = new Set([...STATIC_FAILURES, ...list, ...localFailures]);
+      return Array.from(unique);
+    }
+
+    async function loadAdminFailuresList() {
+      const list = document.getElementById('adminFailuresList');
+      const count = document.getElementById('adminFailureCount');
+      if (!list) return;
+      list.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
+      try {
+        const failures = await getFailuresFromDbOrLocal();
+        if (count) count.textContent = failures.length;
+        list.innerHTML = failures.map(f => `
+          <div class="admin-tip-row">
+            <div style="flex: 1; min-width: 0; font-weight: 700; color: var(--purple);">${escapeHtml(f)}</div>
+            <button class="btn-secondary danger" style="padding: 4px 8px; font-size: 11px; margin-left: 12px;" onclick="deleteFailureItem('${escapeAttr(f)}')">Usuń</button>
+          </div>
+        `).join('');
+      } catch (err) {
+        list.innerHTML = '<div class="tour-empty">Błąd wczytywania aspektów: ' + err.message + '</div>';
+      }
+    }
+
+    window.deleteFailureItem = async (name) => {
+      if (confirm(`Czy na pewno chcesz usunąć aspekt "${name}"?`)) {
+        try {
+          const snap = await getDocs(collection(db, 'failures'));
+          snap.forEach(async (d) => {
+            if (d.data().name.toLowerCase() === name.toLowerCase()) {
+              await deleteDoc(d.ref);
+            }
+          });
+        } catch (err) {
+          console.warn('Firestore failure delete failed:', err);
+        }
+        const localFailures = JSON.parse(localStorage.getItem('fn_local_failures') || '[]');
+        const updated = localFailures.filter(x => x.toLowerCase() !== name.toLowerCase());
+        localStorage.setItem('fn_local_failures', JSON.stringify(updated));
+        loadAdminFailuresList();
+      }
+    };
+
     function detectTournamentFormat(tObj) {
       const name = (tObj.summary || '').toLowerCase();
       const desc = (tObj.description || '').toLowerCase();
@@ -5161,8 +5459,6 @@
       if (f.includes('zero build') || f.includes('zero build') || n.includes('zero build') || n.includes('bez budowania') || n.includes('zb')) return 'Zero Build';
       return 'Battle Royale';
     }
-
-    let currentAnalysisFormat = "Battle Royale";
 
     function renderTournamentAnalysis() {
       const avgPointsEl = document.getElementById('analysisAvgPoints');
