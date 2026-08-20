@@ -1763,7 +1763,7 @@
 
     /* ================= ADMIN TOURNAMENTS ================= */
     .admin-wide {
-      max-width: 1100px;
+      max-width: 100%;
     }
 
     .admin-tabs {
@@ -2920,7 +2920,8 @@
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin: 0 0 4px; font-weight: 700; color: var(--cyan);">
-                    <span class="ic">📊</span> Statystyki i Analiza Formatów</h3>
+                    <span class="ic">📊</span> Statystyki i Analiza Formatów
+                  </h3>
                   <p style="color: var(--text-dim); margin: 0; font-size: 12.5px;">Automatyczne podsumowanie Twoich
                     logów z podziałem na tryb rozgrywek.</p>
                 </div>
@@ -4733,7 +4734,7 @@
             const tObj = allTournamentsCache.find(x => x.id === selectVal);
             name = tObj.summary;
             mode = tObj.mode || 'Solo';
-            format = tObj.tournamentType || 'Tournament';
+            format = detectTournamentFormat(tObj);
           }
           const points = parseInt(document.getElementById('logTournamentPoints').value || 0);
           const placement = parseInt(document.getElementById('logTournamentPlacement').value || 1);
@@ -5007,12 +5008,19 @@
           year: 'numeric'
         });
 
-        const gamesHtml = (log.games || []).map(g => `
-          <div class="modal-row" style="padding: 8px 0; border-bottom: 1px solid var(--border-soft);">
-            <span>Gra #${g.num} (Miejsce: <b>#${g.placement}</b> | Kille: <b>${g.kills}</b>)</span>
-            <span style="color: var(--danger); font-weight: 700;">Powód śmierci: ${escapeHtml(g.cause)}</span>
-          </div>
-        `).join('');
+        const gamesHtml = (log.games || []).map(g => {
+          const isOk = g.cause.toLowerCase().trim() === 'wszystko dobrze';
+          const causeLabel = isOk
+            ? `<span style="color: var(--success); font-weight: 700;">Status: Wszystko Dobrze</span>`
+            : `<span style="color: var(--danger); font-weight: 700;">Powód śmierci: ${escapeHtml(g.cause)}</span>`;
+
+          return `
+            <div class="modal-row" style="padding: 8px 0; border-bottom: 1px solid var(--border-soft);">
+              <span>Gra #${g.num} (Miejsce: <b>#${g.placement}</b> | Kille: <b>${g.kills}</b>)</span>
+              ${causeLabel}
+            </div>
+          `;
+        }).join('');
 
         return `
           <div class="tour-card" style="grid-template-columns: 1fr; gap: 8px; cursor: pointer; display: block; margin-bottom: 12px; padding: 18px 20px;" onclick="toggleTourDetails('${log.id}')">
@@ -5058,10 +5066,12 @@
         const updated = logs.filter(l => l.id !== id);
         localStorage.setItem('fn_logged_tournaments', JSON.stringify(updated));
         renderLoggedTournaments();
+        renderTournamentAnalysis();
       }
     };
 
     const STATIC_DEATH_CAUSES = [
+      "Wszystko Dobrze",
       "surge", "offspawn", "głupi fight", "brak matsów",
       "Rozdzielenie z teamatem", "1 vs 2", "Normalny",
       "Zone", "Zła pozycja", "Server Spray", "Brak Healów", "brak rotacji"
@@ -5129,6 +5139,29 @@
       }
     };
 
+    function detectTournamentFormat(tObj) {
+      const name = (tObj.summary || '').toLowerCase();
+      const desc = (tObj.description || '').toLowerCase();
+      const type = (tObj.tournamentType || '').toLowerCase();
+      const fmt = (tObj.format || '').toLowerCase();
+
+      if (name.includes('reload') || desc.includes('reload') || type.includes('reload') || fmt.includes('reload')) {
+        return 'Reload';
+      }
+      if (name.includes('zero build') || desc.includes('zero build') || type.includes('zero build') || fmt.includes('zero build') || name.includes('zb') || name.includes('bez budowania')) {
+        return 'Zero Build';
+      }
+      return 'Battle Royale';
+    }
+
+    function getNormalizedFormat(formatStr, nameStr) {
+      const f = String(formatStr || '').toLowerCase();
+      const n = String(nameStr || '').toLowerCase();
+      if (f.includes('reload') || n.includes('reload')) return 'Reload';
+      if (f.includes('zero build') || f.includes('zero build') || n.includes('zero build') || n.includes('bez budowania') || n.includes('zb')) return 'Zero Build';
+      return 'Battle Royale';
+    }
+
     let currentAnalysisFormat = "Battle Royale";
 
     function renderTournamentAnalysis() {
@@ -5140,7 +5173,10 @@
       if (!avgPointsEl) return;
 
       const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
-      const filteredLogs = logs.filter(l => l.format === currentAnalysisFormat);
+      const filteredLogs = logs.filter(l => {
+        const normFormat = getNormalizedFormat(l.format, l.name);
+        return normFormat === currentAnalysisFormat;
+      });
 
       if (filteredLogs.length === 0) {
         avgPointsEl.textContent = "—";
@@ -5172,7 +5208,9 @@
             if (g.placement) gamePlacements.push(g.placement);
             if (g.cause) {
               const cause = g.cause.toLowerCase().trim();
-              deathCauses[cause] = (deathCauses[cause] || 0) + 1;
+              if (cause !== 'wszystko dobrze') {
+                deathCauses[cause] = (deathCauses[cause] || 0) + 1;
+              }
             }
           });
         }
