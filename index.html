@@ -2913,6 +2913,80 @@
                 style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Dodaj Turniej</button>
             </div>
 
+            <!-- ANALIZA TURNIEJOWA WIDGET -->
+            <div class="matches-card" style="margin-top: 0; margin-bottom: 24px; padding: 24px;">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div>
+                  <h3
+                    style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin: 0 0 4px; font-weight: 700; color: var(--cyan);">
+                    <span class="ic">📊</span> Statystyki i Analiza Formatów</h3>
+                  <p style="color: var(--text-dim); margin: 0; font-size: 12.5px;">Automatyczne podsumowanie Twoich
+                    logów z podziałem na tryb rozgrywek.</p>
+                </div>
+                <div class="analysis-format-tabs"
+                  style="display: flex; gap: 4px; padding: 3px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-soft); border-radius: var(--radius-md);">
+                  <button type="button" class="tab-btn active" data-analysis-format="Battle Royale"
+                    style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Battle Royale</button>
+                  <button type="button" class="tab-btn" data-analysis-format="Reload"
+                    style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Reload</button>
+                  <button type="button" class="tab-btn" data-analysis-format="Zero Build"
+                    style="padding: 6px 12px; font-size: 11.5px; border-radius:4px;">Zero Budowania</button>
+                </div>
+              </div>
+
+              <div class="analysis-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 18px; border-radius: var(--radius-md);">
+                  <div style="font-size: 11px; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">
+                    Średnie punkty</div>
+                  <div
+                    style="font-size: 28px; font-weight: 700; color: var(--text); margin-top: 6px; font-family: 'Space Grotesk';"
+                    id="analysisAvgPoints">—</div>
+                </div>
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 18px; border-radius: var(--radius-md);">
+                  <div style="font-size: 11px; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">
+                    Średnia topka</div>
+                  <div
+                    style="font-size: 28px; font-weight: 700; color: var(--text); margin-top: 6px; font-family: 'Space Grotesk';"
+                    id="analysisAvgPlacement">—</div>
+                </div>
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 18px; border-radius: var(--radius-md);">
+                  <div style="font-size: 11px; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">
+                    Główny powód zgonu</div>
+                  <div style="font-size: 16px; font-weight: 700; color: var(--cyan); margin-top: 14px;"
+                    id="analysisDeathPhase">—</div>
+                </div>
+              </div>
+
+              <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 18px; border-radius: var(--radius-md);">
+                  <h4
+                    style="font-family: 'Space Grotesk'; font-size: 13.5px; margin: 0 0 12px 0; color: var(--danger);">
+                    💀 5 najczęstszych powodów śmierci:</h4>
+                  <ul id="analysisTopDeaths"
+                    style="margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
+                    <li>Brak logów gier.</li>
+                  </ul>
+                </div>
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 18px; border-radius: var(--radius-md);">
+                  <h4
+                    style="font-family: 'Space Grotesk'; font-size: 13.5px; margin: 0 0 12px 0; color: var(--success);">
+                    🏆 TOP 3 Twoich Turniejów:</h4>
+                  <ol id="analysisBestTournaments"
+                    style="margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
+                    <li>Brak danych turniejowych.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
             <div id="loggedTournamentsList">
               <div class="tour-empty" style="padding: 40px;">
                 <strong>Brak zarejestrowanych turniejów</strong>
@@ -3085,7 +3159,7 @@
             <div class="admin-tabs">
               <button class="admin-tab active" data-admin-tab="users" type="button">👥 Użytkownicy</button>
               <button class="admin-tab" data-admin-tab="tournaments" type="button">📅 Turnieje</button>
-              <button class="admin-tab" data-admin-tab="matches" type="button">🎮 Mecze (Porady)</button>
+              <button class="admin-tab" data-admin-tab="matches" type="button">🎮 Mecze</button>
             </div>
 
             <div class="admin-tour-panel" id="adminPanelUsers">
@@ -3134,59 +3208,90 @@
               </div>
             </div>
 
-            <!-- TAB 3: ADMIN MATCH TIPS MANAGER -->
-            <div class="admin-tour-panel" id="adminPanelMatches" style="display:none;">
-              <div class="admin-section-label">DODAJ NOWĄ PORADĘ</div>
-              <div class="form-msg" id="adminTipMsg"></div>
-              <form id="adminTipForm">
-                <div class="field">
-                  <label for="tipTitle">Tytuł Porady</label>
-                  <input type="text" id="tipTitle" placeholder="np. Korzystaj z prawego kąta (Right-hand peek)" required
-                    autocomplete="off" />
-                </div>
+            <!-- TAB 3: ADMIN MATCH TIPS & DEATH CAUSES MANAGER -->
+            <div class="admin-tour-panel" id="adminPanelMatches" style="display:none; max-width: 100%;">
+              <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 36px; align-items: start;">
+                <!-- SEKCJA 1: PORADY -->
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 24px; border-radius: var(--radius-md);">
+                  <div class="admin-section-label" style="margin-top:0;">DODAJ NOWĄ PORADĘ</div>
+                  <div class="form-msg" id="adminTipMsg"></div>
+                  <form id="adminTipForm">
+                    <div class="field">
+                      <label for="tipTitle">Tytuł Porady</label>
+                      <input type="text" id="tipTitle" placeholder="np. Korzystaj z prawego kąta (Right-hand peek)"
+                        required autocomplete="off" />
+                    </div>
 
-                <div class="field">
-                  <label for="tipContent">Treść Porady</label>
-                  <textarea id="tipContent" class="field input"
-                    style="height: 100px; resize: vertical; font-family: inherit;"
-                    placeholder="Wpisz szczegółową treść porady taktycznej..." required></textarea>
-                </div>
+                    <div class="field">
+                      <label for="tipContent">Treść Porady</label>
+                      <textarea id="tipContent" class="field input"
+                        style="height: 100px; resize: vertical; font-family: inherit;"
+                        placeholder="Wpisz szczegółową treść porady taktycznej..." required></textarea>
+                    </div>
 
-                <div class="settings-grid" style="margin-bottom: 16px;">
-                  <div class="field">
-                    <label for="tipCategory">Kategoria / Etap gry</label>
-                    <select id="tipCategory" required>
-                      <option value="">Wybierz kategorię</option>
-                      <option value="Offspawn">Offspawn (Etap gry)</option>
-                      <option value="Mid-game">Mid-game (Etap gry)</option>
-                      <option value="End-game">End-game (Etap gry)</option>
-                      <option value="Fight">Fight (Inna)</option>
-                      <option value="Rotate">Rotate (Inna)</option>
-                      <option value="Surge">Surge (Inna)</option>
-                    </select>
+                    <div class="settings-grid" style="margin-bottom: 16px;">
+                      <div class="field">
+                        <label for="tipCategory">Kategoria / Etap gry</label>
+                        <select id="tipCategory" required>
+                          <option value="">Wybierz kategorię</option>
+                          <option value="Offspawn">Offspawn (Etap gry)</option>
+                          <option value="Mid-game">Mid-game (Etap gry)</option>
+                          <option value="End-game">End-game (Etap gry)</option>
+                          <option value="Fight">Fight (Inna)</option>
+                          <option value="Rotate">Rotate (Inna)</option>
+                          <option value="Surge">Surge (Inna)</option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label for="tipImportance">Ważność porady (1-5)</label>
+                        <select id="tipImportance" required>
+                          <option value="1">⭐ (Bardzo niska)</option>
+                          <option value="2">⭐⭐ (Niska)</option>
+                          <option value="3">⭐⭐⭐ (Średnia)</option>
+                          <option value="4">⭐⭐⭐⭐ (Wysoka)</option>
+                          <option value="5" selected>⭐⭐⭐⭐⭐ (Krytyczna)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <button class="btn-primary" type="submit" id="saveTipBtn">Dodaj Poradę</button>
+                  </form>
+
+                  <div class="admin-tour-head" style="margin-top: 32px;">
+                    <div>
+                      <h3>ZAPISANE PORADY</h3><span class="admin-tour-count" id="adminTipCount">0</span>
+                    </div>
                   </div>
-                  <div class="field">
-                    <label for="tipImportance">Ważność porady (1-5)</label>
-                    <select id="tipImportance" required>
-                      <option value="1">⭐ (Bardzo niska)</option>
-                      <option value="2">⭐⭐ (Niska)</option>
-                      <option value="3">⭐⭐⭐ (Średnia)</option>
-                      <option value="4">⭐⭐⭐⭐ (Wysoka)</option>
-                      <option value="5" selected>⭐⭐⭐⭐⭐ (Krytyczna)</option>
-                    </select>
+                  <div id="adminTipsList" class="users-list">
+                    <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie porad…</div>
                   </div>
                 </div>
 
-                <button class="btn-primary" type="submit" id="saveTipBtn">Dodaj Poradę</button>
-              </form>
+                <!-- SEKCJA 2: TYPY ŚMIERCI -->
+                <div
+                  style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 24px; border-radius: var(--radius-md);">
+                  <div class="admin-section-label" style="margin-top:0;">DODAJ NOWY POWÓD ŚMIERCI</div>
+                  <div class="form-msg" id="adminDeathMsg"></div>
+                  <form id="adminDeathForm">
+                    <div class="field">
+                      <label for="deathName">Nazwa Powodu Śmierci</label>
+                      <input type="text" id="deathName" placeholder="np. Zły timing rotacji, Brak matsów" required
+                        autocomplete="off" />
+                    </div>
+                    <button class="btn-primary" type="submit" id="saveDeathBtn">Dodaj Powód</button>
+                  </form>
 
-              <div class="admin-tour-head" style="margin-top: 32px;">
-                <div>
-                  <h3>ZAPISANE PORADY</h3><span class="admin-tour-count" id="adminTipCount">0</span>
+                  <div class="admin-tour-head" style="margin-top: 32px;">
+                    <div>
+                      <h3>DOSTĘPNE POWODY ŚMIERCI</h3><span class="admin-tour-count" id="adminDeathCount">0</span>
+                    </div>
+                  </div>
+                  <div id="adminDeathsList" class="users-list">
+                    <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie powodów…</div>
+                  </div>
                 </div>
-              </div>
-              <div id="adminTipsList" class="users-list">
-                <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie porad…</div>
               </div>
             </div>
           </div>
@@ -3691,7 +3796,10 @@
 
       if (tab === 'users') loadUsersList();
       if (tab === 'tournaments') loadAdminTournamentList();
-      if (tab === 'matches') loadAdminTipsList();
+      if (tab === 'matches') {
+        loadAdminTipsList();
+        loadAdminDeathsList();
+      }
     }));
     adminPanelUsers.classList.add('active');
 
@@ -3699,7 +3807,10 @@
       const activeAdminTab = document.querySelector('.admin-tab.active');
       const tab = activeAdminTab ? activeAdminTab.dataset.adminTab : 'users';
       if (tab === 'tournaments') loadAdminTournamentList();
-      else if (tab === 'matches') loadAdminTipsList();
+      else if (tab === 'matches') {
+        loadAdminTipsList();
+        loadAdminDeathsList();
+      }
       else loadUsersList();
     }
 
@@ -4489,6 +4600,117 @@
         });
       }
 
+      // Format analysis tabs inside My Tournaments
+      const analysisFormatTabs = document.querySelectorAll('.analysis-format-tabs button');
+      analysisFormatTabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          analysisFormatTabs.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentAnalysisFormat = btn.dataset.analysisFormat;
+          renderTournamentAnalysis();
+        });
+      });
+
+      // Test widget: Surge calc
+      const testSurgeInp = document.getElementById('testSurgePlayers');
+      const testSurgeBtn = document.getElementById('btnTestSurgeCalc');
+      const testSurgeRes = document.getElementById('testSurgeResult');
+      if (testSurgeBtn && testSurgeInp && testSurgeRes) {
+        testSurgeBtn.addEventListener('click', () => {
+          const players = parseInt(testSurgeInp.value || 0);
+          if (players > 70) {
+            testSurgeRes.innerHTML = '🔴 <b>Wysoki Surge (Limit 3 strefy):</b> Potrzebujesz min. <b>+450 DMG</b>. Szukaj tagów z AR/Snajpy!';
+          } else if (players >= 50) {
+            testSurgeRes.innerHTML = '🟡 <b>Średni Surge (Limit 5 strefy):</b> Potrzebujesz ok. <b>+200 DMG</b>. Graj na deadside strefy.';
+          } else {
+            testSurgeRes.innerHTML = '🟢 <b>Bezpiecznie:</b> Brak progu Storm Surge na serwerze. Skup się w pełni na rotacji.';
+          }
+        });
+      }
+
+      // Test widget: Warmup timer
+      const timerBtn = document.getElementById('btnTestWarmupStart');
+      const timerText = document.getElementById('testWarmupTimer');
+      let warmupInterval = null;
+      if (timerBtn && timerText) {
+        timerBtn.addEventListener('click', () => {
+          if (warmupInterval) {
+            clearInterval(warmupInterval);
+            warmupInterval = null;
+            timerBtn.textContent = 'Start Warmup';
+            timerText.textContent = '02:00';
+            return;
+          }
+          let timeLeft = 120;
+          timerBtn.textContent = 'Stop';
+          warmupInterval = setInterval(() => {
+            timeLeft--;
+            const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+            const secs = String(timeLeft % 60).padStart(2, '0');
+            timerText.textContent = `${mins}:${secs}`;
+            if (timeLeft <= 0) {
+              clearInterval(warmupInterval);
+              warmupInterval = null;
+              timerBtn.textContent = 'Start Warmup';
+              timerText.textContent = '02:00';
+              alert('Rozgrzewka zakończona! Powodzenia w turnieju!');
+            }
+          }, 1000);
+        });
+      }
+
+      // Admin Save Death Reason submit handler
+      const deathForm = document.getElementById('adminDeathForm');
+      if (deathForm) {
+        deathForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const msg = document.getElementById('adminDeathMsg');
+          msg.className = 'form-msg';
+          const name = document.getElementById('deathName').value.trim();
+
+          const saveBtn = document.getElementById('saveDeathBtn');
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Zapisywanie…';
+
+          try {
+            const deathId = 'death_' + Date.now();
+            let savedToFirestore = false;
+            try {
+              await setDoc(doc(db, 'death_causes', deathId), {
+                id: deathId,
+                name: name,
+                createdAt: new Date().toISOString()
+              });
+              savedToFirestore = true;
+            } catch (fsErr) {
+              console.warn('Brak uprawnień Firestore, zapis do localStorage:', fsErr);
+              const localDeaths = JSON.parse(localStorage.getItem('fn_local_deaths') || '[]');
+              if (!localDeaths.includes(name)) {
+                localDeaths.unshift(name);
+                localStorage.setItem('fn_local_deaths', JSON.stringify(localDeaths));
+              }
+            }
+
+            if (savedToFirestore) {
+              msg.textContent = 'Pomyślnie dodano powód śmierci do bazy!';
+              msg.className = 'form-msg show ok';
+            } else {
+              msg.innerHTML = '⚠️ Zapisano lokalnie w przeglądarce (błąd uprawnień Firestore). Aby udostępnić go wszystkim, wklej tę regułę w Firebase Console:<br><code style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 4px; display:block; margin-top:4px;">match /death_causes/{id} { allow read, write: if true; }</code>';
+              msg.className = 'form-msg show ok';
+            }
+            deathForm.reset();
+            loadAdminDeathsList();
+            populateDeathCausesDatalist();
+          } catch (err) {
+            msg.textContent = 'Błąd zapisu: ' + err.message;
+            msg.className = 'form-msg show error';
+          } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Dodaj Powód';
+          }
+        });
+      }
+
       // Test widget: Surge calc
       const testSurgeInp = document.getElementById('testSurgePlayers');
       const testSurgeBtn = document.getElementById('btnTestSurgeCalc');
@@ -4886,9 +5108,172 @@
       }
     };
 
+    const STATIC_DEATH_CAUSES = [
+      "surge", "offspawn", "głupi fight", "brak matsów",
+      "Rozdzielenie z teamatem", "1 vs 2", "Normalny",
+      "Zone", "Zła pozycja", "Server Spray", "Brak Healów", "brak rotacji"
+    ];
+
+    async function getDeathCausesFromDbOrLocal() {
+      let list = [];
+      try {
+        const snap = await getDocs(collection(db, 'death_causes'));
+        snap.forEach(d => {
+          const data = d.data();
+          if (data && data.name) list.push(data.name);
+        });
+      } catch (err) {
+        console.warn('Firestore death causes read failed, loading from local:', err);
+      }
+      const localDeaths = JSON.parse(localStorage.getItem('fn_local_deaths') || '[]');
+      const unique = new Set([...STATIC_DEATH_CAUSES, ...list, ...localDeaths]);
+      return Array.from(unique);
+    }
+
+    async function populateDeathCausesDatalist() {
+      const datalist = document.getElementById('causeOfDeathList');
+      if (!datalist) return;
+      const causes = await getDeathCausesFromDbOrLocal();
+      datalist.innerHTML = causes.map(c => `<option value="${escapeAttr(c)}">`).join('');
+    }
+
+    async function loadAdminDeathsList() {
+      const list = document.getElementById('adminDeathsList');
+      const count = document.getElementById('adminDeathCount');
+      if (!list) return;
+      list.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
+      try {
+        const causes = await getDeathCausesFromDbOrLocal();
+        if (count) count.textContent = causes.length;
+        list.innerHTML = causes.map(cause => `
+          <div class="admin-tip-row">
+            <div style="flex: 1; min-width: 0; font-weight: 700; color: var(--danger);">${escapeHtml(cause)}</div>
+            <button class="btn-secondary danger" style="padding: 4px 8px; font-size: 11px; margin-left: 12px;" onclick="deleteDeathCause('${escapeAttr(cause)}')">Usuń</button>
+          </div>
+        `).join('');
+      } catch (err) {
+        list.innerHTML = '<div class="tour-empty">Błąd wczytywania powodów: ' + err.message + '</div>';
+      }
+    }
+
+    window.deleteDeathCause = async (name) => {
+      if (confirm(`Czy na pewno chcesz usunąć powód śmierci "${name}"?`)) {
+        try {
+          const snap = await getDocs(collection(db, 'death_causes'));
+          snap.forEach(async (d) => {
+            if (d.data().name.toLowerCase() === name.toLowerCase()) {
+              await deleteDoc(d.ref);
+            }
+          });
+        } catch (err) {
+          console.warn('Firestore death cause delete failed:', err);
+        }
+        const localDeaths = JSON.parse(localStorage.getItem('fn_local_deaths') || '[]');
+        const updated = localDeaths.filter(x => x.toLowerCase() !== name.toLowerCase());
+        localStorage.setItem('fn_local_deaths', JSON.stringify(updated));
+        loadAdminDeathsList();
+        populateDeathCausesDatalist();
+      }
+    };
+
+    let currentAnalysisFormat = "Battle Royale";
+
+    function renderTournamentAnalysis() {
+      const avgPointsEl = document.getElementById('analysisAvgPoints');
+      const avgPlacementEl = document.getElementById('analysisAvgPlacement');
+      const topDeathsEl = document.getElementById('analysisTopDeaths');
+      const bestToursEl = document.getElementById('analysisBestTournaments');
+      const deathPhaseEl = document.getElementById('analysisDeathPhase');
+      if (!avgPointsEl) return;
+
+      const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
+      const filteredLogs = logs.filter(l => l.format === currentAnalysisFormat);
+
+      if (filteredLogs.length === 0) {
+        avgPointsEl.textContent = "—";
+        avgPlacementEl.textContent = "—";
+        deathPhaseEl.textContent = "Brak danych";
+        topDeathsEl.innerHTML = "<li>Dodaj turnieje z tego formatu, aby zobaczyć statystyki.</li>";
+        bestToursEl.innerHTML = "<li>Dodaj turnieje z tego formatu, aby zobaczyć statystyki.</li>";
+        return;
+      }
+
+      let totalPoints = 0;
+      let totalPlacement = 0;
+      const gamePlacements = [];
+      const deathCauses = {};
+      const tournamentPerformances = {};
+
+      filteredLogs.forEach(l => {
+        totalPoints += l.points;
+        totalPlacement += l.placement;
+
+        if (!tournamentPerformances[l.name]) {
+          tournamentPerformances[l.name] = { totalPoints: 0, count: 0 };
+        }
+        tournamentPerformances[l.name].totalPoints += l.points;
+        tournamentPerformances[l.name].count += 1;
+
+        if (Array.isArray(l.games)) {
+          l.games.forEach(g => {
+            if (g.placement) gamePlacements.push(g.placement);
+            if (g.cause) {
+              const cause = g.cause.toLowerCase().trim();
+              deathCauses[cause] = (deathCauses[cause] || 0) + 1;
+            }
+          });
+        }
+      });
+
+      const avgPoints = Math.round(totalPoints / filteredLogs.length);
+      const avgPlacement = Math.round(totalPlacement / filteredLogs.length);
+
+      avgPointsEl.textContent = `${avgPoints} pkt`;
+      avgPlacementEl.textContent = `#${avgPlacement}`;
+
+      if (gamePlacements.length > 0) {
+        let offspawn = 0, midgame = 0, endgame = 0;
+        gamePlacements.forEach(p => {
+          if (p >= 70) offspawn++;
+          else if (p >= 25) midgame++;
+          else endgame++;
+        });
+        if (offspawn >= midgame && offspawn >= endgame) {
+          deathPhaseEl.textContent = "Offspawn (Top 100 - Top 70)";
+        } else if (midgame >= offspawn && midgame >= endgame) {
+          deathPhaseEl.textContent = "Mid-game (Top 70 - Top 25)";
+        } else {
+          deathPhaseEl.textContent = "End-game (Top 25 - Top 1)";
+        }
+      } else {
+        deathPhaseEl.textContent = "Brak danych o grach";
+      }
+
+      const sortedDeaths = Object.entries(deathCauses)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+      if (sortedDeaths.length > 0) {
+        topDeathsEl.innerHTML = sortedDeaths.map(([cause, count]) => `<li><b>${escapeHtml(cause)}</b> (${count}x)</li>`).join('');
+      } else {
+        topDeathsEl.innerHTML = "<li>Nie zarejestrowano przyczyn zgonów.</li>";
+      }
+
+      const bestTours = Object.entries(tournamentPerformances)
+        .map(([name, perf]) => ({ name, avg: Math.round(perf.totalPoints / perf.count) }))
+        .sort((a, b) => b.avg - a.avg)
+        .slice(0, 3);
+      if (bestTours.length > 0) {
+        bestToursEl.innerHTML = bestTours.map((t, idx) => `<li><b>${escapeHtml(t.name)}</b> (śr. ${t.avg} pkt)</li>`).join('');
+      } else {
+        bestToursEl.innerHTML = "<li>Brak danych turniejowych.</li>";
+      }
+    }
+
     function loadMatchesPage() {
       backToCategories();
       renderLoggedTournaments();
+      renderTournamentAnalysis();
+      populateDeathCausesDatalist();
     }
 
     // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
