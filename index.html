@@ -1268,7 +1268,7 @@
 
     /* ================= TOURNAMENTS ================= */
     .tournaments-page {
-      max-width: 1200px;
+      max-width: 100%;
     }
 
     .tournaments-head {
@@ -2459,7 +2459,7 @@
     /* Large Category Cards */
     .tips-categories-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
       gap: 20px;
       margin-bottom: 24px;
     }
@@ -2467,14 +2467,23 @@
     .category-card {
       border: 1px solid var(--border-soft);
       border-radius: var(--radius-md);
-      padding: 32px 24px;
+      padding: 24px 28px;
       cursor: pointer;
       transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      min-height: 180px;
+      min-height: 120px;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      justify-content: flex-start;
+    }
+
+    #page-admin .admin-card {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
     }
 
     .category-card[data-category="Offspawn"] {
@@ -2828,6 +2837,68 @@
               <div id="mySavedTipsContainer">
                 <div class="tour-empty">Nie zapisałeś jeszcze żadnych porad. Zaznacz gwiazdkę przy poradach w
                   kategoriach, aby je tutaj dodać!</div>
+              </div>
+            </div>
+
+            <!-- PANEL TESTOWY DLA GRACZA (Do Wyboru) -->
+            <div style="margin-top: 36px; border-top: 1px solid var(--border-soft); padding-top: 24px;">
+              <h3
+                style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--purple);">
+                🔥 Strefa Testowa (Wybierz co zostawić)</h3>
+              <p style="color: var(--text-dim); font-size: 13px; margin: 0 0 20px 0;">Sprawdź poniższe widżety i daj
+                znać w kolejnej wiadomości, które chcesz zachować.</p>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                <!-- TEST 1: ASYSTENT BURZY & PRZEŻYCIA -->
+                <div class="matches-card" style="padding: 20px; margin-top: 0;">
+                  <h4 style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 10px 0; color: var(--cyan);">⚡
+                    Kalkulator Storm Surge</h4>
+                  <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Wpisz liczbę żywych graczy,
+                    aby sprawdzić szacowany próg Surge w meczu turniejowym.</p>
+                  <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <input type="number" id="testSurgePlayers" value="70" class="field input"
+                      style="height:36px; padding:6px; font-size:13px;" />
+                    <button type="button" class="btn-primary" id="btnTestSurgeCalc"
+                      style="width:auto; margin:0; padding:0 14px; font-size:12px;">Oblicz</button>
+                  </div>
+                  <div id="testSurgeResult"
+                    style="padding:10px; border-radius:var(--radius-sm); font-size:12px; background:rgba(255,255,255,0.02); border:1px dashed var(--border-soft);">
+                    Wpisz liczbę graczy powyżej.
+                  </div>
+                </div>
+
+                <!-- TEST 2: CHECKLISTA PRZED MECZEM -->
+                <div class="matches-card" style="padding: 20px; margin-top: 0;">
+                  <h4 style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 10px 0; color: var(--indigo);">
+                    🧠 Pre-match Focus Checklist</h4>
+                  <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Zaznacz te punkty przed
+                    startem busa, aby upewnić się, że masz profesjonalny mindset.</p>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;">
+                      <input type="checkbox" /> <span>Mam 100% energii i skupienia (brak tiltu)</span>
+                    </label>
+                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;">
+                      <input type="checkbox" /> <span>Wiem dokładnie, gdzie ląduję i znam trasę lootu</span>
+                    </label>
+                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;">
+                      <input type="checkbox" /> <span>Będę unikać bezsensownych walk 50/50 w mid-game</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- TEST 3: AIM WARMUP TIMER -->
+                <div class="matches-card" style="padding: 20px; margin-top: 0;">
+                  <h4 style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 10px 0; color: var(--success);">
+                    ⏱️ Szybki Warmup Timer</h4>
+                  <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Rozpocznij krótki 2-minutowy
+                    timer przedturniejowej rozgrzewki dłoni.</p>
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="btn-secondary" id="btnTestWarmupStart"
+                      style="font-size:12px; padding:6px 12px;">Start Warmup</button>
+                    <span id="testWarmupTimer"
+                      style="font-family:'Space Grotesk'; font-weight:700; font-size:16px; color:var(--text);">02:00</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -4309,9 +4380,7 @@
       if (!list) return;
       list.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
       try {
-        const snap = await getDocs(collection(db, 'tips'));
-        const tips = [];
-        snap.forEach(d => tips.push(d.data()));
+        const tips = await getTipsFromDbOrLocal();
         tips.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         if (count) count.textContent = tips.length;
         if (tips.length === 0) {
@@ -4417,6 +4486,54 @@
             if (isCustom) nameInput.setAttribute('required', '');
             else nameInput.removeAttribute('required');
           }
+        });
+      }
+
+      // Test widget: Surge calc
+      const testSurgeInp = document.getElementById('testSurgePlayers');
+      const testSurgeBtn = document.getElementById('btnTestSurgeCalc');
+      const testSurgeRes = document.getElementById('testSurgeResult');
+      if (testSurgeBtn && testSurgeInp && testSurgeRes) {
+        testSurgeBtn.addEventListener('click', () => {
+          const players = parseInt(testSurgeInp.value || 0);
+          if (players > 70) {
+            testSurgeRes.innerHTML = '🔴 <b>Wysoki Surge (Limit 3 strefy):</b> Potrzebujesz min. <b>+450 DMG</b>. Szukaj tagów z AR/Snajpy!';
+          } else if (players >= 50) {
+            testSurgeRes.innerHTML = '🟡 <b>Średni Surge (Limit 5 strefy):</b> Potrzebujesz ok. <b>+200 DMG</b>. Graj na deadside strefy.';
+          } else {
+            testSurgeRes.innerHTML = '🟢 <b>Bezpiecznie:</b> Brak progu Storm Surge na serwerze. Skup się w pełni na rotacji.';
+          }
+        });
+      }
+
+      // Test widget: Warmup timer
+      const timerBtn = document.getElementById('btnTestWarmupStart');
+      const timerText = document.getElementById('testWarmupTimer');
+      let warmupInterval = null;
+      if (timerBtn && timerText) {
+        timerBtn.addEventListener('click', () => {
+          if (warmupInterval) {
+            clearInterval(warmupInterval);
+            warmupInterval = null;
+            timerBtn.textContent = 'Start Warmup';
+            timerText.textContent = '02:00';
+            return;
+          }
+          let timeLeft = 120;
+          timerBtn.textContent = 'Stop';
+          warmupInterval = setInterval(() => {
+            timeLeft--;
+            const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+            const secs = String(timeLeft % 60).padStart(2, '0');
+            timerText.textContent = `${mins}:${secs}`;
+            if (timeLeft <= 0) {
+              clearInterval(warmupInterval);
+              warmupInterval = null;
+              timerBtn.textContent = 'Start Warmup';
+              timerText.textContent = '02:00';
+              alert('Rozgrzewka zakończona! Powodzenia w turnieju!');
+            }
+          }, 1000);
         });
       }
 
