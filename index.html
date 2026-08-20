@@ -533,7 +533,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 36px 40px;
-      max-width: 760px;
+      max-width: 1400px;
       position: relative;
       overflow: hidden;
     }
@@ -1178,7 +1178,7 @@
     }
 
     .page {
-      max-width: 1100px;
+      max-width: 1400px;
     }
 
     .hero-card {
@@ -2059,17 +2059,20 @@
         padding: 24px 15px;
       }
     }
+
     /* ================= MATCHES PAGE ================= */
     .matches-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
+
     @media (max-width: 820px) {
       .matches-grid {
         grid-template-columns: 1fr;
       }
     }
+
     .matches-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -2078,6 +2081,7 @@
       box-shadow: var(--shadow-glow);
       backdrop-filter: blur(12px);
     }
+
     .section-title {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 18px;
@@ -2087,6 +2091,7 @@
       align-items: center;
       gap: 8px;
     }
+
     .match-config-panel {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border-soft);
@@ -2095,16 +2100,19 @@
       width: 280px;
       flex-shrink: 0;
     }
+
     @media (max-width: 760px) {
       .match-config-panel {
         width: 100%;
         margin-top: 16px;
       }
     }
+
     .match-mode-selector {
       display: flex;
       gap: 8px;
     }
+
     .mode-chip {
       flex: 1;
       background: var(--surface-2);
@@ -2118,16 +2126,19 @@
       transition: all 0.2s;
       border-color: var(--border);
     }
+
     .mode-chip:hover {
       color: var(--text);
       border-color: var(--cyan);
     }
+
     .mode-chip.active {
       background: var(--grad-main);
       color: #04050a;
       font-weight: 700;
       border-color: transparent;
     }
+
     .mindset-card-highlight {
       background: linear-gradient(135deg, rgba(109, 91, 255, 0.15), rgba(34, 211, 238, 0.05));
       border: 1px solid rgba(109, 91, 255, 0.3);
@@ -2141,6 +2152,7 @@
       justify-content: center;
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
     }
+
     .mindset-number {
       font-size: 9.5px;
       font-weight: 700;
@@ -2149,6 +2161,7 @@
       margin-bottom: 8px;
       display: block;
     }
+
     .mindset-text {
       font-size: 14.5px;
       font-weight: 600;
@@ -2156,11 +2169,13 @@
       margin: 0;
       color: var(--text);
     }
+
     .surge-input-group {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .btn-qty {
       background: var(--surface-2);
       border: 1px solid var(--border);
@@ -2173,9 +2188,11 @@
       font-size: 13px;
       transition: background 0.2s;
     }
+
     .btn-qty:hover {
       background: rgba(255, 255, 255, 0.1);
     }
+
     .surge-alert-box {
       border-radius: var(--radius-md);
       padding: 16px;
@@ -2183,40 +2200,47 @@
       transition: all 0.3s ease;
       border: 1px solid transparent;
     }
+
     .alert-red {
       background: rgba(251, 69, 112, 0.12);
       border-color: rgba(251, 69, 112, 0.4);
       color: #ffb3c2;
       box-shadow: 0 0 20px -5px rgba(251, 69, 112, 0.3);
     }
+
     .alert-yellow {
       background: rgba(245, 197, 86, 0.12);
       border-color: rgba(245, 197, 86, 0.4);
       color: #ffe6a8;
       box-shadow: 0 0 20px -5px rgba(245, 197, 86, 0.3);
     }
+
     .alert-green {
       background: rgba(52, 211, 153, 0.12);
       border-color: rgba(52, 211, 153, 0.4);
       color: #a7f3d4;
       box-shadow: 0 0 20px -5px rgba(52, 211, 153, 0.3);
     }
+
     .alert-title {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
       font-size: 15px;
       margin-bottom: 4px;
     }
+
     .alert-desc {
       font-size: 12.5px;
       line-height: 1.5;
       opacity: 0.9;
     }
+
     .matrix-buttons {
       display: flex;
       gap: 8px;
       margin-bottom: 16px;
     }
+
     .matrix-btn {
       flex: 1;
       background: var(--surface-2);
@@ -2229,16 +2253,19 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .matrix-btn:hover {
       color: var(--text);
       border-color: rgba(255, 255, 255, 0.2);
     }
+
     .matrix-btn.active {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--indigo);
       color: var(--text);
       box-shadow: 0 0 12px -3px var(--indigo);
     }
+
     .matrix-plan {
       background: rgba(255, 255, 255, 0.015);
       border: 1px solid var(--border-soft);
@@ -2250,28 +2277,34 @@
       gap: 12px;
       justify-content: center;
     }
+
     .plan-step {
       font-size: 13.5px;
       line-height: 1.5;
       color: var(--text-dim);
     }
+
     .plan-step b {
       color: var(--cyan);
       margin-right: 6px;
     }
+
     .loss-tags-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 8px;
       margin-top: 6px;
     }
+
     .tag-checkbox-label {
       display: block;
       cursor: pointer;
     }
+
     .tag-checkbox-label input {
       display: none;
     }
+
     .tag-checkbox-label span {
       display: block;
       text-align: center;
@@ -2285,12 +2318,14 @@
       transition: all 0.15s;
       user-select: none;
     }
-    .tag-checkbox-label input:checked + span {
+
+    .tag-checkbox-label input:checked+span {
       background: rgba(109, 91, 255, 0.15);
       border-color: var(--purple);
       color: var(--text);
       box-shadow: 0 0 10px -3px var(--purple);
     }
+
     .log-row {
       display: grid;
       grid-template-columns: 80px 120px minmax(160px, 1fr) minmax(120px, 1fr) auto;
@@ -2303,12 +2338,14 @@
       font-size: 12.5px;
       margin-bottom: 8px;
     }
+
     @media (max-width: 760px) {
       .log-row {
         grid-template-columns: 1fr;
         gap: 6px;
       }
     }
+
     .log-tag-badge {
       display: inline-block;
       font-size: 10px;
@@ -2320,6 +2357,93 @@
       border-radius: 999px;
       margin-right: 4px;
       margin-bottom: 4px;
+    }
+
+    /* Admin matches tab styles */
+    .admin-tip-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-soft);
+      background: rgba(255, 255, 255, 0.015);
+      margin-bottom: 8px;
+    }
+
+    /* Tips selector styling */
+    .category-card:hover {
+      transform: translateY(-2.5px);
+      box-shadow: 0 10px 28px -8px rgba(109, 91, 255, 0.45);
+      border-color: var(--cyan) !important;
+    }
+
+    .tip-card-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .tip-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+
+    .tip-card-content {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    .tip-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    .btn-save-tip-star {
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 20px;
+      padding: 0;
+      transition: color 0.15s;
+    }
+
+    .btn-save-tip-star:hover {
+      color: #ffe6a8;
+    }
+
+    .btn-save-tip-star.active {
+      color: #f5c556;
+      filter: drop-shadow(0 0 4px rgba(245, 197, 86, 0.6));
+    }
+
+    .game-row-input {
+      display: grid;
+      grid-template-columns: 80px 100px 1fr 40px;
+      gap: 8px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-soft);
+      padding: 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    @media (max-width: 600px) {
+      .game-row-input {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -2512,147 +2636,138 @@
 
 
         <div class="page hidden" id="page-matches">
-          <div class="matches-hero hero-card" style="margin-bottom: 24px;">
-            <div style="flex: 1;">
-              <div class="eyebrow">MATCH ASSISTANT</div>
-              <h1>Asystent Meczu Turniejowego</h1>
-              <p>Zarządzaj swoim nastawieniem, kalkuluj próg Storm Surge w czasie rzeczywistym i analizuj swoje błędy bezpośrednio po grze.</p>
+          <div class="matches-header"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <div class="eyebrow" style="letter-spacing: 0.14em; color: var(--text-faint); font-weight: 700;">STRATEGY
+                & TOURNAMENTS</div>
+              <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 34px; margin: 0 0 4px; font-weight: 700;">
+                Asystent Meczu</h1>
+              <p style="color: var(--text-dim); margin: 0; font-size: 13.5px;">Przeglądaj porady taktyczne w podziale na
+                etapy gry oraz rejestruj swoje występy w turniejach.</p>
             </div>
-            
-            <div class="match-config-panel">
-              <div class="field" style="margin-bottom: 12px;">
-                <label>Tryb Gry</label>
-                <div class="match-mode-selector">
-                  <button type="button" class="mode-chip active" data-mode="Solo">Solo</button>
-                  <button type="button" class="mode-chip" data-mode="Duo">Duo</button>
-                  <button type="button" class="mode-chip" data-mode="Trio">Trio</button>
-                </div>
+
+            <div class="matches-subtabs"
+              style="display: flex; gap: 6px; padding: 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: var(--radius-md);">
+              <button type="button" class="tab-btn active" id="btnMatchTabTips"
+                style="padding: 8px 18px; font-size: 13px;">💡 Porady</button>
+              <button type="button" class="tab-btn" id="btnMatchTabTournaments"
+                style="padding: 8px 18px; font-size: 13px;">🏆 Moje Turnieje</button>
+            </div>
+          </div>
+
+          <!-- SUBTAB 1: PORADY -->
+          <div id="matchTabContentTips" class="match-subtab-panel">
+            <!-- Grid z Kategoriami Porad -->
+            <div class="tips-categories-grid"
+              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+              <div class="category-card" data-category="Offspawn"
+                style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(34, 211, 238, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">🏠</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--cyan);">
+                  Offspawn</h3>
+                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Walka o drop spot, pozycjonowanie na
+                  start.</p>
               </div>
-              <div class="field" style="margin-bottom: 0;">
-                <label for="matchPoi">Drop Spot / POI</label>
-                <select id="matchPoi" class="tour-filter" style="width: 100%; height: 38px;">
-                  <option value="Castle Doom">Castle Doom</option>
-                  <option value="Doomstadt">Doomstadt</option>
-                  <option value="The Raft">The Raft</option>
-                  <option value="Grand Glacier">Grand Glacier</option>
-                  <option value="Mount Olympus">Mount Olympus</option>
-                  <option value="Reckless Railways">Reckless Railways</option>
-                  <option value="Nitrodrome">Nitrodrome</option>
-                  <option value="Restored Reels">Restored Reels</option>
-                  <option value="Grim Gate">Grim Gate</option>
-                  <option value="Brawlers Battlefield">Brawler's Battlefield</option>
-                  <option value="Inny Spot (Custom)">Inny Spot (Custom)</option>
-                </select>
+              <div class="category-card" data-category="Mid-game"
+                style="background: linear-gradient(135deg, rgba(109, 91, 255, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(109, 91, 255, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">🗺️</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--indigo);">
+                  Mid-game</h3>
+                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Rotacje, pozycjonowanie, zbieranie
+                  info.</p>
+              </div>
+              <div class="category-card" data-category="End-game"
+                style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">👑</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--purple);">
+                  End-game</h3>
+                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Gry końcowe, tunele, wysokie maty.</p>
+              </div>
+              <div class="category-card" data-category="Fight"
+                style="background: linear-gradient(135deg, rgba(251, 69, 112, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(251, 69, 112, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">⚔️</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--danger);">
+                  Fight</h3>
+                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Techniki walki, budowanie i aimfighty.
+                </p>
+              </div>
+              <div class="category-card" data-category="Rotate"
+                style="background: linear-gradient(135deg, rgba(245, 197, 86, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(245, 197, 86, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">🔄</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: #ffe6a8;">
+                  Rotate</h3>
+                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Rotowanie przez strefy, chowanie się.
+                </p>
+              </div>
+              <div class="category-card" data-category="Surge"
+                style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(52, 211, 153, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--success);">
+                  Surge</h3>
+                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Zdobywanie damage, limity Storm Surge.
+                </p>
+              </div>
+
+              <!-- MOJE PORADY SPECIAL CARD -->
+              <div class="category-card" id="btnMySavedTipsCard"
+                style="background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01)); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+                <div style="font-size: 24px; margin-bottom: 8px;">⭐</div>
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--text);">
+                  Moje Porady</h3>
+                <p style="font-size: 11.5px; color: var(--cyan); margin: 0; font-weight: 600;">Wyświetl swoje zapisane
+                  porady taktyczne.</p>
+              </div>
+            </div>
+
+            <!-- Panel z Listą Porad danej Kategorii -->
+            <div class="matches-card" id="tipsDisplayCard" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 class="section-title" id="selectedCategoryTitle">Kategoria: ...</h2>
+                <button type="button" class="btn-secondary" id="btnBackToCategories"
+                  style="font-size: 12px; padding: 6px 12px;">Powrót</button>
+              </div>
+              <div id="tipsListContainer">
+                <div class="tour-empty">Brak porad w tej kategorii.</div>
+              </div>
+            </div>
+
+            <!-- Panel z Zapisanymi Poradami Użytkownika -->
+            <div class="matches-card" id="mySavedTipsCard" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 class="section-title"><span class="ic">⭐</span> Zapisane Porady</h2>
+                <button type="button" class="btn-secondary" id="btnBackToCategoriesSaved"
+                  style="font-size: 12px; padding: 6px 12px;">Powrót</button>
+              </div>
+              <div id="mySavedTipsContainer">
+                <div class="tour-empty">Nie zapisałeś jeszcze żadnych porad. Zaznacz gwiazdkę przy poradach w
+                  kategoriach, aby je tutaj dodać!</div>
               </div>
             </div>
           </div>
 
-          <div class="matches-grid">
-            <!-- PRE-MATCH MINDSET -->
-            <div class="matches-card">
-              <h2 class="section-title"><span class="ic">🧠</span> Pre-Match Mindset</h2>
-              <p class="form-sub" style="margin-bottom: 16px;">Kluczowa zasada mentalna na ten mecz. Wylosuj nową wskazówkę przed startem busa bojowego.</p>
-              
-              <div class="mindset-card-highlight" id="mindsetCard">
-                <span class="mindset-number">ZASADA #1</span>
-                <p class="mindset-text" id="mindsetText">Right-hand peek w każdej walce — nie dawaj rywalowi darmowych strzałów.</p>
+          <!-- SUBTAB 2: MOJE TURNIEJE -->
+          <div id="matchTabContentTournaments" class="match-subtab-panel" style="display: none;">
+            <div class="tournaments-page-header"
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h2 class="section-title" style="margin-bottom: 0;"><span class="ic">🏆</span> Dziennik Moich Turniejów
+              </h2>
+              <button class="btn-primary" id="btnOpenAddTournamentModal" type="button"
+                style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;">Dodaj Turniej</button>
+            </div>
+
+            <div id="loggedTournamentsList">
+              <div class="tour-empty" style="padding: 40px;">
+                <strong>Brak zarejestrowanych turniejów</strong>
+                Kliknij przycisk „Dodaj Turniej” u góry po prawej stronie, aby zapisać swoje wyniki i rozegrane mecze.
               </div>
-              
-              <button class="btn-primary" id="btnRollMindset" type="button" style="margin-top: 14px;">Losuj wskazówkę na ten mecz</button>
-            </div>
-
-            <!-- LIVE SURGE ASSISTANT -->
-            <div class="matches-card">
-              <h2 class="section-title"><span class="ic">⚡</span> Live Surge Assistant</h2>
-              <p class="form-sub" style="margin-bottom: 16px;">Wpisz liczbę graczy na serwerze, aby oszacować status Storm Surge i zaplanować styl gry.</p>
-              
-              <div class="surge-calc-wrap">
-                <div class="field" style="margin-bottom: 14px;">
-                  <label for="surgePlayers">Liczba żywych graczy</label>
-                  <div class="surge-input-group">
-                    <button type="button" class="btn-qty" onclick="changePlayers(-5)">-5</button>
-                    <button type="button" class="btn-qty" onclick="changePlayers(-1)">-1</button>
-                    <input type="number" id="surgePlayers" value="80" min="1" max="100" class="field input" style="text-align: center; font-size: 18px; font-weight: 700;" />
-                    <button type="button" class="btn-qty" onclick="changePlayers(1)">+1</button>
-                    <button type="button" class="btn-qty" onclick="changePlayers(5)">+5</button>
-                  </div>
-                </div>
-
-                <div class="surge-alert-box alert-red" id="surgeAlert">
-                  <div class="alert-title">Wysoki Surge (~500+ DMG)</div>
-                  <div class="alert-desc">Wysoka gęstość lobby. Szukaj agresywnych tagów i asyst z krawędzi strefy przed rotacją.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- DECISION MATRIX -->
-            <div class="matches-card">
-              <h2 class="section-title"><span class="ic">🚦</span> Decision Matrix</h2>
-              <p class="form-sub" style="margin-bottom: 16px;">Wybierz swój obecny stan w meczu, aby natychmiast otrzymać optymalny plan działania.</p>
-              
-              <div class="matrix-buttons">
-                <button type="button" class="matrix-btn active" data-state="no-surge">🔴 Brak Surge'a</button>
-                <button type="button" class="matrix-btn" data-state="low-mats">🟡 Low Maty (&lt;400)</button>
-                <button type="button" class="matrix-btn" data-state="ok">🟢 Surge + Maty OK</button>
-              </div>
-
-              <div class="matrix-plan" id="matrixPlanBox">
-                <div class="plan-step"><b>1.</b> Znajdź pozycję na krawędzi strefy (lobby-tagging) lub wejdź do boxa gracza obok.</div>
-                <div class="plan-step"><b>2.</b> Szukaj strzałów snajperskich lub z AR na rotujących przeciwnikach.</div>
-                <div class="plan-step"><b>3.</b> Jeżeli strefa się zamyka, zaplanuj bezpieczny w-key na plecy strefy.</div>
-              </div>
-            </div>
-
-            <!-- QUICK POST-MATCH LOGGER -->
-            <div class="matches-card">
-              <h2 class="section-title"><span class="ic">💀</span> Quick Post-Match Logger</h2>
-              <p class="form-sub" style="margin-bottom: 16px;">Szybka 5-sekundowa analiza po porażce. Wyciągaj wnioski na bieżąco.</p>
-              
-              <form id="matchLogForm">
-                <div class="field">
-                  <label>Powód porażki / błąd (zaznacz główne)</label>
-                  <div class="loss-tags-grid">
-                    <label class="tag-checkbox-label">
-                      <input type="checkbox" name="lossReason" value="Przegrany Offspawn">
-                      <span>Offspawn Fight</span>
-                    </label>
-                    <label class="tag-checkbox-label">
-                      <input type="checkbox" name="lossReason" value="Zły timing rotacji">
-                      <span>Rotacja / Strefa</span>
-                    </label>
-                    <label class="tag-checkbox-label">
-                      <input type="checkbox" name="lossReason" value="Brak matów w Endgame">
-                      <span>Brak Matów</span>
-                    </label>
-                    <label class="tag-checkbox-label">
-                      <input type="checkbox" name="lossReason" value="Przegrany 50/50 aimfight">
-                      <span>Aimfight 50/50</span>
-                    </label>
-                    <label class="tag-checkbox-label">
-                      <input type="checkbox" name="lossReason" value="Storm Surge DMG">
-                      <span>Storm Surge DMG</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="field" style="margin-top: 12px;">
-                  <label for="matchLogNotes">Krótka notatka / wniosek</label>
-                  <input type="text" id="matchLogNotes" placeholder="np. Za mało tagów na początku 3 strefy..." autocomplete="off">
-                </div>
-
-                <button class="btn-primary" type="submit" style="margin-top: 14px;">Zapisz Log</button>
-              </form>
-            </div>
-          </div>
-
-          <!-- RECENT MATCH LOGS -->
-          <div class="matches-card" style="margin-top: 24px;">
-            <div class="recent-logs-head" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h2 class="section-title" style="margin-bottom: 0;"><span class="ic">📊</span> Ostatnie Logi Meczowe</h2>
-              <button class="btn-secondary danger" id="btnClearMatchLogs" type="button" style="padding: 6px 12px; font-size: 11px;">Wyczyść historię</button>
-            </div>
-            <div id="matchLogsList">
-              <div class="tour-empty" style="padding: 20px;"><strong>Brak zapisanych logów</strong>Rozegraj mecz i zapisz swoje wnioski.</div>
             </div>
           </div>
         </div>
@@ -2820,6 +2935,7 @@
             <div class="admin-tabs">
               <button class="admin-tab active" data-admin-tab="users" type="button">👥 Użytkownicy</button>
               <button class="admin-tab" data-admin-tab="tournaments" type="button">📅 Turnieje</button>
+              <button class="admin-tab" data-admin-tab="matches" type="button">🎮 Mecze (Porady)</button>
             </div>
 
             <div class="admin-tour-panel" id="adminPanelUsers">
@@ -2867,6 +2983,62 @@
                 <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>
               </div>
             </div>
+
+            <!-- TAB 3: ADMIN MATCH TIPS MANAGER -->
+            <div class="admin-tour-panel" id="adminPanelMatches" style="display:none;">
+              <div class="admin-section-label">DODAJ NOWĄ PORADĘ</div>
+              <div class="form-msg" id="adminTipMsg"></div>
+              <form id="adminTipForm">
+                <div class="field">
+                  <label for="tipTitle">Tytuł Porady</label>
+                  <input type="text" id="tipTitle" placeholder="np. Korzystaj z prawego kąta (Right-hand peek)" required
+                    autocomplete="off" />
+                </div>
+
+                <div class="field">
+                  <label for="tipContent">Treść Porady</label>
+                  <textarea id="tipContent" class="field input"
+                    style="height: 100px; resize: vertical; font-family: inherit;"
+                    placeholder="Wpisz szczegółową treść porady taktycznej..." required></textarea>
+                </div>
+
+                <div class="settings-grid" style="margin-bottom: 16px;">
+                  <div class="field">
+                    <label for="tipCategory">Kategoria / Etap gry</label>
+                    <select id="tipCategory" required>
+                      <option value="">Wybierz kategorię</option>
+                      <option value="Offspawn">Offspawn (Etap gry)</option>
+                      <option value="Mid-game">Mid-game (Etap gry)</option>
+                      <option value="End-game">End-game (Etap gry)</option>
+                      <option value="Fight">Fight (Inna)</option>
+                      <option value="Rotate">Rotate (Inna)</option>
+                      <option value="Surge">Surge (Inna)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="tipImportance">Ważność porady (1-5)</label>
+                    <select id="tipImportance" required>
+                      <option value="1">⭐ (Bardzo niska)</option>
+                      <option value="2">⭐⭐ (Niska)</option>
+                      <option value="3">⭐⭐⭐ (Średnia)</option>
+                      <option value="4">⭐⭐⭐⭐ (Wysoka)</option>
+                      <option value="5" selected>⭐⭐⭐⭐⭐ (Krytyczna)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button class="btn-primary" type="submit" id="saveTipBtn">Dodaj Poradę</button>
+              </form>
+
+              <div class="admin-tour-head" style="margin-top: 32px;">
+                <div>
+                  <h3>ZAPISANE PORADY</h3><span class="admin-tour-count" id="adminTipCount">0</span>
+                </div>
+              </div>
+              <div id="adminTipsList" class="users-list">
+                <div class="users-loading"><span class="mini-spinner"></span> Wczytywanie porad…</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2889,6 +3061,94 @@
       <div id="modalContent"></div>
     </div>
   </div>
+
+  <!-- ================= ADD TOURNAMENT MODAL ================= -->
+  <div id="addTournamentModalOverlay" class="modal-overlay hidden" style="z-index:100;">
+    <div class="modal-card" style="max-width: 580px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" id="addTournamentModalClose" type="button">✕</button>
+      <h2 class="form-title" style="margin-bottom: 12px;">Dodaj Turniej do Dziennika</h2>
+      <p class="form-sub" style="margin-bottom: 20px;">Wprowadź statystyki z rozegranego turnieju oraz opcjonalnie
+        podział na poszczególne gry.</p>
+
+      <form id="addTournamentLogForm">
+        <!-- Szukanie turnieju z kalendarza -->
+        <div class="field">
+          <label for="logTournamentSelect">Wybierz Turniej z Kalendarza (lub wybierz Inny)</label>
+          <div style="display: flex; gap: 8px;">
+            <select id="logTournamentSelect" class="tour-filter" style="flex: 1; height: 38px;">
+              <option value="custom">Inny (Wpisz własną nazwę)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="customTournamentFields">
+          <div class="field">
+            <label for="logTournamentName">Nazwa Turnieju</label>
+            <input type="text" id="logTournamentName" placeholder="np. Solo Victory Cash Cup Session 1" required />
+          </div>
+          <div class="settings-grid" style="margin-bottom: 12px;">
+            <div class="field">
+              <label for="logTournamentMode">Tryb</label>
+              <select id="logTournamentMode">
+                <option value="Solo">Solo</option>
+                <option value="Duo">Duo</option>
+                <option value="Trio">Trio</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="logTournamentFormat">Format</label>
+              <select id="logTournamentFormat">
+                <option value="Battle Royale">Battle Royale</option>
+                <option value="Zero Build">Zero Build</option>
+                <option value="Reload">Reload</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-grid" style="margin-bottom: 12px;">
+          <div class="field">
+            <label for="logTournamentPoints">Zdobyte punkty</label>
+            <input type="number" id="logTournamentPoints" placeholder="np. 142" required min="0" />
+          </div>
+          <div class="field">
+            <label for="logTournamentPlacement">Zajęte miejsce</label>
+            <input type="number" id="logTournamentPlacement" placeholder="np. 450" required min="1" />
+          </div>
+        </div>
+
+        <!-- Dodawanie gier -->
+        <div class="admin-section-label"
+          style="margin: 20px 0 8px; display: flex; justify-content: space-between; align-items: center;">
+          <span>Rozegrane Gry (Mecze)</span>
+          <button type="button" class="btn-ghost" id="btnAddGameRow"
+            style="padding: 4px 10px; font-size: 11px; font-weight: 700; width: auto; margin-top: 0;">+ Dodaj
+            grę</button>
+        </div>
+
+        <div id="gamesInputsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+          <!-- dynamiczne wiersze gier -->
+        </div>
+
+        <button class="btn-primary" type="submit" id="saveTournamentLogBtn">Zapisz Turniej</button>
+      </form>
+    </div>
+  </div>
+
+  <datalist id="causeOfDeathList">
+    <option value="surge">
+    <option value="offspawn">
+    <option value="głupi fight">
+    <option value="brak matsów">
+    <option value="Rozdzielenie z teamatem">
+    <option value="1 vs 2">
+    <option value="Normalny">
+    <option value="Zone">
+    <option value="Zła pozycja">
+    <option value="Server Spray">
+    <option value="Brak Healów">
+    <option value="brak rotacji">
+  </datalist>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -3258,7 +3518,7 @@
         pages.forEach(p => p.classList.add('hidden'));
         document.getElementById('page-' + target).classList.remove('hidden');
         if (target === 'tournaments') loadTournaments();
-        if (target === 'admin') loadAdminTournamentList();
+        if (target === 'admin') loadAdminNavLinkState();
         if (target === 'matches') loadMatchesPage();
       });
     });
@@ -3270,10 +3530,28 @@
       const tab = btn.dataset.adminTab;
       adminPanelUsers.classList.toggle('active', tab === 'users');
       adminPanelTournaments.classList.toggle('active', tab === 'tournaments');
+
+      const adminPanelMatches = document.getElementById('adminPanelMatches');
+      if (adminPanelMatches) {
+        adminPanelMatches.classList.toggle('active', tab === 'matches');
+        adminPanelMatches.style.display = tab === 'matches' ? 'block' : 'none';
+      }
+      adminPanelUsers.style.display = tab === 'users' ? 'block' : 'none';
+      adminPanelTournaments.style.display = tab === 'tournaments' ? 'block' : 'none';
+
       if (tab === 'users') loadUsersList();
       if (tab === 'tournaments') loadAdminTournamentList();
+      if (tab === 'matches') loadAdminTipsList();
     }));
     adminPanelUsers.classList.add('active');
+
+    function loadAdminNavLinkState() {
+      const activeAdminTab = document.querySelector('.admin-tab.active');
+      const tab = activeAdminTab ? activeAdminTab.dataset.adminTab : 'users';
+      if (tab === 'tournaments') loadAdminTournamentList();
+      else if (tab === 'matches') loadAdminTipsList();
+      else loadUsersList();
+    }
 
 
     // ================= TOURNAMENT CALENDAR =================
@@ -3946,208 +4224,434 @@
     });
 
     // ================= MATCHES LOGIC =================
-    const MINDSET_TIPS = [
-      "Right-hand peek w każdej walce — nie dawaj rywalowi darmowych strzałów.",
-      "Zero tiltu — poprzedni mecz nie istnieje, skup się wyłącznie na obecnej grze.",
-      "Brak matów = szukaj natychmiastowego Refresha w duo/trio.",
-      "Zawsze kontroluj strefę przed rotacją — graj na krawędzi lub na deadside strefy.",
-      "Zachowaj wysokie zaangażowanie w grę na dystans, aby budować bezpieczną przewagę.",
-      "Graj spokojnie i nie podejmuj pochopnych decyzji 50/50.",
-      "Planuj drop spot i trasy lootu ze 100% precyzją."
-    ];
-
-    const MATRIX_PLANS = {
-      'no-surge': [
-        "<b>1.</b> Znajdź pozycję na krawędzi strefy (lobby-tagging) lub wejdź do boxa gracza obok.",
-        "<b>2.</b> Szukaj strzałów snajperskich lub z AR na rotujących przeciwnikach.",
-        "<b>3.</b> Jeżeli strefa się zamyka, zaplanuj bezpieczny w-key na plecy strefy."
-      ],
-      'low-mats': [
-        "<b>1.</b> Zlokalizuj solo gracza lub osłabioną ekipę do natychmiastowego refresha.",
-        "<b>2.</b> Używaj cudzych budowli i starych tuneli do rotacji (tarping conservation).",
-        "<b>3.</b> Nie angażuj się w walki dystansowe — oszczędzaj amunicję na bliskie starcie."
-      ],
-      'ok': [
-        "<b>1.</b> Rotuj wcześnie (Early Rotate) do centrum kolejnej strefy na dogodną pozycję.",
-        "<b>2.</b> Zbuduj solidną bazę z metalu/kamienia na podwyższeniu (high ground/mid ground).",
-        "<b>3.</b> Kontroluj otoczenie i nie pozwól się zaskoczyć rywalom z krawędzi strefy."
-      ]
+    async function loadAdminTipsList() {
+      const list = document.getElementById('adminTipsList');
+      const count = document.getElementById('adminTipCount');
+      if (!list) return;
+      list.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
+      try {
+        const snap = await getDocs(collection(db, 'tips'));
+        const tips = [];
+        snap.forEach(d => tips.push(d.data()));
+        tips.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        if (count) count.textContent = tips.length;
+        if (tips.length === 0) {
+          list.innerHTML = '<div class="tour-empty">Brak zapisanych porad w bazie.</div>';
+          return;
+        }
+        list.innerHTML = tips.map(tip => `
+          <div class="admin-tip-row">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 700; color: var(--cyan);">${escapeHtml(tip.title)}</div>
+              <div style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">${escapeHtml(tip.content)}</div>
+              <div style="font-size: 10px; color: var(--text-faint); margin-top: 4px;">Kategoria: <b>${escapeHtml(tip.category)}</b> | Ważność: ${'⭐'.repeat(tip.importance)}</div>
+            </div>
+            <button class="btn-secondary danger" style="padding: 4px 8px; font-size: 11px; margin-left: 12px;" onclick="deleteTip('${tip.id}')">Usuń</button>
+          </div>
+        `).join('');
+      } catch (err) {
+        list.innerHTML = '<div class="tour-empty">Błąd wczytywania porad: ' + err.message + '</div>';
+      }
+    }
+    window.deleteTip = async (id) => {
+      if (confirm('Czy na pewno chcesz usunąć tę poradę?')) {
+        try {
+          await deleteDoc(doc(db, 'tips', id));
+          loadAdminTipsList();
+        } catch (err) {
+          alert('Nie udało się usunąć: ' + err.message);
+        }
+      }
     };
 
-    let activeGameMode = "Solo";
-
     function setupMatchesPage() {
-      const chips = document.querySelectorAll('.mode-chip');
-      chips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          chips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          activeGameMode = chip.dataset.mode;
-        });
-      });
+      // Subtab logic
+      const btnTips = document.getElementById('btnMatchTabTips');
+      const btnTours = document.getElementById('btnMatchTabTournaments');
+      const contentTips = document.getElementById('matchTabContentTips');
+      const contentTours = document.getElementById('matchTabContentTournaments');
 
-      const btnRoll = document.getElementById('btnRollMindset');
-      const textTip = document.getElementById('mindsetText');
-      const cardMindset = document.getElementById('mindsetCard');
-      if (btnRoll && textTip) {
-        btnRoll.addEventListener('click', () => {
-          cardMindset.style.opacity = '0';
-          cardMindset.style.transform = 'scale(0.95)';
-          setTimeout(() => {
-            const currentText = textTip.textContent;
-            let newText = currentText;
-            while (newText === currentText) {
-              const randIdx = Math.floor(Math.random() * MINDSET_TIPS.length);
-              newText = MINDSET_TIPS[randIdx];
-              const randNum = randIdx + 1;
-              const numSpan = document.querySelector('.mindset-number');
-              if (numSpan) numSpan.textContent = `ZASADA #${randNum}`;
-            }
-            textTip.textContent = newText;
-            cardMindset.style.opacity = '1';
-            cardMindset.style.transform = 'scale(1)';
-          }, 200);
+      if (btnTips && btnTours) {
+        btnTips.addEventListener('click', () => {
+          btnTips.classList.add('active');
+          btnTours.classList.remove('active');
+          contentTips.style.display = 'block';
+          contentTours.style.display = 'none';
+        });
+        btnTours.addEventListener('click', () => {
+          btnTours.classList.add('active');
+          btnTips.classList.remove('active');
+          contentTips.style.display = 'none';
+          contentTours.style.display = 'block';
+          renderLoggedTournaments();
         });
       }
 
-      const surgePlayers = document.getElementById('surgePlayers');
-      if (surgePlayers) {
-        surgePlayers.addEventListener('input', recalculateSurge);
-      }
-
-      const matrixBtns = document.querySelectorAll('.matrix-btn');
-      const planBox = document.getElementById('matrixPlanBox');
-      matrixBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          matrixBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const state = btn.dataset.state;
-          const plan = MATRIX_PLANS[state] || [];
-          if (planBox) {
-            planBox.innerHTML = plan.map(step => `<div class="plan-step">${step}</div>`).join('');
-          }
+      // Categories setup
+      const catCards = document.querySelectorAll('.category-card[data-category]');
+      catCards.forEach(card => {
+        card.addEventListener('click', () => {
+          showCategoryTips(card.dataset.category);
         });
       });
 
-      const logForm = document.getElementById('matchLogForm');
-      if (logForm) {
-        logForm.addEventListener('submit', (e) => {
+      const mySavedCardBtn = document.getElementById('btnMySavedTipsCard');
+      if (mySavedCardBtn) {
+        mySavedCardBtn.addEventListener('click', showMySavedTips);
+      }
+
+      const backBtn1 = document.getElementById('btnBackToCategories');
+      if (backBtn1) backBtn1.addEventListener('click', backToCategories);
+      const backBtn2 = document.getElementById('btnBackToCategoriesSaved');
+      if (backBtn2) backBtn2.addEventListener('click', backToCategories);
+
+      // Add Tournament Modal overlay logic
+      const btnOpenTourModal = document.getElementById('btnOpenAddTournamentModal');
+      const tourModalOverlay = document.getElementById('addTournamentModalOverlay');
+      const tourModalClose = document.getElementById('addTournamentModalClose');
+      const selectTour = document.getElementById('logTournamentSelect');
+      const customTourFields = document.getElementById('customTournamentFields');
+
+      if (btnOpenTourModal && tourModalOverlay) {
+        btnOpenTourModal.addEventListener('click', () => {
+          populateLoggedTournamentSelect();
+          tourModalOverlay.classList.remove('hidden');
+        });
+      }
+      if (tourModalClose && tourModalOverlay) {
+        tourModalClose.addEventListener('click', () => tourModalOverlay.classList.add('hidden'));
+      }
+      if (selectTour && customTourFields) {
+        selectTour.addEventListener('change', () => {
+          customTourFields.style.display = selectTour.value === 'custom' ? 'block' : 'none';
+        });
+      }
+
+      // Game row addition inside modal
+      const btnAddGameRow = document.getElementById('btnAddGameRow');
+      if (btnAddGameRow) {
+        btnAddGameRow.addEventListener('click', addGameInputRow);
+      }
+
+      // Tournament Form Submit
+      const addTourForm = document.getElementById('addTournamentLogForm');
+      if (addTourForm) {
+        addTourForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          const reasons = [];
-          const checkboxes = logForm.querySelectorAll('input[name="lossReason"]:checked');
-          checkboxes.forEach(cb => reasons.push(cb.value));
+          const selectVal = document.getElementById('logTournamentSelect').value;
+          let name, mode, format;
+          if (selectVal === 'custom') {
+            name = document.getElementById('logTournamentName').value.trim();
+            mode = document.getElementById('logTournamentMode').value;
+            format = document.getElementById('logTournamentFormat').value;
+          } else {
+            const tObj = allTournamentsCache.find(x => x.id === selectVal);
+            name = tObj.summary;
+            mode = tObj.mode || 'Solo';
+            format = tObj.tournamentType || 'Tournament';
+          }
+          const points = parseInt(document.getElementById('logTournamentPoints').value || 0);
+          const placement = parseInt(document.getElementById('logTournamentPlacement').value || 1);
 
-          const note = document.getElementById('matchLogNotes').value.trim();
-          const poi = document.getElementById('matchPoi').value;
+          const games = [];
+          const placements = document.querySelectorAll('input[name="gamePlacement"]');
+          const kills = document.querySelectorAll('input[name="gameKills"]');
+          const causes = document.querySelectorAll('input[name="gameCause"]');
+          for (let i = 0; i < placements.length; i++) {
+            games.push({
+              num: i + 1,
+              placement: parseInt(placements[i].value),
+              kills: parseInt(kills[i].value),
+              cause: causes[i].value.trim()
+            });
+          }
 
           const log = {
-            id: 'log_' + Date.now(),
-            mode: activeGameMode,
-            poi: poi,
-            reasons: reasons,
-            note: note || 'Brak dodatkowej notatki.',
+            id: 'tour_log_' + Date.now(),
+            name,
+            mode,
+            format,
+            points,
+            placement,
+            games,
             createdAt: new Date().toISOString()
           };
 
-          const existingLogs = JSON.parse(localStorage.getItem('fn_matches_logs') || '[]');
+          const existingLogs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
           existingLogs.unshift(log);
-          localStorage.setItem('fn_matches_logs', JSON.stringify(existingLogs));
+          localStorage.setItem('fn_logged_tournaments', JSON.stringify(existingLogs));
 
-          logForm.reset();
-          renderMatchLogs();
+          // Close and reset
+          tourModalOverlay.classList.add('hidden');
+          addTourForm.reset();
+          document.getElementById('gamesInputsContainer').innerHTML = '';
+          customTourFields.style.display = 'block';
+          renderLoggedTournaments();
         });
       }
 
-      const btnClearLogs = document.getElementById('btnClearMatchLogs');
-      if (btnClearLogs) {
-        btnClearLogs.addEventListener('click', () => {
-          if (confirm('Czy na pewno chcesz usunąć całą historię logów meczowych?')) {
-            localStorage.removeItem('fn_matches_logs');
-            renderMatchLogs();
+      // Admin Save Tip submit handler
+      const tipForm = document.getElementById('adminTipForm');
+      if (tipForm) {
+        tipForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const msg = document.getElementById('adminTipMsg');
+          msg.className = 'form-msg';
+          const title = document.getElementById('tipTitle').value.trim();
+          const content = document.getElementById('tipContent').value.trim();
+          const category = document.getElementById('tipCategory').value;
+          const importance = parseInt(document.getElementById('tipImportance').value);
+
+          const saveBtn = document.getElementById('saveTipBtn');
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Zapisywanie…';
+
+          try {
+            const tipId = 'tip_' + Date.now();
+            await setDoc(doc(db, 'tips', tipId), {
+              id: tipId,
+              title,
+              content,
+              category,
+              importance,
+              createdAt: new Date().toISOString()
+            });
+            msg.textContent = 'Pomyślnie dodano nową poradę!';
+            msg.className = 'form-msg show ok';
+            tipForm.reset();
+            loadAdminTipsList();
+          } catch (err) {
+            msg.textContent = 'Błąd zapisu: ' + err.message;
+            msg.className = 'form-msg show error';
+          } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Dodaj Poradę';
           }
         });
       }
-
-      window.changePlayers = (val) => {
-        const inp = document.getElementById('surgePlayers');
-        if (!inp) return;
-        let newV = parseInt(inp.value || 0) + val;
-        if (newV < 1) newV = 1;
-        if (newV > 100) newV = 100;
-        inp.value = newV;
-        recalculateSurge();
-      };
     }
 
-    function recalculateSurge() {
-      const inp = document.getElementById('surgePlayers');
-      const alertBox = document.getElementById('surgeAlert');
-      if (!inp || !alertBox) return;
+    function backToCategories() {
+      document.getElementById('tipsDisplayCard').style.display = 'none';
+      document.getElementById('mySavedTipsCard').style.display = 'none';
+      document.querySelector('.tips-categories-grid').style.display = 'grid';
+    }
 
-      const pCount = parseInt(inp.value || 0);
-      alertBox.className = 'surge-alert-box';
+    async function showCategoryTips(cat) {
+      document.querySelector('.tips-categories-grid').style.display = 'none';
+      const displayCard = document.getElementById('tipsDisplayCard');
+      const title = document.getElementById('selectedCategoryTitle');
+      const container = document.getElementById('tipsListContainer');
 
-      if (pCount > 70) {
-        alertBox.classList.add('alert-red');
-        alertBox.innerHTML = `
-          <div class="alert-title">🔴 Wysoki Surge (~500+ DMG)</div>
-          <div class="alert-desc">Wysoka gęstość lobby. Szukaj agresywnych tagów z krawędzi strefy przed rotacją i pozycjonuj się bezpiecznie.</div>
-        `;
-      } else if (pCount >= 55) {
-        alertBox.classList.add('alert-yellow');
-        alertBox.innerHTML = `
-          <div class="alert-title">🟡 Średni Surge (~300-450 DMG)</div>
-          <div class="alert-desc">Monitoruj progi Surge. Kontroluj kąty na Deadside strefy i szukaj darmowych hitów.</div>
-        `;
-      } else {
-        alertBox.classList.add('alert-green');
-        alertBox.innerHTML = `
-          <div class="alert-title">🟢 Bezpiecznie</div>
-          <div class="alert-desc">Brak progu Surge. Skup się w pełni na rotacji, oszczędzaniu matów i pozycjonowaniu na endgame.</div>
-        `;
+      title.textContent = `Kategoria: ${cat}`;
+      displayCard.style.display = 'block';
+      container.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
+
+      try {
+        const snap = await getDocs(collection(db, 'tips'));
+        const tips = [];
+        snap.forEach(d => {
+          const t = d.data();
+          if (t.category === cat) tips.push(t);
+        });
+        tips.sort((a, b) => b.importance - a.importance);
+
+        if (tips.length === 0) {
+          container.innerHTML = '<div class="tour-empty">Brak opublikowanych porad w tej kategorii.</div>';
+          return;
+        }
+
+        const savedTipIds = JSON.parse(localStorage.getItem('fn_user_saved_tips') || '[]');
+
+        container.innerHTML = tips.map(tip => {
+          const isSaved = savedTipIds.includes(tip.id);
+          return `
+            <div class="tip-card-item">
+              <div class="tip-card-title">${escapeHtml(tip.title)}</div>
+              <div class="tip-card-content">${escapeHtml(tip.content)}</div>
+              <div class="tip-card-footer">
+                <span>Ważność: ${'⭐'.repeat(tip.importance)}</span>
+                <button type="button" class="btn-save-tip-star ${isSaved ? 'active' : ''}" onclick="toggleSaveTip('${tip.id}')" title="Zapisz do Moich Porad">★</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        container.innerHTML = '<div class="tour-empty">Błąd wczytywania: ' + err.message + '</div>';
       }
     }
 
-    function renderMatchLogs() {
-      const listContainer = document.getElementById('matchLogsList');
-      if (!listContainer) return;
+    window.toggleSaveTip = (id) => {
+      const savedTipIds = JSON.parse(localStorage.getItem('fn_user_saved_tips') || '[]');
+      const idx = savedTipIds.indexOf(id);
+      if (idx > -1) {
+        savedTipIds.splice(idx, 1);
+      } else {
+        savedTipIds.push(id);
+      }
+      localStorage.setItem('fn_user_saved_tips', JSON.stringify(savedTipIds));
 
-      const logs = JSON.parse(localStorage.getItem('fn_matches_logs') || '[]');
+      const visibleDisplay = document.getElementById('tipsDisplayCard').style.display !== 'none';
+      if (visibleDisplay) {
+        const cat = document.getElementById('selectedCategoryTitle').textContent.replace('Kategoria: ', '');
+        showCategoryTips(cat);
+      } else {
+        showMySavedTips();
+      }
+    };
 
+    async function showMySavedTips() {
+      document.querySelector('.tips-categories-grid').style.display = 'none';
+      const myCard = document.getElementById('mySavedTipsCard');
+      const container = document.getElementById('mySavedTipsContainer');
+      myCard.style.display = 'block';
+
+      container.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
+
+      const savedTipIds = JSON.parse(localStorage.getItem('fn_user_saved_tips') || '[]');
+      if (savedTipIds.length === 0) {
+        container.innerHTML = '<div class="tour-empty">Nie zapisałeś jeszcze żadnych porad. Kliknij gwiazdkę przy poradzie w kategoriach, aby ją tu dodać.</div>';
+        return;
+      }
+
+      try {
+        const snap = await getDocs(collection(db, 'tips'));
+        const allTips = {};
+        snap.forEach(d => {
+          const t = d.data();
+          if (savedTipIds.includes(t.id)) {
+            if (!allTips[t.category]) allTips[t.category] = [];
+            allTips[t.category].push(t);
+          }
+        });
+
+        let html = '';
+        const cats = Object.keys(allTips);
+        if (cats.length === 0) {
+          container.innerHTML = '<div class="tour-empty">Zapisane porady nie istnieją już w bazie.</div>';
+          return;
+        }
+
+        cats.forEach(cat => {
+          html += `<h4 style="margin: 16px 0 8px 0; color: var(--cyan); border-bottom: 1px solid var(--border-soft); padding-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Kategoria: ${cat}</h4>`;
+          html += allTips[cat].map(tip => `
+            <div class="tip-card-item">
+              <div class="tip-card-title">${escapeHtml(tip.title)}</div>
+              <div class="tip-card-content">${escapeHtml(tip.content)}</div>
+              <div class="tip-card-footer">
+                <span>Ważność: ${'⭐'.repeat(tip.importance)}</span>
+                <button type="button" class="btn-save-tip-star active" onclick="toggleSaveTip('${tip.id}')" title="Usuń z Moich Porad">★</button>
+              </div>
+            </div>
+          `).join('');
+        });
+
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = '<div class="tour-empty">Błąd wczytywania: ' + err.message + '</div>';
+      }
+    }
+
+    function populateLoggedTournamentSelect() {
+      const select = document.getElementById('logTournamentSelect');
+      if (!select) return;
+      select.innerHTML = '<option value="custom">Inny (Wpisz własną nazwę)</option>' +
+        allTournamentsCache.map(t => `<option value="${escapeAttr(t.id)}">${escapeHtml(t.summary)} (${new Date(t.startAt).toLocaleDateString('pl-PL')})</option>`).join('');
+    }
+
+    let gameCount = 0;
+    function addGameInputRow() {
+      gameCount++;
+      const container = document.getElementById('gamesInputsContainer');
+      const row = document.createElement('div');
+      row.className = 'game-row-input';
+      row.id = `game_input_row_${gameCount}`;
+      row.innerHTML = `
+        <input type="number" placeholder="Miejsce" class="field input" style="padding: 6px; font-size: 12px; height: 32px;" required min="1" max="100" name="gamePlacement" />
+        <input type="number" placeholder="Kille" class="field input" style="padding: 6px; font-size: 12px; height: 32px;" required min="0" name="gameKills" />
+        <input type="text" list="causeOfDeathList" placeholder="Wyszukaj powód śmierci..." class="field input" style="padding: 6px; font-size: 12px; height: 32px;" name="gameCause" required />
+        <button type="button" class="btn-secondary danger" style="padding: 0; font-size: 12px; height: 32px; width: 32px; display: grid; place-items: center;" onclick="document.getElementById('game_input_row_${gameCount}').remove()">✕</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function renderLoggedTournaments() {
+      const list = document.getElementById('loggedTournamentsList');
+      if (!list) return;
+      const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
       if (logs.length === 0) {
-        listContainer.innerHTML = `
-          <div class="tour-empty" style="padding: 20px;">
-            <strong>Brak zapisanych logów</strong>
-            Rozegraj mecz i zapisz swoje wnioski.
+        list.innerHTML = `
+          <div class="tour-empty" style="padding: 40px;">
+            <strong>Brak zarejestrowanych turniejów</strong>
+            Kliknij przycisk „Dodaj Turniej” u góry po prawej stronie, aby zapisać swoje wyniki i rozegrane mecze.
           </div>`;
         return;
       }
 
-      listContainer.innerHTML = logs.slice(0, 10).map(log => {
+      list.innerHTML = logs.map(log => {
         const dateStr = new Date(log.createdAt).toLocaleDateString('pl-PL', {
           day: '2-digit',
           month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
+          year: 'numeric'
         });
 
-        const badges = log.reasons.map(r => `<span class="log-tag-badge">${escapeHtml(r)}</span>`).join('');
+        const gamesHtml = (log.games || []).map(g => `
+          <div class="modal-row" style="padding: 8px 0; border-bottom: 1px solid var(--border-soft);">
+            <span>Gra #${g.num} (Miejsce: <b>#${g.placement}</b> | Kille: <b>${g.kills}</b>)</span>
+            <span style="color: var(--danger); font-weight: 700;">Powód śmierci: ${escapeHtml(g.cause)}</span>
+          </div>
+        `).join('');
 
         return `
-          <div class="log-row">
-            <div><b>${escapeHtml(log.mode)}</b></div>
-            <div><span class="ic">📍</span> ${escapeHtml(log.poi)}</div>
-            <div>${badges || '<span style="color: var(--text-faint);">Brak określonego błędu</span>'}</div>
-            <div style="color: var(--text-dim); font-style: italic;">"${escapeHtml(log.note)}"</div>
-            <div style="color: var(--text-faint); font-size: 11px; text-align: right;">${dateStr}</div>
+          <div class="tour-card" style="grid-template-columns: 1fr; gap: 8px; cursor: pointer; display: block; margin-bottom: 12px; padding: 18px 20px;" onclick="toggleTourDetails('${log.id}')">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h3 style="font-family: 'Space Grotesk'; font-size: 17px; font-weight: 700; margin: 0 0 6px 0; color: var(--cyan);">${escapeHtml(log.name)}</h3>
+                <div style="display: flex; gap: 6px;">
+                  <span class="tour-tag accent">${escapeHtml(log.mode)}</span>
+                  <span class="tour-tag purple">${escapeHtml(log.format)}</span>
+                  <span class="tour-tag">${dateStr}</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 20px; font-weight: 700; font-family: 'Space Grotesk'; background: var(--grad-main); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">${log.points} pkt</div>
+                <div style="font-size: 12px; color: var(--text-dim); margin-top: 2px;">Miejsce: #${log.placement}</div>
+              </div>
+            </div>
+            
+            <div id="tour_details_${log.id}" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border-soft);" onclick="event.stopPropagation();">
+              <h4 style="font-family: 'Space Grotesk'; font-size: 13px; font-weight: 700; margin: 0 0 10px 0; color: var(--purple);">Statystyki poszczególnych gier (${(log.games || []).length}):</h4>
+              <div style="max-width: 100%;">
+                ${gamesHtml || '<div class="tour-empty" style="padding: 10px;">Nie dodano szczegółów żadnej gry dla tego turnieju.</div>'}
+              </div>
+              <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+                <button type="button" class="btn-secondary danger" style="padding: 6px 14px; font-size: 11px; font-weight: 700;" onclick="deleteTournamentLog('${log.id}')">Usuń Log</button>
+              </div>
+            </div>
           </div>
         `;
       }).join('');
     }
 
+    window.toggleTourDetails = (id) => {
+      const el = document.getElementById('tour_details_' + id);
+      if (el) {
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      }
+    };
+
+    window.deleteTournamentLog = (id) => {
+      if (confirm('Czy na pewno chcesz usunąć ten log turniejowy?')) {
+        const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
+        const updated = logs.filter(l => l.id !== id);
+        localStorage.setItem('fn_logged_tournaments', JSON.stringify(updated));
+        renderLoggedTournaments();
+      }
+    };
+
     function loadMatchesPage() {
-      renderMatchLogs();
-      recalculateSurge();
+      backToCategories();
+      renderLoggedTournaments();
     }
 
     // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
