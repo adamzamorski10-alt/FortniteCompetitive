@@ -6286,6 +6286,16 @@
           const planLock = document.getElementById('planLockOverlay');
           const trainingBlocks = document.getElementById('trainingBlocksContainer');
 
+          // Double check button binding for unlock
+          const localBtn = document.getElementById('btnOpenUnlockSkills');
+          const localOverlay = document.getElementById('unlockSkillsModalOverlay');
+          if (localBtn && localOverlay) {
+            // Remove existing listener by replacing or setting onclick directly
+            localBtn.onclick = () => {
+              localOverlay.classList.remove('hidden');
+            };
+          }
+
           if (storedSkills) {
             // Profile unlocked!
             if (skillsLock) skillsLock.style.display = 'none';
