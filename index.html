@@ -2439,6 +2439,43 @@
       padding: 8px;
       border-radius: var(--radius-sm);
     }
+    
+    .modal-card input, .modal-card select, .modal-card textarea, .admin-card textarea, .game-row-input input {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text) !important;
+    }
+    .modal-card select option, .admin-card select option {
+      background: #0c0f17 !important;
+      color: var(--text) !important;
+    }
+
+    /* Large Category Cards */
+    .tips-categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .category-card {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .category-card[data-category="Offspawn"] { border-color: rgba(34, 211, 238, 0.25); background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(5,7,13,0.1)); }
+    .category-card[data-category="Mid-game"] { border-color: rgba(109, 91, 255, 0.25); background: linear-gradient(135deg, rgba(109, 91, 255, 0.08), rgba(5,7,13,0.1)); }
+    .category-card[data-category="End-game"] { border-color: rgba(168, 85, 247, 0.25); background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(5,7,13,0.1)); }
+    .category-card[data-category="Fight"] { border-color: rgba(251, 69, 112, 0.25); background: linear-gradient(135deg, rgba(251, 69, 112, 0.08), rgba(5,7,13,0.1)); }
+    .category-card[data-category="Rotate"] { border-color: rgba(245, 197, 86, 0.25); background: linear-gradient(135deg, rgba(245, 197, 86, 0.08), rgba(5,7,13,0.1)); }
+    .category-card[data-category="Surge"] { border-color: rgba(52, 211, 153, 0.25); background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(5,7,13,0.1)); }
+    .category-card#btnMySavedTipsCard { border: 2px dashed rgba(255, 255, 255, 0.2); background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01)); }
 
     @media (max-width: 600px) {
       .game-row-input {
@@ -2659,65 +2696,59 @@
           <!-- SUBTAB 1: PORADY -->
           <div id="matchTabContentTips" class="match-subtab-panel">
             <!-- Grid z Kategoriami Porad -->
-            <div class="tips-categories-grid"
-              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
-              <div class="category-card" data-category="Offspawn"
-                style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(34, 211, 238, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
-                <div style="font-size: 24px; margin-bottom: 8px;">🏠</div>
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--cyan);">
-                  Offspawn</h3>
-                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Walka o drop spot, pozycjonowanie na
-                  start.</p>
+            <div class="tips-categories-grid">
+              <div class="category-card" data-category="Offspawn">
+                <div style="font-size: 28px; margin-bottom: 12px;">🏠</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--cyan);">Offspawn</h3>
+                  <p style="font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4;">Walka o drop spot, pozycjonowanie na start.</p>
+                </div>
               </div>
-              <div class="category-card" data-category="Mid-game"
-                style="background: linear-gradient(135deg, rgba(109, 91, 255, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(109, 91, 255, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
-                <div style="font-size: 24px; margin-bottom: 8px;">🗺️</div>
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--indigo);">
-                  Mid-game</h3>
-                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Rotacje, pozycjonowanie, zbieranie
-                  info.</p>
+              <div class="category-card" data-category="Mid-game">
+                <div style="font-size: 28px; margin-bottom: 12px;">🗺️</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--indigo);">Mid-game</h3>
+                  <p style="font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4;">Rotacje, pozycjonowanie, zbieranie info.</p>
+                </div>
               </div>
-              <div class="category-card" data-category="End-game"
-                style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
-                <div style="font-size: 24px; margin-bottom: 8px;">👑</div>
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--purple);">
-                  End-game</h3>
-                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Gry końcowe, tunele, wysokie maty.</p>
+              <div class="category-card" data-category="End-game">
+                <div style="font-size: 28px; margin-bottom: 12px;">👑</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--purple);">End-game</h3>
+                  <p style="font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4;">Gry końcowe, tunele, wysokie maty.</p>
+                </div>
               </div>
-              <div class="category-card" data-category="Fight"
-                style="background: linear-gradient(135deg, rgba(251, 69, 112, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(251, 69, 112, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
-                <div style="font-size: 24px; margin-bottom: 8px;">⚔️</div>
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--danger);">
-                  Fight</h3>
-                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Techniki walki, budowanie i aimfighty.
-                </p>
+              <div class="category-card" data-category="Fight">
+                <div style="font-size: 28px; margin-bottom: 12px;">⚔️</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--danger);">Fight</h3>
+                  <p style="font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4;">Techniki walki, budowanie i aimfighty.</p>
+                </div>
               </div>
-              <div class="category-card" data-category="Rotate"
-                style="background: linear-gradient(135deg, rgba(245, 197, 86, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(245, 197, 86, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
-                <div style="font-size: 24px; margin-bottom: 8px;">🔄</div>
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: #ffe6a8;">
-                  Rotate</h3>
-                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Rotowanie przez strefy, chowanie się.
-                </p>
+              <div class="category-card" data-category="Rotate">
+                <div style="font-size: 28px; margin-bottom: 12px;">🔄</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: #ffe6a8;">Rotate</h3>
+                  <p style="font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4;">Rotowanie przez strefy, chowanie się.</p>
+                </div>
               </div>
-              <div class="category-card" data-category="Surge"
-                style="background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(5,7,13,0.1)); border: 1px solid rgba(52, 211, 153, 0.25); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
-                <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--success);">
-                  Surge</h3>
-                <p style="font-size: 11.5px; color: var(--text-dim); margin: 0;">Zdobywanie damage, limity Storm Surge.
-                </p>
+              <div class="category-card" data-category="Surge">
+                <div style="font-size: 28px; margin-bottom: 12px;">⚡</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--success);">Surge</h3>
+                  <p style="font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4;">Zdobywanie damage, limity Storm Surge.</p>
+                </div>
               </div>
 
               <!-- MOJE PORADY SPECIAL CARD -->
-              <div class="category-card" id="btnMySavedTipsCard"
-                style="background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01)); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: all 0.2s; position: relative;">
+              <div class="category-card" id="btnMySavedTipsCard">
+                <div style="font-size: 28px; margin-bottom: 12px;">⭐</div>
+                <div>
+                  <h3 style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--text);">Moje Porady</h3>
+                  <p style="font-size: 13px; color: var(--cyan); margin: 0; font-weight: 600; line-height: 1.4;">Wyświetl swoje zapisane porady taktyczne.</p>
+                </div>
+              </div>
+            </div>
                 <div style="font-size: 24px; margin-bottom: 8px;">⭐</div>
                 <h3
                   style="font-family: 'Space Grotesk'; font-size: 16px; margin: 0 0 4px; font-weight: 700; color: var(--text);">
@@ -4316,6 +4347,14 @@
         btnOpenTourModal.addEventListener('click', () => {
           populateLoggedTournamentSelect();
           tourModalOverlay.classList.remove('hidden');
+          
+          // Reset custom fields visibility & required attribute
+          if (selectTour && customTourFields) {
+            selectTour.value = 'custom';
+            customTourFields.style.display = 'block';
+            const nameInput = document.getElementById('logTournamentName');
+            if (nameInput) nameInput.setAttribute('required', '');
+          }
         });
       }
       if (tourModalClose && tourModalOverlay) {
@@ -4323,7 +4362,13 @@
       }
       if (selectTour && customTourFields) {
         selectTour.addEventListener('change', () => {
-          customTourFields.style.display = selectTour.value === 'custom' ? 'block' : 'none';
+          const isCustom = selectTour.value === 'custom';
+          customTourFields.style.display = isCustom ? 'block' : 'none';
+          const nameInput = document.getElementById('logTournamentName');
+          if (nameInput) {
+            if (isCustom) nameInput.setAttribute('required', '');
+            else nameInput.removeAttribute('required');
+          }
         });
       }
 
@@ -4408,16 +4453,33 @@
 
           try {
             const tipId = 'tip_' + Date.now();
-            await setDoc(doc(db, 'tips', tipId), {
+            const tipData = {
               id: tipId,
               title,
               content,
               category,
               importance,
               createdAt: new Date().toISOString()
-            });
-            msg.textContent = 'Pomyślnie dodano nową poradę!';
-            msg.className = 'form-msg show ok';
+            };
+            
+            let savedToFirestore = false;
+            try {
+              await setDoc(doc(db, 'tips', tipId), tipData);
+              savedToFirestore = true;
+            } catch (fsErr) {
+              console.warn('Brak uprawnień Firestore, zapis do localStorage:', fsErr);
+              const localTips = JSON.parse(localStorage.getItem('fn_local_tips') || '[]');
+              localTips.unshift(tipData);
+              localStorage.setItem('fn_local_tips', JSON.stringify(localTips));
+            }
+
+            if (savedToFirestore) {
+              msg.textContent = 'Pomyślnie dodano nową poradę do bazy!';
+              msg.className = 'form-msg show ok';
+            } else {
+              msg.innerHTML = '⚠️ Zapisano lokalnie w przeglądarce (błąd uprawnień Firestore). Aby udostępnić porady wszystkim, wklej tę regułę w Firebase Console:<br><code style="font-size:11px; background:rgba(0,0,0,0.2); padding:2px 4px; display:block; margin-top:4px;">match /tips/{tipId} { allow read, write: if true; }</code>';
+              msg.className = 'form-msg show ok';
+            }
             tipForm.reset();
             loadAdminTipsList();
           } catch (err) {
@@ -4429,6 +4491,21 @@
           }
         });
       }
+    }
+
+    async function getTipsFromDbOrLocal() {
+      let tips = [];
+      try {
+        const snap = await getDocs(collection(db, 'tips'));
+        snap.forEach(d => tips.push(d.data()));
+      } catch (err) {
+        console.warn('Firestore tips read failed, loading from local:', err);
+      }
+      const localTips = JSON.parse(localStorage.getItem('fn_local_tips') || '[]');
+      const allTipsMap = {};
+      tips.forEach(t => allTipsMap[t.id] = t);
+      localTips.forEach(t => allTipsMap[t.id] = t);
+      return Object.values(allTipsMap);
     }
 
     function backToCategories() {
@@ -4448,12 +4525,8 @@
       container.innerHTML = '<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie…</div>';
 
       try {
-        const snap = await getDocs(collection(db, 'tips'));
-        const tips = [];
-        snap.forEach(d => {
-          const t = d.data();
-          if (t.category === cat) tips.push(t);
-        });
+        const allTips = await getTipsFromDbOrLocal();
+        const tips = allTips.filter(t => t.category === cat);
         tips.sort((a, b) => b.importance - a.importance);
 
         if (tips.length === 0) {
@@ -4515,10 +4588,9 @@
       }
 
       try {
-        const snap = await getDocs(collection(db, 'tips'));
+        const snap = await getTipsFromDbOrLocal();
         const allTips = {};
-        snap.forEach(d => {
-          const t = d.data();
+        snap.forEach(t => {
           if (savedTipIds.includes(t.id)) {
             if (!allTips[t.category]) allTips[t.category] = [];
             allTips[t.category].push(t);
