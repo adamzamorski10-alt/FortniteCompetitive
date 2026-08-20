@@ -2741,7 +2741,7 @@
           <div class="nav-link" data-page="matches"><span class="ic">🎮</span> Mecze</div>
           <div class="nav-link disabled"><span class="ic">📊</span> Statystyki <span class="soon-tag">wkrótce</span>
           </div>
-          <div class="nav-link disabled"><span class="ic">🏆</span> Trening <span class="soon-tag">wkrótce</span></div>
+          <div class="nav-link" data-page="training"><span class="ic">🏋️‍♂️</span> Trening</div>
         </div>
         <div class="sidebar-bottom">
           <div class="nav-link admin-link hidden" data-page="admin" id="adminNavLink"><span class="ic">🛡️</span> Panel
@@ -3133,6 +3133,16 @@
                   <input type="text" id="setEpicId" placeholder="np. Nick#1234" />
                 </div>
 
+                <div class="field">
+                  <label for="setRole">Rola w teamie</label>
+                  <select id="setRole">
+                    <option value="">Wybierz rolę</option>
+                    <option value="IGL">IGL (In-Game Leader)</option>
+                    <option value="Fragger">Fragger</option>
+                    <option value="Support">Support / Co-IGL</option>
+                  </select>
+                </div>
+
                 <div class="field full">
                   <label for="setInput">Sprzęt do gry</label>
                   <select id="setInput">
@@ -3156,6 +3166,148 @@
               na sezon (np. docelowa ranga Arena/Reload), połączenie z Epic API do auto‑importu meczów, strefa czasowa i
               godziny, w których zwykle grasz (pod planowanie sesji treningowych), motyw jasny/ciemny, język interfejsu,
               widoczność profilu (publiczny/prywatny) oraz zgody na powiadomienia (np. podsumowanie po turnieju).
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TRAINING PAGE ================= -->
+        <div class="page hidden" id="page-training">
+          <!-- SUBTABS HEADER -->
+          <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+            <button type="button" class="tab-btn active" id="btnTrainingTabInfo"
+              style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">📊
+              Informacje</button>
+            <button type="button" class="tab-btn" id="btnTrainingTabPlan"
+              style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">🏋️ Plan
+              Treningowy</button>
+          </div>
+
+          <!-- TAB CONTENT: INFORMACJE -->
+          <div id="trainingTabContentInfo" class="training-subtab-panel">
+            <div
+              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; align-items: start;">
+
+              <!-- KARTA UŻYTKOWNIKA -->
+              <div class="matches-card"
+                style="padding: 28px; margin: 0; background: linear-gradient(135deg, rgba(245, 197, 86, 0.05) 0%, rgba(12, 15, 23, 0.95) 100%); border: 1.5px solid var(--border-soft); position: relative; overflow: hidden; border-radius: var(--radius-lg);">
+                <div
+                  style="position: absolute; top: -50px; right: -50px; width: 160px; height: 160px; background: var(--grad-main); opacity: 0.08; filter: blur(40px); border-radius: 50%;">
+                </div>
+
+                <!-- HEADER KARTY -->
+                <div
+                  style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 18px;">
+                  <div
+                    style="width: 56px; height: 56px; border-radius: 50%; background: var(--grad-main); display: grid; place-items: center; font-size: 24px; font-weight: 900; color: #0c0f17; text-transform: uppercase;"
+                    id="trainingCardAvatar">G</div>
+                  <div>
+                    <h2
+                      style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; margin: 0; color: var(--text);"
+                      id="trainingCardNick">—</h2>
+                    <span
+                      style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cyan); font-weight: 700;"
+                      id="trainingCardRole">Rola: —</span>
+                  </div>
+                </div>
+
+                <!-- ANALITYKA W KARCIE -->
+                <div style="margin-bottom: 24px;">
+                  <h4
+                    style="font-family: 'Space Grotesk'; font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: var(--danger); text-transform: uppercase; letter-spacing: 0.05em;">
+                    💀 5 Najczęstszych Przyczyn Śmierci</h4>
+                  <ul id="trainingTopDeaths"
+                    style="margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
+                    <li>Wczytywanie logów...</li>
+                  </ul>
+                </div>
+
+                <div style="margin-bottom: 0;">
+                  <h4
+                    style="font-family: 'Space Grotesk'; font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em;">
+                    ⚠️ 5 Najczęstszych Błędów</h4>
+                  <ul id="trainingTopFailures"
+                    style="margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
+                    <li>Wczytywanie logów...</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- PANEL UMIEJĘTNOŚCI (ZABLOKOWANY KŁÓDKĄ) -->
+              <div class="matches-card" style="padding: 28px; margin: 0; position: relative;">
+
+                <!-- LOCK OVERLAY -->
+                <div
+                  style="position: absolute; inset: 0; background: rgba(12, 15, 23, 0.82); backdrop-filter: blur(5px); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; border-radius: var(--radius-lg);">
+                  <div
+                    style="width: 64px; height: 64px; background: rgba(245, 197, 86, 0.1); border: 1.5px solid var(--orange); border-radius: 50%; display: grid; place-items: center; font-size: 26px; margin-bottom: 16px; box-shadow: 0 0 20px rgba(245, 197, 86, 0.15);">
+                    🔒</div>
+                  <h3
+                    style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
+                    Profil Umiejętności Zablokowany</h3>
+                  <p style="font-size: 12.5px; color: var(--text-dim); max-width: 320px; line-height: 1.5; margin: 0;">
+                    Wykonaj testy weryfikacyjne w trybie kreatywnym Fortnite, aby odblokować oceny umiejętności i
+                    wygenerować spersonalizowany plan treningowy.</p>
+                </div>
+
+                <h3
+                  style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: var(--text); display:flex; align-items:center; gap:8px;">
+                  📊 Profil Umiejętności Gracza</h3>
+
+                <!-- SKILL GRID PLACEHOLDERS -->
+                <div style="display: flex; flex-direction: column; gap: 12px; filter: blur(1.5px); opacity: 0.4;">
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+                    <span>🔨 Budowanie</span>
+                    <span style="font-weight: 700;">—</span>
+                  </div>
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+                    <span>📐 Edytowanie</span>
+                    <span style="font-weight: 700;">—</span>
+                  </div>
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+                    <span>🎯 AIM</span>
+                    <span style="font-weight: 700;">—</span>
+                  </div>
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+                    <span>🌀 Late game</span>
+                    <span style="font-weight: 700;">—</span>
+                  </div>
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+                    <span>🪂 Offspawn</span>
+                    <span style="font-weight: 700;">—</span>
+                  </div>
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+                    <span>⚔️ Midgame</span>
+                    <span style="font-weight: 700;">—</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB CONTENT: PLAN TRENINGOWY -->
+          <div id="trainingTabContentPlan" class="training-subtab-panel" style="display: none;">
+            <div class="tournaments-page-header" style="margin-bottom: 16px;">
+              <h2 class="section-title" style="margin-bottom: 8px;"><span class="ic">🏋️</span> Spersonalizowany Plan
+                Treningowy</h2>
+              <p style="color: var(--text-dim); font-size: 13px; margin: 0;">Rekomendowane mapy kreatywne, scenariusze
+                Aim Trainer i rutyny meczowe dopasowane do Twoich słabości.</p>
+            </div>
+            <div class="matches-card"
+              style="padding: 40px; text-align: center; border: 1px dashed var(--border-soft); background: transparent;">
+              <div style="font-size: 40px; margin-bottom: 16px;">🔒</div>
+              <h3
+                style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
+                Plan treningowy jest niedostępny</h3>
+              <p style="color: var(--text-dim); font-size: 13px; max-width: 440px; margin: 0 auto; line-height: 1.6;">
+                Dziennik treningów zostanie wygenerowany automatycznie, gdy system oceni Twoje podstawowe umiejętności
+                na karcie weryfikacji profilu.</p>
             </div>
           </div>
         </div>
@@ -3231,7 +3383,8 @@
                   <div class="admin-collapsible-head" onclick="toggleAdminCollapse('tipManagerBody')">
                     <h3
                       style="font-family:'Space Grotesk'; font-size:16px; margin:0; font-weight:700; color: var(--cyan);">
-                      <span class="ic">💡</span> Menedżer Porad taktycznych</h3>
+                      <span class="ic">💡</span> Menedżer Porad taktycznych
+                    </h3>
                     <span id="tipManagerBody_indicator">▼</span>
                   </div>
                   <div id="tipManagerBody" class="admin-collapsible-body">
@@ -3298,7 +3451,8 @@
                     <div class="admin-collapsible-head" onclick="toggleAdminCollapse('deathManagerBody')">
                       <h3
                         style="font-family:'Space Grotesk'; font-size:16px; margin:0; font-weight:700; color: var(--danger);">
-                        <span class="ic">💀</span> Menedżer Powodów Śmierci</h3>
+                        <span class="ic">💀</span> Menedżer Powodów Śmierci
+                      </h3>
                       <span id="deathManagerBody_indicator">▲</span>
                     </div>
                     <div id="deathManagerBody" class="admin-collapsible-body collapsed">
@@ -3329,7 +3483,8 @@
                     <div class="admin-collapsible-head" onclick="toggleAdminCollapse('failureManagerBody')">
                       <h3
                         style="font-family:'Space Grotesk'; font-size:16px; margin:0; font-weight:700; color: var(--purple);">
-                        <span class="ic">⚙️</span> Menedżer Błędów (Co zawiodło)</h3>
+                        <span class="ic">⚙️</span> Menedżer Błędów (Co zawiodło)
+                      </h3>
                       <span id="failureManagerBody_indicator">▲</span>
                     </div>
                     <div id="failureManagerBody" class="admin-collapsible-body collapsed">
@@ -3382,13 +3537,14 @@
 
   <!-- ================= ADD TOURNAMENT MODAL ================= -->
   <div id="addTournamentModalOverlay" class="modal-overlay hidden" style="z-index:100;">
-    <div class="modal-card" style="max-width: 580px; max-height: 90vh; overflow-y: auto;">
+    <div class="modal-card" style="max-width: 840px; max-height: 90vh; overflow-y: auto; width: 100%;">
       <button class="modal-close" id="addTournamentModalClose" type="button">✕</button>
-      <h2 class="form-title" style="margin-bottom: 12px;">Dodaj Turniej do Dziennika</h2>
+      <h2 class="form-title" id="tournamentModalTitle" style="margin-bottom: 12px;">Dodaj Turniej do Dziennika</h2>
       <p class="form-sub" style="margin-bottom: 20px;">Wprowadź statystyki z rozegranego turnieju oraz opcjonalnie
-        podział na poszczególne gry.</p>
+        podział na poszczególne gry ze szczegółowymi informacjami.</p>
 
       <form id="addTournamentLogForm">
+        <input type="hidden" id="editTournamentLogId" value="" />
         <!-- Szukanie turnieju z kalendarza -->
         <div class="field">
           <label for="logTournamentSelect">Wybierz Turniej z Kalendarza (lub wybierz Inny)</label>
@@ -3404,7 +3560,7 @@
             <label for="logTournamentName">Nazwa Turnieju</label>
             <input type="text" id="logTournamentName" placeholder="np. Solo Victory Cash Cup Session 1" required />
           </div>
-          <div class="settings-grid" style="margin-bottom: 12px;">
+          <div class="settings-grid" style="margin-bottom: 12px; grid-template-columns: 1fr 1fr;">
             <div class="field">
               <label for="logTournamentMode">Tryb</label>
               <select id="logTournamentMode">
@@ -3424,7 +3580,7 @@
           </div>
         </div>
 
-        <div class="settings-grid" style="margin-bottom: 12px;">
+        <div class="settings-grid" style="margin-bottom: 20px; grid-template-columns: 1fr 1fr;">
           <div class="field">
             <label for="logTournamentPoints">Zdobyte punkty</label>
             <input type="number" id="logTournamentPoints" placeholder="np. 142" required min="0" />
@@ -3437,14 +3593,14 @@
 
         <!-- Dodawanie gier -->
         <div class="admin-section-label"
-          style="margin: 20px 0 8px; display: flex; justify-content: space-between; align-items: center;">
-          <span>Rozegrane Gry (Mecze)</span>
-          <button type="button" class="btn-ghost" id="btnAddGameRow"
-            style="padding: 4px 10px; font-size: 11px; font-weight: 700; width: auto; margin-top: 0;">+ Dodaj
+          style="margin: 20px 0 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-soft); padding-bottom: 8px;">
+          <span style="font-family: 'Space Grotesk'; font-size: 16px; color: var(--text);">Rozegrane Gry (Mecze)</span>
+          <button type="button" class="btn-primary" id="btnAddGameRow"
+            style="padding: 6px 14px; font-size: 12px; font-weight: 700; width: auto; margin-top: 0;">+ Dodaj
             grę</button>
         </div>
 
-        <div id="gamesInputsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+        <div id="gamesInputsContainer" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
           <!-- dynamiczne wiersze gier -->
         </div>
 
@@ -3838,6 +3994,7 @@
         if (target === 'tournaments') loadTournaments();
         if (target === 'admin') loadAdminNavLinkState();
         if (target === 'matches') loadMatchesPage();
+        if (target === 'training') loadTrainingPage();
       });
     });
 
@@ -4276,6 +4433,7 @@
       document.getElementById('setMode').value = data.mode || '';
       document.getElementById('setEpicId').value = data.epicId || '';
       document.getElementById('setInput').value = data.input || '';
+      document.getElementById('setRole').value = data.role || '';
     }
 
     settingsForm.addEventListener('submit', async (e) => {
@@ -4292,6 +4450,7 @@
       const mode = document.getElementById('setMode').value;
       const epicId = document.getElementById('setEpicId').value.trim();
       const input = document.getElementById('setInput').value;
+      const role = document.getElementById('setRole').value;
 
       if (!isValidNick(nick)) {
         settingsMsg.textContent = 'Nick musi mieć 3–20 znaków: litery, cyfry lub podkreślenie.';
@@ -4317,7 +4476,7 @@
         }
 
         await withTimeout(setDoc(doc(db, 'users', user.uid), {
-          nick, region, platform, mode, epicId, input,
+          nick, region, platform, mode, epicId, input, role,
           updatedAt: new Date().toISOString()
         }, { merge: true }));
 
@@ -5380,7 +5539,7 @@
     };
 
     const STATIC_FAILURES = [
-      "Aim", "Edycja", "Budowanie", "Komunikacja", "Pozycjonowanie", "Decyzje", "Gierka psychiczna (Tilt)", "FPS / Ping"
+      "budowanie", "edytowanie", "AIM", "Box fight", "Normal Fight", "Pozycionowanie", "Komunikacja"
     ];
 
     async function getFailuresFromDbOrLocal() {
@@ -5562,6 +5721,98 @@
       renderTournamentAnalysis();
       populateDeathCausesDatalist();
     }
+
+    function loadTrainingPage() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const cardNick = document.getElementById('trainingCardNick');
+      const cardRole = document.getElementById('trainingCardRole');
+      const cardAvatar = document.getElementById('trainingCardAvatar');
+
+      const displayNick = user.displayName || 'Gracz';
+      if (cardNick) cardNick.textContent = displayNick;
+      if (cardAvatar) cardAvatar.textContent = displayNick.charAt(0).toUpperCase();
+
+      const storedRole = document.getElementById('setRole').value;
+      if (cardRole) {
+        cardRole.textContent = storedRole ? `Rola: ${storedRole}` : 'Rola: Nieustawiona w ustawieniach';
+      }
+
+      // Aggregate deaths and failures from logs
+      const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
+      const deathCauses = {};
+      const failures = {};
+
+      logs.forEach(l => {
+        if (Array.isArray(l.games)) {
+          l.games.forEach(g => {
+            if (g.cause) {
+              const c = g.cause.toLowerCase().trim();
+              if (c !== 'wszystko dobrze') {
+                deathCauses[c] = (deathCauses[c] || 0) + 1;
+              }
+            }
+            if (Array.isArray(g.failures)) {
+              g.failures.forEach(f => {
+                const normF = f.trim();
+                if (normF) failures[normF] = (failures[normF] || 0) + 1;
+              });
+            }
+          });
+        }
+      });
+
+      const topDeaths = Object.entries(deathCauses)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      const topFailures = Object.entries(failures)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      const trainingTopDeathsEl = document.getElementById('trainingTopDeaths');
+      const trainingTopFailuresEl = document.getElementById('trainingTopFailures');
+
+      if (trainingTopDeathsEl) {
+        if (topDeaths.length > 0) {
+          trainingTopDeathsEl.innerHTML = topDeaths.map(([cause, count]) => `<li><b>${escapeHtml(cause)}</b> (${count}x)</li>`).join('');
+        } else {
+          trainingTopDeathsEl.innerHTML = '<li>Brak wystarczającej ilości danych o zgonach. Dodaj logi turniejowe z grami.</li>';
+        }
+      }
+
+      if (trainingTopFailuresEl) {
+        if (topFailures.length > 0) {
+          trainingTopFailuresEl.innerHTML = topFailures.map(([fail, count]) => `<li><b>${escapeHtml(fail)}</b> (${count}x)</li>`).join('');
+        } else {
+          trainingTopFailuresEl.innerHTML = '<li>Brak zarejestrowanych błędów. Uzupełnij błędy w grach w logach.</li>';
+        }
+      }
+    }
+
+    // Initialize training switcher listeners
+    setTimeout(() => {
+      const btnTrainingInfo = document.getElementById('btnTrainingTabInfo');
+      const btnTrainingPlan = document.getElementById('btnTrainingTabPlan');
+      const contentTrainingInfo = document.getElementById('trainingTabContentInfo');
+      const contentTrainingPlan = document.getElementById('trainingTabContentPlan');
+
+      if (btnTrainingInfo && btnTrainingPlan) {
+        btnTrainingInfo.addEventListener('click', () => {
+          btnTrainingInfo.classList.add('active');
+          btnTrainingPlan.classList.remove('active');
+          if (contentTrainingInfo) contentTrainingInfo.style.display = 'block';
+          if (contentTrainingPlan) contentTrainingPlan.style.display = 'none';
+        });
+        btnTrainingPlan.addEventListener('click', () => {
+          btnTrainingPlan.classList.add('active');
+          btnTrainingInfo.classList.remove('active');
+          if (contentTrainingInfo) contentTrainingInfo.style.display = 'none';
+          if (contentTrainingPlan) contentTrainingPlan.style.display = 'block';
+        });
+      }
+    }, 100);
 
     // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
     async function enterApp(user) {
