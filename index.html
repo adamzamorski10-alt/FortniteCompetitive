@@ -4711,53 +4711,6 @@
         });
       }
 
-      // Test widget: Surge calc
-      const testSurgeInp = document.getElementById('testSurgePlayers');
-      const testSurgeBtn = document.getElementById('btnTestSurgeCalc');
-      const testSurgeRes = document.getElementById('testSurgeResult');
-      if (testSurgeBtn && testSurgeInp && testSurgeRes) {
-        testSurgeBtn.addEventListener('click', () => {
-          const players = parseInt(testSurgeInp.value || 0);
-          if (players > 70) {
-            testSurgeRes.innerHTML = '🔴 <b>Wysoki Surge (Limit 3 strefy):</b> Potrzebujesz min. <b>+450 DMG</b>. Szukaj tagów z AR/Snajpy!';
-          } else if (players >= 50) {
-            testSurgeRes.innerHTML = '🟡 <b>Średni Surge (Limit 5 strefy):</b> Potrzebujesz ok. <b>+200 DMG</b>. Graj na deadside strefy.';
-          } else {
-            testSurgeRes.innerHTML = '🟢 <b>Bezpiecznie:</b> Brak progu Storm Surge na serwerze. Skup się w pełni na rotacji.';
-          }
-        });
-      }
-
-      // Test widget: Warmup timer
-      const timerBtn = document.getElementById('btnTestWarmupStart');
-      const timerText = document.getElementById('testWarmupTimer');
-      let warmupInterval = null;
-      if (timerBtn && timerText) {
-        timerBtn.addEventListener('click', () => {
-          if (warmupInterval) {
-            clearInterval(warmupInterval);
-            warmupInterval = null;
-            timerBtn.textContent = 'Start Warmup';
-            timerText.textContent = '02:00';
-            return;
-          }
-          let timeLeft = 120;
-          timerBtn.textContent = 'Stop';
-          warmupInterval = setInterval(() => {
-            timeLeft--;
-            const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-            const secs = String(timeLeft % 60).padStart(2, '0');
-            timerText.textContent = `${mins}:${secs}`;
-            if (timeLeft <= 0) {
-              clearInterval(warmupInterval);
-              warmupInterval = null;
-              timerBtn.textContent = 'Start Warmup';
-              timerText.textContent = '02:00';
-              alert('Rozgrzewka zakończona! Powodzenia w turnieju!');
-            }
-          }, 1000);
-        });
-      }
 
       // Game row addition inside modal
       const btnAddGameRow = document.getElementById('btnAddGameRow');
