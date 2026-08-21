@@ -85,27 +85,73 @@
       display: none !important;
     }
 
-    /* ---------- Native View Transitions ---------- */
+    /* ---------- Tournament subtabs ---------- */
+    .tournament-subtabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      margin: 4px 0 22px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+    }
+
+    .tournament-subtab {
+      min-height: 38px;
+      padding: 9px 15px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tournament-tab-panel {
+      width: 100%;
+    }
+
+    /* View Transition: jedna kontrolowana warstwa zamiast nakładania pełnych ekranów. */
     @supports (view-transition-name: none) {
       .main {
         view-transition-name: app-main;
       }
 
+      ::view-transition-group(app-main) {
+        animation-duration: 380ms;
+        animation-timing-function: cubic-bezier(.22,.61,.36,1);
+      }
+
       ::view-transition-old(app-main),
       ::view-transition-new(app-main) {
-        animation-duration: 220ms;
-        animation-timing-function: ease;
+        backface-visibility: hidden;
+        animation-timing-function: cubic-bezier(.22,.61,.36,1);
+        animation-fill-mode: both;
       }
 
+      /* Najpierw stary ekran znika, dopiero potem pojawia się nowy.
+         Dzięki temu pełne ekrany nie „walczą” ze sobą podczas przejścia. */
       ::view-transition-old(app-main) {
-        animation-name: app-main-out;
+        animation: app-main-out 170ms cubic-bezier(.22,.61,.36,1) both;
       }
 
       ::view-transition-new(app-main) {
-        animation-name: app-main-in;
+        animation: app-main-in 210ms cubic-bezier(.22,.61,.36,1) 170ms both;
       }
     }
 
+    @media (max-width: 700px) {
+      .tournament-subtabs {
+        display: flex;
+        width: 100%;
+      }
+      .tournament-subtab {
+        flex: 1;
+        padding-inline: 8px;
+        font-size: 11.5px;
+      }
+    }
+
+    /* ---------- Native View Transitions ---------- */
     @keyframes app-main-out {
       to { opacity: 0; transform: translateY(4px); }
     }
@@ -2991,6 +3037,12 @@
                 bazą</span></div>
           </div>
 
+          <div class="tournament-subtabs" id="tournamentSubtabs" role="tablist" aria-label="Sekcje turniejów">
+            <button type="button" class="tab-btn active tournament-subtab" id="btnTournamentTabCalendar" role="tab" aria-selected="true" aria-controls="tournamentTabContentCalendar">📅 Kalendarz turniejów</button>
+            <button type="button" class="tab-btn tournament-subtab" id="btnTournamentTabDiary" role="tab" aria-selected="false" aria-controls="tournamentTabContentDiary">📓 Dziennik moich turniejów</button>
+          </div>
+
+          <div id="tournamentTabContentCalendar" class="tournament-tab-panel" role="tabpanel" aria-labelledby="btnTournamentTabCalendar">
           <div class="tournament-stats">
             <div class="tour-stat">
               <div class="label">Wszystkie</div>
@@ -3046,8 +3098,10 @@
             <div class="tour-load"><span class="mini-spinner"></span>&nbsp; Wczytywanie harmonogramu…</div>
           </div>
 
-          <!-- MOJE TURNIEJE: przeniesione bezpośrednio do sekcji Turnieje -->
-          <section id="myTournamentsSection" class="my-tournaments-section">
+          </div>
+
+          <!-- OSOBNA ZAKŁADKA: DZIENNIK MOICH TURNIEJÓW -->
+          <section id="tournamentTabContentDiary" class="my-tournaments-section tournament-tab-panel" role="tabpanel" aria-labelledby="btnTournamentTabDiary" style="display:none;">
 
             <div class="tournaments-page-header"
               style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -4219,40 +4273,66 @@
     });
 
     // ---------- Page navigation + View Transitions API ----------
-    async function switchPage(target, activeLink) {
+    let isPageTransitioning = false;
+
+    function updatePageDOM(target, activeLink) {
       const nextPage = document.getElementById('page-' + target);
-      if (!nextPage) return;
+      if (!nextPage) return false;
 
-      const updatePage = async () => {
-        navLinks.forEach(l => l.classList.remove('active'));
-        activeLink.classList.add('active');
+      navLinks.forEach(l => l.classList.remove('active'));
+      if (activeLink) activeLink.classList.add('active');
 
-        pages.forEach(p => p.classList.add('hidden'));
-        nextPage.classList.remove('hidden');
+      pages.forEach(p => p.classList.add('hidden'));
+      nextPage.classList.remove('hidden');
+      return true;
+    }
 
-        if (target === 'tournaments') await loadTournaments();
-        if (target === 'admin') loadAdminNavLinkState();
-        if (target === 'matches') loadMatchesPage();
-        if (target === 'training') loadTrainingPage();
-
-      };
-
-      if (document.startViewTransition) {
-        try {
-          const transition = document.startViewTransition(updatePage);
-          await transition.finished;
-          return;
-        } catch (err) {
-          console.warn('FN Coach / View Transitions fallback:', err);
-        }
+    async function afterPageOpened(target) {
+      // Dane ładujemy dopiero po przełączeniu widoku — dzięki temu View Transition
+      // nie czeka na Firestore i nie tworzy „zawieszonego” starego ekranu.
+      if (target === 'tournaments') {
+        await loadTournaments();
+        setupTournamentTabs();
+        animateStaggeredPageContent('tournaments');
       }
+      if (target === 'admin') loadAdminNavLinkState();
+      if (target === 'matches') loadMatchesPage();
+      if (target === 'training') loadTrainingPage();
+    }
 
-      // Fallback dla przeglądarek bez View Transitions API.
-      await updatePage();
+    async function switchPage(target, activeLink) {
+      if (isPageTransitioning) return;
+      const nextPage = document.getElementById('page-' + target);
+      if (!nextPage || !nextPage.classList.contains('hidden')) return;
+
+      isPageTransitioning = true;
+
+      const update = () => updatePageDOM(target, activeLink);
+
+      try {
+        if (document.startViewTransition) {
+          const transition = document.startViewTransition(update);
+          await transition.finished;
+        } else {
+          // Fallback: dokładnie jeden ekran jest widoczny w danym momencie.
+          update();
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+
+        await afterPageOpened(target);
+      } catch (err) {
+        console.warn('FN Coach / Page transition:', err);
+        // Bezpieczny fallback nawet jeśli View Transition zostanie przerwany.
+        update();
+        await afterPageOpened(target);
+      } finally {
+        isPageTransitioning = false;
+      }
     }
 
     navLinks.forEach(link => {
-      link.addEventListener('click', () => {
+      link.addEventListener('click', event => {
+        event.preventDefault();
         if (link.classList.contains('disabled')) return;
         switchPage(link.dataset.page, link);
       });
@@ -5983,6 +6063,41 @@
       saved: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json'
     };
 
+    let tournamentTabsInitialized = false;
+
+    function setupTournamentTabs() {
+      const calendarBtn = document.getElementById('btnTournamentTabCalendar');
+      const diaryBtn = document.getElementById('btnTournamentTabDiary');
+      const calendarPanel = document.getElementById('tournamentTabContentCalendar');
+      const diaryPanel = document.getElementById('tournamentTabContentDiary');
+      if (!calendarBtn || !diaryBtn || !calendarPanel || !diaryPanel) return;
+      if (tournamentTabsInitialized) return;
+
+      const openTournamentTab = (tab) => {
+        const isDiary = tab === 'diary';
+        calendarBtn.classList.toggle('active', !isDiary);
+        diaryBtn.classList.toggle('active', isDiary);
+        calendarBtn.setAttribute('aria-selected', String(!isDiary));
+        diaryBtn.setAttribute('aria-selected', String(isDiary));
+
+        if (isDiary) {
+          calendarPanel.style.display = 'none';
+          diaryPanel.style.display = 'block';
+          renderLoggedTournaments();
+          renderTournamentAnalysis();
+          requestAnimationFrame(() => animateStaggeredPageContent('tournament-diary'));
+        } else {
+          diaryPanel.style.display = 'none';
+          calendarPanel.style.display = 'block';
+          requestAnimationFrame(() => animateStaggeredPageContent('tournaments'));
+        }
+      };
+
+      calendarBtn.addEventListener('click', () => openTournamentTab('calendar'));
+      diaryBtn.addEventListener('click', () => openTournamentTab('diary'));
+      tournamentTabsInitialized = true;
+    }
+
     const lottieInstances = new Map();
 
     function initLottieTipAnimations() {
@@ -6012,8 +6127,10 @@
       if (!window.gsap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const selectors = target === 'tournaments'
-        ? '.tour-stat, #tournamentsList .tour-card, #loggedTournamentsList > *'
-        : '';
+        ? '.tour-stat, #tournamentsList .tour-card'
+        : target === 'tournament-diary'
+          ? '#tournamentTabContentDiary .analysis-grid > *, #loggedTournamentsList > *'
+          : '';
 
       if (!selectors) return;
 
@@ -7309,6 +7426,7 @@
 
       appScreen.classList.remove('hidden');
       loadSettings(user, userData);
+      setupTournamentTabs();
       loadTournaments();
       setupMatchesPage();
       loadMatchesPage();
