@@ -85,125 +85,6 @@
       display: none !important;
     }
 
-    /* ---------- Tournament subtabs ---------- */
-    .tournament-subtabs {
-      display: inline-flex;
-      gap: 4px;
-      padding: 4px;
-      margin: 4px 0 22px;
-      background: rgba(255,255,255,.025);
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
-    }
-
-    .tournament-subtab {
-      min-height: 38px;
-      padding: 9px 15px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .tournament-tab-panel {
-      width: 100%;
-    }
-
-    /* View Transition: jedna kontrolowana warstwa zamiast nakładania pełnych ekranów. */
-    @supports (view-transition-name: none) {
-      .main {
-        view-transition-name: app-main;
-      }
-
-      ::view-transition-group(app-main) {
-        animation-duration: 380ms;
-        animation-timing-function: cubic-bezier(.22,.61,.36,1);
-      }
-
-      ::view-transition-old(app-main),
-      ::view-transition-new(app-main) {
-        backface-visibility: hidden;
-        animation-timing-function: cubic-bezier(.22,.61,.36,1);
-        animation-fill-mode: both;
-      }
-
-      /* Najpierw stary ekran znika, dopiero potem pojawia się nowy.
-         Dzięki temu pełne ekrany nie „walczą” ze sobą podczas przejścia. */
-      ::view-transition-old(app-main) {
-        animation: app-main-out 170ms cubic-bezier(.22,.61,.36,1) both;
-      }
-
-      ::view-transition-new(app-main) {
-        animation: app-main-in 210ms cubic-bezier(.22,.61,.36,1) 170ms both;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .tournament-subtabs {
-        display: flex;
-        width: 100%;
-      }
-      .tournament-subtab {
-        flex: 1;
-        padding-inline: 8px;
-        font-size: 11.5px;
-      }
-    }
-
-    /* ---------- Native View Transitions ---------- */
-    @keyframes app-main-out {
-      to { opacity: 0; transform: translateY(4px); }
-    }
-
-    @keyframes app-main-in {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ---------- Lottie tip category icons ---------- */
-    .lottie-tip-icon {
-      width: 54px;
-      height: 54px;
-      margin-bottom: 10px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--border-soft);
-    }
-
-    .lottie-tip-icon svg,
-    .lottie-tip-icon canvas {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-    }
-
-    /* ---------- Moved "Moje Turnieje" section ---------- */
-    .my-tournaments-section {
-      margin-top: 34px;
-      padding-top: 28px;
-      border-top: 1px solid var(--border-soft);
-    }
-
-    .my-tournaments-section .tournaments-page-header {
-      margin-bottom: 16px;
-    }
-
-    .my-tournaments-section .matches-card,
-    .my-tournaments-section #loggedTournamentsList {
-      position: relative;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      ::view-transition-old(app-main),
-      ::view-transition-new(app-main) {
-        animation: none !important;
-      }
-    }
-
     /* ---------- Storm ring signature element ---------- */
     .storm-ring {
       position: relative;
@@ -2911,9 +2792,17 @@
                 & TOURNAMENTS</div>
               <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 34px; margin: 0 0 4px; font-weight: 700;">
                 Asystent Meczu</h1>
-              <p style="color: var(--text-dim); margin: 0; font-size: 13.5px;">Przeglądaj porady taktyczne w podziale na etapy gry i rozwijaj swoją decyzję meczową.</p>
+              <p style="color: var(--text-dim); margin: 0; font-size: 13.5px;">Przeglądaj porady taktyczne w podziale na
+                etapy gry oraz rejestruj swoje występy w turniejach.</p>
             </div>
 
+            <div class="matches-subtabs"
+              style="display: flex; gap: 6px; padding: 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: var(--radius-md);">
+              <button type="button" class="tab-btn active" id="btnMatchTabTips"
+                style="padding: 8px 18px; font-size: 13px;">💡 Porady</button>
+              <button type="button" class="tab-btn" id="btnMatchTabTournaments"
+                style="padding: 8px 18px; font-size: 13px;">🏆 Moje Turnieje</button>
+            </div>
           </div>
 
           <!-- SUBTAB 1: PORADY -->
@@ -2921,7 +2810,7 @@
             <!-- Grid z Kategoriami Porad -->
             <div class="tips-categories-grid">
               <div class="category-card" data-category="Offspawn">
-                <div class="lottie-tip-icon" data-lottie-animation="offspawn" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">🏠</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--cyan);">
@@ -2931,7 +2820,7 @@
                 </div>
               </div>
               <div class="category-card" data-category="Mid-game">
-                <div class="lottie-tip-icon" data-lottie-animation="midgame" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">🗺️</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--indigo);">
@@ -2941,7 +2830,7 @@
                 </div>
               </div>
               <div class="category-card" data-category="End-game">
-                <div class="lottie-tip-icon" data-lottie-animation="endgame" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">👑</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--purple);">
@@ -2951,7 +2840,7 @@
                 </div>
               </div>
               <div class="category-card" data-category="Fight">
-                <div class="lottie-tip-icon" data-lottie-animation="fight" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">⚔️</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--danger);">
@@ -2961,7 +2850,7 @@
                 </div>
               </div>
               <div class="category-card" data-category="Rotate">
-                <div class="lottie-tip-icon" data-lottie-animation="rotate" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">🔄</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: #ffe6a8;">
@@ -2971,7 +2860,7 @@
                 </div>
               </div>
               <div class="category-card" data-category="Surge">
-                <div class="lottie-tip-icon" data-lottie-animation="surge" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">⚡</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--success);">
@@ -2983,7 +2872,7 @@
 
               <!-- MOJE PORADY SPECIAL CARD -->
               <div class="category-card" id="btnMySavedTipsCard">
-                <div class="lottie-tip-icon" data-lottie-animation="saved" aria-hidden="true"></div>
+                <div style="font-size: 28px; margin-bottom: 12px;">⭐</div>
                 <div>
                   <h3
                     style="font-family: 'Space Grotesk'; font-size: 18px; margin: 0 0 6px; font-weight: 700; color: var(--text);">
@@ -3022,87 +2911,8 @@
 
           </div>
 
-
-        </div>
-
-        <div class="page hidden tournaments-page" id="page-tournaments">
-          <div class="tournaments-head">
-            <div>
-              <div class="eyebrow">COMPETITIVE CALENDAR</div>
-              <h1>Turnieje</h1>
-              <p>Pełny harmonogram turniejów z kalendarza FN Tracker. Sprawdzaj godziny, tryb, format, regiony, rundy i
-                przechodź bezpośrednio do leaderboardów.</p>
-            </div>
-            <div class="tournament-sync"><span class="sync-dot"></span><span id="tournamentSyncText">Synchronizacja z
-                bazą</span></div>
-          </div>
-
-          <div class="tournament-subtabs" id="tournamentSubtabs" role="tablist" aria-label="Sekcje turniejów">
-            <button type="button" class="tab-btn active tournament-subtab" id="btnTournamentTabCalendar" role="tab" aria-selected="true" aria-controls="tournamentTabContentCalendar">📅 Kalendarz turniejów</button>
-            <button type="button" class="tab-btn tournament-subtab" id="btnTournamentTabDiary" role="tab" aria-selected="false" aria-controls="tournamentTabContentDiary">📓 Dziennik moich turniejów</button>
-          </div>
-
-          <div id="tournamentTabContentCalendar" class="tournament-tab-panel" role="tabpanel" aria-labelledby="btnTournamentTabCalendar">
-          <div class="tournament-stats">
-            <div class="tour-stat">
-              <div class="label">Wszystkie</div>
-              <div class="value" id="tourStatAll">—</div>
-              <div class="sub">zaimportowane sesje</div>
-            </div>
-            <div class="tour-stat">
-              <div class="label">Najbliższy</div>
-              <div class="value" id="tourStatNext">—</div>
-              <div class="sub" id="tourStatNextSub">brak danych</div>
-            </div>
-            <div class="tour-stat">
-              <div class="label">Dzisiaj</div>
-              <div class="value" id="tourStatToday">—</div>
-              <div class="sub">sesji turniejowych</div>
-            </div>
-            <div class="tour-stat">
-              <div class="label">Tryby</div>
-              <div class="value" id="tourStatModes">—</div>
-              <div class="sub">różnych trybów</div>
-            </div>
-          </div>
-
-          <div class="tour-filters">
-            <div class="tour-search-wrap"><span>⌕</span><input class="tour-filter tour-search" id="tourSearch"
-                placeholder="Szukaj turnieju, typu, rundy…" autocomplete="off"></div>
-            <select class="tour-filter" id="tourDateFilter">
-              <option value="upcoming">Nadchodzące</option>
-              <option value="all">Wszystkie</option>
-              <option value="today">Dzisiaj</option>
-              <option value="week">Najbliższe 7 dni</option>
-            </select>
-            <select class="tour-filter" id="tourTypeFilter">
-              <option value="">Wszystkie typy</option>
-            </select>
-            <select class="tour-filter" id="tourModeFilter">
-              <option value="">Wszystkie tryby</option>
-            </select>
-            <select class="tour-filter" id="tourRegionFilter">
-              <option value="">Wszystkie regiony</option>
-              <option>EU</option>
-              <option>NAE</option>
-              <option>NAW</option>
-              <option>OCE</option>
-              <option>BR</option>
-              <option>ASIA</option>
-              <option>ME</option>
-              <option>NAC</option>
-            </select>
-          </div>
-
-          <div id="tournamentsList">
-            <div class="tour-load"><span class="mini-spinner"></span>&nbsp; Wczytywanie harmonogramu…</div>
-          </div>
-
-          </div>
-
-          <!-- OSOBNA ZAKŁADKA: DZIENNIK MOICH TURNIEJÓW -->
-          <section id="tournamentTabContentDiary" class="my-tournaments-section tournament-tab-panel" role="tabpanel" aria-labelledby="btnTournamentTabDiary" style="display:none;">
-
+          <!-- SUBTAB 2: MOJE TURNIEJE -->
+          <div id="matchTabContentTournaments" class="match-subtab-panel" style="display: none;">
             <div class="tournaments-page-header"
               style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
               <h2 class="section-title" style="margin-bottom: 0;"><span class="ic">🏆</span> Dziennik Moich Turniejów
@@ -3197,9 +3007,75 @@
                 Kliknij przycisk „Dodaj Turniej” u góry po prawej stronie, aby zapisać swoje wyniki i rozegrane mecze.
               </div>
             </div>
-          
-          </section>
+          </div>
+        </div>
 
+        <div class="page hidden tournaments-page" id="page-tournaments">
+          <div class="tournaments-head">
+            <div>
+              <div class="eyebrow">COMPETITIVE CALENDAR</div>
+              <h1>Turnieje</h1>
+              <p>Pełny harmonogram turniejów z kalendarza FN Tracker. Sprawdzaj godziny, tryb, format, regiony, rundy i
+                przechodź bezpośrednio do leaderboardów.</p>
+            </div>
+            <div class="tournament-sync"><span class="sync-dot"></span><span id="tournamentSyncText">Synchronizacja z
+                bazą</span></div>
+          </div>
+
+          <div class="tournament-stats">
+            <div class="tour-stat">
+              <div class="label">Wszystkie</div>
+              <div class="value" id="tourStatAll">—</div>
+              <div class="sub">zaimportowane sesje</div>
+            </div>
+            <div class="tour-stat">
+              <div class="label">Najbliższy</div>
+              <div class="value" id="tourStatNext">—</div>
+              <div class="sub" id="tourStatNextSub">brak danych</div>
+            </div>
+            <div class="tour-stat">
+              <div class="label">Dzisiaj</div>
+              <div class="value" id="tourStatToday">—</div>
+              <div class="sub">sesji turniejowych</div>
+            </div>
+            <div class="tour-stat">
+              <div class="label">Tryby</div>
+              <div class="value" id="tourStatModes">—</div>
+              <div class="sub">różnych trybów</div>
+            </div>
+          </div>
+
+          <div class="tour-filters">
+            <div class="tour-search-wrap"><span>⌕</span><input class="tour-filter tour-search" id="tourSearch"
+                placeholder="Szukaj turnieju, typu, rundy…" autocomplete="off"></div>
+            <select class="tour-filter" id="tourDateFilter">
+              <option value="upcoming">Nadchodzące</option>
+              <option value="all">Wszystkie</option>
+              <option value="today">Dzisiaj</option>
+              <option value="week">Najbliższe 7 dni</option>
+            </select>
+            <select class="tour-filter" id="tourTypeFilter">
+              <option value="">Wszystkie typy</option>
+            </select>
+            <select class="tour-filter" id="tourModeFilter">
+              <option value="">Wszystkie tryby</option>
+            </select>
+            <select class="tour-filter" id="tourRegionFilter">
+              <option value="">Wszystkie regiony</option>
+              <option>EU</option>
+              <option>NAE</option>
+              <option>NAW</option>
+              <option>OCE</option>
+              <option>BR</option>
+              <option>ASIA</option>
+              <option>ME</option>
+              <option>NAC</option>
+            </select>
+          </div>
+
+          <div id="tournamentsList">
+            <div class="tour-load"><span class="mini-spinner"></span>&nbsp; Wczytywanie harmonogramu…</div>
+          </div>
         </div>
 
         <div class="page hidden" id="page-settings">
@@ -3909,10 +3785,6 @@
     </div>
   </div>
 
-  <!-- Animation libraries: GSAP + Lottie-web -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
@@ -4272,69 +4144,18 @@
       await signOut(auth);
     });
 
-    // ---------- Page navigation + View Transitions API ----------
-    let isPageTransitioning = false;
-
-    function updatePageDOM(target, activeLink) {
-      const nextPage = document.getElementById('page-' + target);
-      if (!nextPage) return false;
-
-      navLinks.forEach(l => l.classList.remove('active'));
-      if (activeLink) activeLink.classList.add('active');
-
-      pages.forEach(p => p.classList.add('hidden'));
-      nextPage.classList.remove('hidden');
-      return true;
-    }
-
-    async function afterPageOpened(target) {
-      // Dane ładujemy dopiero po przełączeniu widoku — dzięki temu View Transition
-      // nie czeka na Firestore i nie tworzy „zawieszonego” starego ekranu.
-      if (target === 'tournaments') {
-        await loadTournaments();
-        setupTournamentTabs();
-        animateStaggeredPageContent('tournaments');
-      }
-      if (target === 'admin') loadAdminNavLinkState();
-      if (target === 'matches') loadMatchesPage();
-      if (target === 'training') loadTrainingPage();
-    }
-
-    async function switchPage(target, activeLink) {
-      if (isPageTransitioning) return;
-      const nextPage = document.getElementById('page-' + target);
-      if (!nextPage || !nextPage.classList.contains('hidden')) return;
-
-      isPageTransitioning = true;
-
-      const update = () => updatePageDOM(target, activeLink);
-
-      try {
-        if (document.startViewTransition) {
-          const transition = document.startViewTransition(update);
-          await transition.finished;
-        } else {
-          // Fallback: dokładnie jeden ekran jest widoczny w danym momencie.
-          update();
-          await new Promise(resolve => requestAnimationFrame(resolve));
-        }
-
-        await afterPageOpened(target);
-      } catch (err) {
-        console.warn('FN Coach / Page transition:', err);
-        // Bezpieczny fallback nawet jeśli View Transition zostanie przerwany.
-        update();
-        await afterPageOpened(target);
-      } finally {
-        isPageTransitioning = false;
-      }
-    }
-
+    // ---------- Page navigation (Home / Ustawienia) ----------
     navLinks.forEach(link => {
-      link.addEventListener('click', event => {
-        event.preventDefault();
-        if (link.classList.contains('disabled')) return;
-        switchPage(link.dataset.page, link);
+      link.addEventListener('click', () => {
+        const target = link.dataset.page;
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        pages.forEach(p => p.classList.add('hidden'));
+        document.getElementById('page-' + target).classList.remove('hidden');
+        if (target === 'tournaments') loadTournaments();
+        if (target === 'admin') loadAdminNavLinkState();
+        if (target === 'matches') loadMatchesPage();
+        if (target === 'training') loadTrainingPage();
       });
     });
 
@@ -4557,11 +4378,7 @@
         snap.forEach(d => allTournamentsCache.push({ id: d.id, ...d.data() }));
         allTournamentsCache.sort((a, b) => new Date(a.startAt) - new Date(b.startAt));
         populateTournamentFilters(); renderTournamentStats(); renderTournaments();
-        renderLoggedTournaments();
-        renderTournamentAnalysis();
-        populateDeathCausesDatalist();
         if (tournamentSyncText) tournamentSyncText.textContent = 'Ostatnia synchronizacja: ' + new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-        requestAnimationFrame(() => animateStaggeredPageContent('tournaments'));
       } catch (err) {
         console.error(err);
         tournamentsList.innerHTML = '<div class="tour-empty"><strong>Nie udało się wczytać harmonogramu</strong>Sprawdź reguły Firestore dla kolekcji <code>tournaments</code>.</div>';
@@ -5134,9 +4951,27 @@
     };
 
     function setupMatchesPage() {
-      initLottieTipAnimations();
-      // Kategorie porad + obsługa modala dziennika są inicjalizowane tylko raz.
-      // Sam dziennik "Moje Turnieje" znajduje się teraz bezpośrednio w zakładce Turnieje.
+      // Subtab logic
+      const btnTips = document.getElementById('btnMatchTabTips');
+      const btnTours = document.getElementById('btnMatchTabTournaments');
+      const contentTips = document.getElementById('matchTabContentTips');
+      const contentTours = document.getElementById('matchTabContentTournaments');
+
+      if (btnTips && btnTours) {
+        btnTips.addEventListener('click', () => {
+          btnTips.classList.add('active');
+          btnTours.classList.remove('active');
+          contentTips.style.display = 'block';
+          contentTours.style.display = 'none';
+        });
+        btnTours.addEventListener('click', () => {
+          btnTours.classList.add('active');
+          btnTips.classList.remove('active');
+          contentTips.style.display = 'none';
+          contentTours.style.display = 'block';
+          renderLoggedTournaments();
+        });
+      }
 
       // Categories setup
       const catCards = document.querySelectorAll('.category-card[data-category]');
@@ -6050,106 +5885,9 @@
 
     function loadMatchesPage() {
       backToCategories();
-    }
-
-    // ---------- Lottie + GSAP animations ----------
-    const LOTTIE_TIP_ANIMATIONS = {
-      offspawn: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-      midgame: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-      endgame: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-      fight: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-      rotate: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-      surge: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json',
-      saved: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json'
-    };
-
-    let tournamentTabsInitialized = false;
-
-    function setupTournamentTabs() {
-      const calendarBtn = document.getElementById('btnTournamentTabCalendar');
-      const diaryBtn = document.getElementById('btnTournamentTabDiary');
-      const calendarPanel = document.getElementById('tournamentTabContentCalendar');
-      const diaryPanel = document.getElementById('tournamentTabContentDiary');
-      if (!calendarBtn || !diaryBtn || !calendarPanel || !diaryPanel) return;
-      if (tournamentTabsInitialized) return;
-
-      const openTournamentTab = (tab) => {
-        const isDiary = tab === 'diary';
-        calendarBtn.classList.toggle('active', !isDiary);
-        diaryBtn.classList.toggle('active', isDiary);
-        calendarBtn.setAttribute('aria-selected', String(!isDiary));
-        diaryBtn.setAttribute('aria-selected', String(isDiary));
-
-        if (isDiary) {
-          calendarPanel.style.display = 'none';
-          diaryPanel.style.display = 'block';
-          renderLoggedTournaments();
-          renderTournamentAnalysis();
-          requestAnimationFrame(() => animateStaggeredPageContent('tournament-diary'));
-        } else {
-          diaryPanel.style.display = 'none';
-          calendarPanel.style.display = 'block';
-          requestAnimationFrame(() => animateStaggeredPageContent('tournaments'));
-        }
-      };
-
-      calendarBtn.addEventListener('click', () => openTournamentTab('calendar'));
-      diaryBtn.addEventListener('click', () => openTournamentTab('diary'));
-      tournamentTabsInitialized = true;
-    }
-
-    const lottieInstances = new Map();
-
-    function initLottieTipAnimations() {
-      if (!window.lottie) return;
-
-      document.querySelectorAll('.lottie-tip-icon[data-lottie-animation]').forEach(container => {
-        const key = container.dataset.lottieAnimation;
-        const path = LOTTIE_TIP_ANIMATIONS[key];
-        if (!path || lottieInstances.has(container)) return;
-
-        try {
-          const animation = window.lottie.loadAnimation({
-            container,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path
-          });
-          lottieInstances.set(container, animation);
-        } catch (err) {
-          console.warn('FN Coach / Lottie:', err);
-        }
-      });
-    }
-
-    function animateStaggeredPageContent(target) {
-      if (!window.gsap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      const selectors = target === 'tournaments'
-        ? '.tour-stat, #tournamentsList .tour-card'
-        : target === 'tournament-diary'
-          ? '#tournamentTabContentDiary .analysis-grid > *, #loggedTournamentsList > *'
-          : '';
-
-      if (!selectors) return;
-
-      const elements = document.querySelectorAll(selectors);
-      if (!elements.length) return;
-
-      window.gsap.killTweensOf(elements);
-      window.gsap.fromTo(elements,
-        { autoAlpha: 0, y: 18 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.42,
-          ease: 'power2.out',
-          stagger: 0.055,
-          overwrite: true,
-          clearProps: 'transform,opacity,visibility'
-        }
-      );
+      renderLoggedTournaments();
+      renderTournamentAnalysis();
+      populateDeathCausesDatalist();
     }
 
     // Global state for training selection
@@ -7426,7 +7164,6 @@
 
       appScreen.classList.remove('hidden');
       loadSettings(user, userData);
-      setupTournamentTabs();
       loadTournaments();
       setupMatchesPage();
       loadMatchesPage();
