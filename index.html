@@ -3497,6 +3497,20 @@
                 </div>
               </div>
             </div>
+
+            <!-- ===== ADMIN TAB: TRENING ===== -->
+            <div id="admin-content-training" class="admin-tour-panel" style="display:none;">
+              <div class="admin-card" style="margin:0;">
+                <div class="admin-card-head" style="margin-bottom:20px;">
+                  <div class="admin-card-icon">🏋️</div>
+                  <div>
+                    <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--text);margin:0 0 4px 0;">Baza Ćwiczeń Treningowych</h3>
+                    <p style="font-size:13px;color:var(--text-dim);margin:0;">Podgląd wszystkich ćwiczeń pogrupowanych według kategorii i poziomu trudności.</p>
+                  </div>
+                </div>
+                <div id="adminTrainingCategoryList" style="display:flex;flex-direction:column;gap:20px;"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -3608,17 +3622,6 @@
     <option value="Brak Healów">
     <option value="brak rotacji">
   </datalist>
-
-  <!-- ===== ADMIN TAB: TRENING ===== -->
-  <div id="admin-content-training" class="admin-tab-content" style="display:none; padding: 20px 0;">
-    <div class="admin-card">
-      <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--text);margin:0 0 6px 0;">🏋️
-        Baza Ćwiczeń Treningowych</h3>
-      <p style="font-size:13px;color:var(--text-dim);margin:0 0 20px 0;">Podgląd wszystkich ćwiczeń pogrupowanych według
-        kategorii i poziomu trudności. Dane są generowane dynamicznie z konfiguracji programu.</p>
-      <div id="adminTrainingCategoryList" style="display:flex;flex-direction:column;gap:20px;"></div>
-    </div>
-  </div>
 
   <!-- ================= UNLOCK SKILLS MODAL ================= -->
   <div id="unlockSkillsModalOverlay" class="modal-overlay hidden" style="z-index:110;">
@@ -5893,205 +5896,504 @@
     let currentSelectedDifficulty = 'medium';
 
     // Training definitions containing exercises for combinations
+    // Each exercise object:
+    // { name, desc, metric ('time_sec'|'time_min'|'score'|'count'|'percent'|'rounds'|'text'),
+    //   unit (display string), hint (placeholder), benchmarks: {bad, ok, good, pro} }
     const TRAINING_EXERCISES = {
       building: {
         name: "Budowanie",
-        description: "Poprawa szybkości obudowywania przeciwników, płynności 90s oraz opanowania budowy pod presją.",
+        icon: "🔨",
+        color: "var(--orange)",
+        description: "Poprawa szybkości i płynności budowania — obudowania, 90s, piece control i retakes pod presją.",
         maps: ["MECHANICS TRAINING V5 🎯 (2424-4344-7824)"],
         easy: {
-          quick: ["10 minut swobodnego budowania (Freebuild) na mapie", "Przejście Tunelu #1 (5 razy) bez popełniania błędów"],
-          medium: ["15 minut Freebuild z włączonym niskim tempem gry", "Przejście Tunelu #1 i #2 (po 5 razy)"],
-          long: ["25 minut Freebuild (różne tempo gry)", "Przejście Tuneli #1, #2 i #3 (po 5 razy)", "Trening ramp rush z asekuracją stożka (3 minuty)"]
+          quick: [
+            { name: "Freebuild 10 min — spokojne tempo", desc: "Swobodne budowanie bez presji czasu. Skup się na płynności ruchów.", metric: "text", unit: "", hint: "Notatka np. 'Płynne, problem z schodami lewą ręką'" },
+            { name: "Tunnel Piece Control #1 — 5 przejść", desc: "Przejdź Tunnel #1 na MECHANICS TRAINING V5 pięć razy bez błędu.", metric: "count", unit: "błędów", hint: "np. 2", benchmarks: { pro: 0, good: 1, ok: 3, bad: 5 } }
+          ],
+          medium: [
+            { name: "Freebuild 15 min — niskie tempo", desc: "Freebuild z wolnym tempem gry.", metric: "text", unit: "", hint: "Notatka z sesji" },
+            { name: "Tunnel #1 i #2 — 5 razy każdy", desc: "Przejdź tunele #1 i #2 pięć razy każdy, mierząc łączny czas.", metric: "time_min", unit: "min (łączny czas)", hint: "np. 4.5", benchmarks: { pro: 3, good: 4.5, ok: 7, bad: 10 } }
+          ],
+          long: [
+            { name: "Freebuild 25 min — zmienne tempo", desc: "25 minut freebuildu w różnym tempie gry.", metric: "text", unit: "", hint: "Co było trudne?" },
+            { name: "Tunnel #1, #2, #3 — 5 razy każdy", desc: "Łączny czas przejścia wszystkich 3 tuneli.", metric: "time_min", unit: "min", hint: "np. 8", benchmarks: { pro: 5, good: 8, ok: 12, bad: 18 } },
+            { name: "Ramp Rush z asekuracją stożka — 3 min", desc: "Ćwicz ramp rush z natychmiastowym wstawianiem stożków.", metric: "text", unit: "", hint: "Ocena płynności (1-10)" }
+          ]
         },
         medium: {
-          quick: ["10 minut Freebuild (szybkie tempo)", "Piece Control Scenario #1 i #2 (po 3 razy)"],
-          medium: ["15 minut Freebuild (skupienie na triple-editach)", "Piece Control Scenario #1, #2, #3 (po 5 razy)"],
-          long: ["30 minut zróżnicowanego Freebuildu", "Wszystkie Piece Control Scenarios (1-5) po 4 powtórzenia", "10 minut defensywnego budowania (boksowanie)"]
+          quick: [
+            { name: "Freebuild szybkie tempo — 10 min", desc: "Freebuild w przyspieszonym tempie gry.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Piece Control #1 i #2 — 3 razy każdy", desc: "Przejdź scenariusze Piece Control #1 i #2.", metric: "time_sec", unit: "sek (średni czas scenariusza)", hint: "np. 45", benchmarks: { pro: 30, good: 45, ok: 70, bad: 100 } }
+          ],
+          medium: [
+            { name: "Freebuild triple-edit focus — 15 min", desc: "Freebuild z naciskiem na płynne triple-edity podczas budowy.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Piece Control #1–#3 — 5 razy każdy", desc: "Łączny czas ukończenia wszystkich 3 scenariuszy (1 runda).", metric: "time_min", unit: "min", hint: "np. 5", benchmarks: { pro: 3, good: 5, ok: 8, bad: 12 } }
+          ],
+          long: [
+            { name: "Freebuild 30 min — zróżnicowany", desc: "30 minut kompleksowego freebuildu.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Piece Control #1–#5 — 4 razy każdy", desc: "Łączny czas ukończenia 5 scenariuszy.", metric: "time_min", unit: "min", hint: "np. 12", benchmarks: { pro: 8, good: 12, ok: 18, bad: 25 } },
+            { name: "Defensywne boksowanie — 10 min", desc: "Trening szybkiego zamykania boksu i dodawania stożka.", metric: "text", unit: "", hint: "Liczba błędów w boksie" }
+          ]
         },
         advanced: {
-          quick: ["10 minut High-ground Retakes bez błędów", "Piece Control Scenarios (z botami) #3 i #4"],
-          medium: ["15 minut High-ground Retakes i Freebuild", "Piece Control Scenarios #3, #4, #5 (po 8 powtórzeń)"],
-          long: ["30 minut zaawansowanego Freebuildu", "Wszystkie Scenariusze Piece Control (1-8) po 5 razy w tempie 1.2x", "Trening osłony pleców stożkami podczas rotacji"]
+          quick: [
+            { name: "High-ground Retakes — 10 min bez błędu", desc: "Ciągłe podbieranie wysokiego gruntu nad przeciwnikiem.", metric: "count", unit: "błędów/upadków", hint: "np. 3", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } },
+            { name: "Piece Control #3 i #4 — 8 razy każdy", desc: "Przejście zaawansowanych scenariuszy.", metric: "time_sec", unit: "sek (śred. czas/scenariusz)", hint: "np. 35", benchmarks: { pro: 20, good: 35, ok: 55, bad: 80 } }
+          ],
+          medium: [
+            { name: "High-ground Retakes + Freebuild — 15 min", desc: "Połączenie retakes z freebuildem.", metric: "text", unit: "", hint: "Notatka z sesji" },
+            { name: "Piece Control #3–#5 — 8 razy każdy", desc: "Łączny czas na tempo 1.2x.", metric: "time_min", unit: "min", hint: "np. 6", benchmarks: { pro: 4, good: 6, ok: 9, bad: 14 } }
+          ],
+          long: [
+            { name: "Zaawansowany Freebuild — 30 min", desc: "30 minut zaawansowanego freebuildu.", metric: "text", unit: "", hint: "Co poprawić?" },
+            { name: "Piece Control #1–#8 — 5 razy każdy", desc: "Wszystkie scenariusze na 1.2x. Łączny czas.", metric: "time_min", unit: "min", hint: "np. 20", benchmarks: { pro: 12, good: 20, ok: 30, bad: 45 } },
+            { name: "Rotacje z osłoną pleców — 10 min", desc: "Trening automatycznego stawiania osłon podczas rotacji.", metric: "count", unit: "utraceń rotacji", hint: "np. 4", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } }
+          ]
         },
         pro: {
-          quick: ["10 minut ekstremalnego Freebuildu (tempo 1.3x)", "Piece Control Scenarios #7 i #8 (bez utraty HP)"],
-          medium: ["20 minut Freebuildu i retakes bez zatrzymywania", "Ukończenie całego działu Piece Control w czasie poniżej 4 minut"],
-          long: ["35 minut perfekcyjnego Freebuildu w tempie turniejowym", "Przejście wszystkich 10 sekwencji tunelowania i Piece Control bez skuchy", "Analiza powtórki własnego buildu w zwolnionym tempie"]
+          quick: [
+            { name: "Ekstremalny Freebuild 1.3x — 10 min", desc: "Freebuild na maksymalnym tempie gry.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Piece Control #7 i #8 — bez utraty HP", desc: "Przejście najtrudniejszych scenariuszy bez otrzymania obrażeń.", metric: "count", unit: "razów otrzymano DMG", hint: "np. 1", benchmarks: { pro: 0, good: 1, ok: 3, bad: 6 } }
+          ],
+          medium: [
+            { name: "Non-stop Freebuild + Retakes — 20 min", desc: "Bez przerwy — freebuild i retakes w tempie turniejowym.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Cały dział Piece Control — poniżej 4 min", desc: "Wszystkie scenariusze bez przerwy.", metric: "time_min", unit: "min", hint: "np. 3.5", benchmarks: { pro: 3, good: 4, ok: 6, bad: 9 } }
+          ],
+          long: [
+            { name: "Perfekcyjny Freebuild w tempie turniejowym — 35 min", desc: "35 minut z zachowaniem tempa pro.", metric: "text", unit: "", hint: "Płynność 1-10" },
+            { name: "Wszystkie 10 sekwencji Tunnel + Piece Control — bez błędu", desc: "Kompletna sesja tunelowania i PC.", metric: "count", unit: "błędów łącznie", hint: "np. 2", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } },
+            { name: "Analiza VOD własnego budowania", desc: "Nagraj i obejrzyj własny build w zwolnionym tempie.", metric: "text", unit: "", hint: "Zidentyfikowane błędy" }
+          ]
         }
       },
       editing: {
         name: "Edytowanie",
-        description: "Poprawa szybkości pojedynczych i seryjnych edycji (double, triple edit) oraz resetowania budowli.",
+        icon: "📐",
+        color: "var(--purple)",
+        description: "Poprawa szybkości edycji pojedynczych i seryjnych edycji (double, triple) oraz resetowania budowli pod presją.",
         maps: ["MECHANICS TRAINING V5 🎯 (2424-4344-7824)"],
         easy: {
-          quick: ["5 minut ćwiczenia pojedynczych edycji ścian", "Przejście Easy Edit Course (1 runda)"],
-          medium: ["10 minut treningu edycji (ściana + schody)", "Przejście Easy Edit Course (3 rundy)"],
-          long: ["15 minut treningu edycji ze schodami i podłogą", "Przejście Easy Edit Course na czas i próba pobicia rekordu", "5 minut szybkiego resetowania struktur"]
+          quick: [
+            { name: "Single Wall Edit — 5 min", desc: "Ćwicz edycję pojedynczej ściany (okno/łuk) do budowania nawyku resetowania.", metric: "text", unit: "", hint: "Notatka — czy był reset?" },
+            { name: "Easy Edit Course #1 — 1 runda", desc: "Przejście podstawowego edit course na czas.", metric: "time_sec", unit: "sek", hint: "np. 90", benchmarks: { pro: 40, good: 60, ok: 90, bad: 130 } }
+          ],
+          medium: [
+            { name: "Edycja ściana + schody — 10 min", desc: "Ćwicz edycję mieszaną ściana → schody → reset.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Easy Edit Course — 3 rundy", desc: "Łączny czas 3 rund Easy Edit Course.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 220", benchmarks: { pro: 120, good: 180, ok: 250, bad: 360 } }
+          ],
+          long: [
+            { name: "Edycja ze schodami i podłogą — 15 min", desc: "Kompleksowy trening edycji 3 typów struktur.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Easy Edit Course — pobicie rekordu", desc: "Wpisz najlepszy czas rundy jaki osiągnąłeś.", metric: "time_sec", unit: "sek (rekord)", hint: "np. 38", benchmarks: { pro: 30, good: 40, ok: 55, bad: 75 } },
+            { name: "Szybkie resetowanie — 5 min", desc: "Tylko reset po edycji (bez strzału), ile razy w 5 min.", metric: "count", unit: "resetów wykonanych", hint: "np. 180", benchmarks: { pro: 300, good: 220, ok: 160, bad: 100 } }
+          ]
         },
         medium: {
-          quick: ["5 minut Double Edit Run", "Przejście Medium Edit Course (1 runda)"],
-          medium: ["10 minut Double i Triple Edit Run", "Przejście Medium Edit Course (3 rundy)", "Trening edycji zza osłony (Right-hand peek)"],
-          long: ["20 minut zaawansowanego edit course", "Przejście Medium Edit Course (5 rund)", "Praca nad spójnością edycji (0 błędów przez 2 minuty)"]
+          quick: [
+            { name: "Double Edit Run — 5 min", desc: "Sekwencja double-editów bez przerwy.", metric: "count", unit: "poprawnych double-editów w 5 min", hint: "np. 80", benchmarks: { pro: 150, good: 110, ok: 80, bad: 50 } },
+            { name: "Medium Edit Course — 1 runda", desc: "Czas ukończenia 1 rundy Medium Edit Course.", metric: "time_sec", unit: "sek", hint: "np. 75", benchmarks: { pro: 40, good: 60, ok: 80, bad: 110 } }
+          ],
+          medium: [
+            { name: "Double i Triple Edit Run — 10 min", desc: "Naprzemienne double i triple edity.", metric: "text", unit: "", hint: "Ile błędów popełniłeś?" },
+            { name: "Medium Edit Course — 3 rundy", desc: "Łączny czas 3 rund.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 200", benchmarks: { pro: 110, good: 160, ok: 220, bad: 310 } },
+            { name: "Right-hand peek edit — 5 min", desc: "Edycja okna i strzał zza prawego narożnika.", metric: "count", unit: "poprawnych peeks", hint: "np. 45", benchmarks: { pro: 80, good: 60, ok: 40, bad: 20 } }
+          ],
+          long: [
+            { name: "Zaawansowany edit course — 20 min", desc: "20 minut ciągłego edit runu bez przerwy.", metric: "text", unit: "", hint: "Notatka — co bolało?" },
+            { name: "Medium Edit Course — 5 rund", desc: "Łączny czas 5 rund.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 320", benchmarks: { pro: 180, good: 260, ok: 360, bad: 480 } },
+            { name: "Zero-error edycja — 2 min", desc: "Edytuj przez 2 min bez żadnego błędnego kliku.", metric: "count", unit: "błędów w 2 min", hint: "np. 3", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } }
+          ]
         },
         advanced: {
-          quick: ["5 minut Triple Edit Run bez utraty pędu", "Przejście Hard Edit Course (1 runda)"],
-          medium: ["12 minut Triple i Quadruple Edit Run", "Przejście Hard Edit Course (3 rundy)", "Trening błyskawicznych edycji i resetów w biegu"],
-          long: ["25 minut Hard Edit Course", "Przejście Hard Edit Course (5 rund)", "10 minut dynamicznej edycji tunelu ze stożkami"]
+          quick: [
+            { name: "Triple Edit Run bez utraty pędu — 5 min", desc: "Triple edity w ciągłym ruchu.", metric: "count", unit: "poprawnych triple-editów", hint: "np. 60", benchmarks: { pro: 100, good: 75, ok: 55, bad: 30 } },
+            { name: "Hard Edit Course — 1 runda", desc: "Czas ukończenia Hard Edit Course.", metric: "time_sec", unit: "sek", hint: "np. 55", benchmarks: { pro: 30, good: 50, ok: 70, bad: 100 } }
+          ],
+          medium: [
+            { name: "Triple + Quad Edit Run — 12 min", desc: "Naprzemienne triple i quadruple edity przez 12 min.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Hard Edit Course — 3 rundy", desc: "Łączny czas 3 rund Hard Edit Course.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 165", benchmarks: { pro: 85, good: 140, ok: 200, bad: 280 } },
+            { name: "Edit + reset w biegu — 5 min", desc: "Edycja z natychmiastowym resetem podczas sprintu.", metric: "count", unit: "błędów resetowania", hint: "np. 8", benchmarks: { pro: 0, good: 3, ok: 8, bad: 15 } }
+          ],
+          long: [
+            { name: "Hard Edit Course — 25 min ciągłe", desc: "25 minut bez przerwy na Hard Edit Course.", metric: "text", unit: "", hint: "Notatka zmęczenia" },
+            { name: "Hard Edit Course — 5 rund", desc: "Łączny czas 5 rund.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 265", benchmarks: { pro: 140, good: 230, ok: 330, bad: 460 } },
+            { name: "Tunel dynamiczny ze stożkami — 10 min", desc: "Edycja tunelu z automatycznym stożkowaniem.", metric: "count", unit: "perfekcyjnych sekwencji", hint: "np. 12", benchmarks: { pro: 25, good: 15, ok: 9, bad: 4 } }
+          ]
         },
         pro: {
-          quick: ["8 minut Quadruple Edit Run w tempie 1.25x", "Przejście Impossible Edit Course"],
-          medium: ["15 minut ekstremalnego Edit Run", "Ukończenie Hard Edit Course z czasem poniżej 1:20 min", "Edycja pod kątem 180 stopni bez zatrzymania"],
-          long: ["30 minut ciągłego edit runu z różnymi modyfikatorami", "Ukończenie Impossible Edit Course 3 razy pod rząd", "Trening precyzji celownika (Crosshair placement) podczas edytowania"]
+          quick: [
+            { name: "Quad Edit Run w tempie 1.25x — 8 min", desc: "Quadruple edity na maksymalnym tempie.", metric: "count", unit: "quadów bez błędu", hint: "np. 50", benchmarks: { pro: 90, good: 60, ok: 40, bad: 20 } },
+            { name: "Impossible Edit Course — 1 runda", desc: "Czas ukończenia Impossible Edit Course.", metric: "time_sec", unit: "sek", hint: "np. 85", benchmarks: { pro: 55, good: 80, ok: 110, bad: 150 } }
+          ],
+          medium: [
+            { name: "Ekstremalny Edit Run — 15 min", desc: "15 minut nieprzerwanie na najtrudniejszych kursach.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "Hard Edit Course — poniżej 1:20 min", desc: "Ukończ Hard Edit Course w czasie krótszym niż 80 sekund.", metric: "time_sec", unit: "sek", hint: "np. 75", benchmarks: { pro: 58, good: 75, ok: 90, bad: 110 } },
+            { name: "Edit 180° bez zatrzymania — 5 min", desc: "Edycja z obróceniem o 180 stopni bez utraty tempa.", metric: "count", unit: "poprawnych obrotów", hint: "np. 20", benchmarks: { pro: 40, good: 25, ok: 14, bad: 6 } }
+          ],
+          long: [
+            { name: "Impossible Edit Course — 3 razy pod rząd", desc: "Łączny czas 3 ukończeń Impossible Edit Course.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 265", benchmarks: { pro: 160, good: 240, ok: 330, bad: 450 } },
+            { name: "Precyzja celownika podczas edycji — 10 min", desc: "Ćwicz edit → strzał z crosshair placement na głowę.", metric: "percent", unit: "% trafień w głowę", hint: "np. 65", benchmarks: { pro: 80, good: 65, ok: 45, bad: 25 } }
+          ]
         }
       },
       aim: {
         name: "AIM (Celowanie)",
-        description: "Doskonalenie precyzji strzałów ze strzelb (flicks) oraz śledzenia celu z pistoletów maszynowych (tracking).",
-        maps: ["Skaavok Aim Trainer (8022-6842-4965)", "Raider's Aim Trainer"],
+        icon: "🎯",
+        color: "var(--danger)",
+        description: "Doskonalenie precyzji strzałów z shotgunów (flick) oraz śledzenia ruchu z pistoletów i AR (tracking).",
+        maps: ["Skaavok Aim Trainer (8022-6842-4965)", "Raider's Aim Trainer (0029-8153-8374)", "MECHANICS TRAINING V5 🎯 (2424-4344-7824)"],
         easy: {
-          quick: ["5 minut Horizontal Tracking (bliski dystans)", "5 minut Tile Frenzy (wolne tempo)"],
-          medium: ["10 minut Horizontal Tracking", "10 minut Tile Frenzy (skupienie na 100% celności)"],
-          long: ["15 minut Horizontal + Vertical Tracking", "15 minut Tile Frenzy", "5 minut strzelania do celów w powietrzu (Popcorn)"]
+          quick: [
+            { name: "Horizontal Tracking — 5 min", desc: "Śledzenie celu poruszającego się poziomo na bliskim dystansie.", metric: "percent", unit: "% celności", hint: "np. 55", benchmarks: { pro: 85, good: 70, ok: 55, bad: 35 } },
+            { name: "Tile Frenzy — wolne tempo", desc: "Strzelaj do płytek w spokojnym tempie. Zapisz wynik z rundy.", metric: "score", unit: "pkt", hint: "np. 55", benchmarks: { pro: 90, good: 70, ok: 50, bad: 30 } }
+          ],
+          medium: [
+            { name: "Horizontal Tracking — 10 min", desc: "Dłuższa sesja trackingu poziomego. Skupienie na 100% celności.", metric: "percent", unit: "% celności", hint: "np. 62", benchmarks: { pro: 88, good: 72, ok: 58, bad: 38 } },
+            { name: "Tile Frenzy — 100% celność focus", desc: "Wynik z najlepszej rundy Tile Frenzy w tej sesji.", metric: "score", unit: "pkt", hint: "np. 60", benchmarks: { pro: 95, good: 75, ok: 55, bad: 35 } }
+          ],
+          long: [
+            { name: "Horizontal + Vertical Tracking — 15 min", desc: "Śledzenie w obu osiach.", metric: "percent", unit: "% celności", hint: "np. 58", benchmarks: { pro: 85, good: 68, ok: 52, bad: 32 } },
+            { name: "Tile Frenzy — 15 min", desc: "Najlepszy wynik z sesji.", metric: "score", unit: "pkt", hint: "np. 65", benchmarks: { pro: 98, good: 78, ok: 58, bad: 38 } },
+            { name: "Popcorn (cele w powietrzu) — 5 min", desc: "Strzelanie do ruchomych celów w powietrzu.", metric: "percent", unit: "% trafień", hint: "np. 40", benchmarks: { pro: 72, good: 55, ok: 38, bad: 20 } }
+          ]
         },
         medium: {
-          quick: ["5 minut Shotgun Flick (z osłoną)", "5 minut Bounce 360 Tracking"],
-          medium: ["10 minut Shotgun Flick", "10 minut Bounce 360", "5 minut Reaction Time Training"],
-          long: ["15 minut dynamicznych flicków shotgunem", "15 minut dynamicznego trackingu bota", "10 minut treningu z karabinem szturmowym (AR tracking z daleka)"]
+          quick: [
+            { name: "Shotgun Flick zza osłony — 5 min", desc: "Wypada z boku i strzał z shotguna do celu. Rekord wyników rundy.", metric: "score", unit: "pkt (Tile Frenzy Shotgun)", hint: "np. 70", benchmarks: { pro: 100, good: 80, ok: 60, bad: 40 } },
+            { name: "Bounce 360 Tracking — 5 min", desc: "Śledzenie celu odbijającego się po całym ekranie. Celność.", metric: "percent", unit: "% celności", hint: "np. 52", benchmarks: { pro: 80, good: 63, ok: 48, bad: 30 } }
+          ],
+          medium: [
+            { name: "Shotgun Flick — 10 min", desc: "Pełna sesja flicowania shotgunem. Avg celność.", metric: "percent", unit: "% trafień w głowę/tors", hint: "np. 45", benchmarks: { pro: 70, good: 55, ok: 40, bad: 22 } },
+            { name: "Bounce 360 Tracking — 10 min", desc: "Wydłużona sesja. Avg celność.", metric: "percent", unit: "% celności", hint: "np. 55", benchmarks: { pro: 82, good: 65, ok: 50, bad: 32 } },
+            { name: "Reaction Time Training — 5 min", desc: "Średni czas reakcji (ms) z sesji.", metric: "score", unit: "ms (średni czas reakcji)", hint: "np. 280", benchmarks: { pro: 190, good: 240, ok: 300, bad: 380 } }
+          ],
+          long: [
+            { name: "Dynamiczne ficki shotgunem — 15 min", desc: "Cele w różnych kątach i ruchomych warunkach. Celność.", metric: "percent", unit: "% trafień krytycznych", hint: "np. 38", benchmarks: { pro: 68, good: 50, ok: 35, bad: 18 } },
+            { name: "Dynamiczny tracking bota — 15 min", desc: "Śledzenie ruchomego bota AR. Celność.", metric: "percent", unit: "% celności AR", hint: "np. 62", benchmarks: { pro: 88, good: 72, ok: 55, bad: 35 } },
+            { name: "AR tracking z daleka — 10 min", desc: "Strzelanie z karabinu szturmowego na dystans 100m+.", metric: "percent", unit: "% trafień", hint: "np. 48", benchmarks: { pro: 78, good: 60, ok: 44, bad: 25 } }
+          ]
         },
         advanced: {
-          quick: ["6 minut Advanced Flick Trainer", "6 minut Fast Tracking (bot skaczący)"],
-          medium: ["12 minut Advanced Flick", "12 minut Fast Tracking", "6 minut Dynamic Target Switching"],
-          long: ["20 minut flicków do małych kulek (Microflicks)", "20 minut szybkiego śledzenia botów na średnim dystansie", "10 minut ćwiczenia prefire w symulatorze walki"]
+          quick: [
+            { name: "Advanced Flick Trainer — 6 min", desc: "Zaawansowane ficki do małych i poruszających się celów.", metric: "score", unit: "pkt (najlepszy wynik rundy)", hint: "np. 85", benchmarks: { pro: 115, good: 90, ok: 70, bad: 45 } },
+            { name: "Fast Tracking (skaczący bot) — 6 min", desc: "Śledzenie bota wykonującego skoki i zmiany kierunku.", metric: "percent", unit: "% celności", hint: "np. 55", benchmarks: { pro: 82, good: 65, ok: 50, bad: 30 } }
+          ],
+          medium: [
+            { name: "Advanced Flick — 12 min", desc: "Rozszerzona sesja zaawansowanych fliców.", metric: "score", unit: "pkt (śred. wynik rundy)", hint: "np. 90", benchmarks: { pro: 120, good: 95, ok: 72, bad: 48 } },
+            { name: "Fast Tracking — 12 min", desc: "Rozszerzona sesja śledzenia dynamicznych botów.", metric: "percent", unit: "% celności", hint: "np. 58", benchmarks: { pro: 84, good: 67, ok: 52, bad: 33 } },
+            { name: "Dynamic Target Switching — 6 min", desc: "Szybkie przełączanie pomiędzy wieloma celami.", metric: "score", unit: "eliminacji/min", hint: "np. 4", benchmarks: { pro: 7, good: 5, ok: 3.5, bad: 2 } }
+          ],
+          long: [
+            { name: "Microflicks — 20 min", desc: "Ficki do bardzo małych celów (precyzja). Celność.", metric: "percent", unit: "% trafień microflick", hint: "np. 42", benchmarks: { pro: 70, good: 54, ok: 38, bad: 20 } },
+            { name: "Szybkie śledzenie botów AR — 20 min", desc: "śledzenie 2+ botów jednocześnie na średnim dystansie.", metric: "percent", unit: "% celności avg", hint: "np. 60", benchmarks: { pro: 86, good: 68, ok: 52, bad: 32 } },
+            { name: "Prefire symulator walki — 10 min", desc: "Strzelanie do pojawiających się celów zza rogu przed ich zobaczeniem.", metric: "percent", unit: "% skuteczności prefire", hint: "np. 50", benchmarks: { pro: 78, good: 60, ok: 43, bad: 24 } }
+          ]
         },
         pro: {
-          quick: ["8 minut Microflick (tempo pro)", "8 minut Skaczący Bot (140 HP) Tracking"],
-          medium: ["15 minut perfekcyjnego trackingu na dynamiczne cele", "Ukończenie Tile Frenzy z wynikiem powyżej 100 punktów", "10 minut Aim Duels z profesjonalnym botem"],
-          long: ["30 minut zróżnicowanych scenariuszy aim trainer (100% focus)", "Pokonanie pro bota w 5 Aim Duelach pod rząd", "10 minut AR Tracking na dystansie 150m (minimalny rozrzut)"]
+          quick: [
+            { name: "Microflick tempo pro — 8 min", desc: "Ficki do mikro-celów w najszybszym tempie.", metric: "score", unit: "pkt/rundę", hint: "np. 110", benchmarks: { pro: 140, good: 112, ok: 85, bad: 55 } },
+            { name: "Skaczący Bot 140 HP Tracking — 8 min", desc: "Śledzenie najszybszego bota z pełnym HP. Celność.", metric: "percent", unit: "% celności", hint: "np. 62", benchmarks: { pro: 85, good: 68, ok: 52, bad: 32 } }
+          ],
+          medium: [
+            { name: "Perfekcyjny tracking — 15 min", desc: "Śledzenie dynamicznych celów na wszystkich dystansach.", metric: "percent", unit: "% celności avg (wszystkie dystanse)", hint: "np. 70", benchmarks: { pro: 88, good: 72, ok: 57, bad: 38 } },
+            { name: "Tile Frenzy — powyżej 100 punktów", desc: "Wynik z rundy Tile Frenzy w tej sesji.", metric: "score", unit: "pkt", hint: "np. 108", benchmarks: { pro: 120, good: 103, ok: 85, bad: 65 } },
+            { name: "Aim Duels z pro botem — 10 min", desc: "1v1 z najtrudniejszym botem aim trainera. % wygranych.", metric: "percent", unit: "% wygranych duelów", hint: "np. 55", benchmarks: { pro: 80, good: 62, ok: 45, bad: 25 } }
+          ],
+          long: [
+            { name: "Zróżnicowane scenariusze aim — 30 min", desc: "30 min skupienia totalnego na różnych trybach aim trainera.", metric: "percent", unit: "% celności całościowej", hint: "np. 74", benchmarks: { pro: 90, good: 75, ok: 60, bad: 40 } },
+            { name: "Pokonanie pro bota 5x pod rząd", desc: "Wygraj z najsilniejszym botem 5 dueli pod rząd.", metric: "count", unit: "prób potrzebnych do 5 wygranych", hint: "np. 8", benchmarks: { pro: 5, good: 7, ok: 10, bad: 16 } },
+            { name: "AR Tracking 150m — minimalny rozrzut", desc: "Strzelanie AR na długi dystans. % strzałów w centrum celu.", metric: "percent", unit: "% strzałów w centrum", hint: "np. 60", benchmarks: { pro: 82, good: 66, ok: 50, bad: 30 } }
+          ]
         }
       },
       offspawn: {
-        name: "Offspawn (Początek gry)",
-        description: "Trening lądowań, szybkiego lootowania pod presją oraz wczesnych pojedynków bez pełnego ekwipunku.",
-        maps: ["Gry rankingowe Fortnite (Ranked)", "Real-match Drop Map Tools"],
+        name: "Offspawn",
+        icon: "🪂",
+        color: "var(--cyan)",
+        description: "Trening lądowań, szybkiego lootu pod presją oraz wczesnych pojedynków bez pełnego ekwipunku.",
+        maps: ["Gry rankingowe / Arena (Ranked)"],
         easy: {
-          quick: ["Wyląduj 2 razy na spokojniejszej lokacji", "Zaplanuj i przećwicz idealną ścieżkę lootu (loot route)"],
-          medium: ["Rozegraj 4 mecze rankingowe, lądując w tej samej bezpiecznej strefie", "Przeżyj offspawn w każdym z tych meczów"],
-          long: ["Rozegraj 6 meczów lądując na wybranej lokacji", "Zanotuj i przeanalizuj każdy zgon offspawn (co poszło nie tak?)"]
+          quick: [
+            { name: "Bezpieczne lądowanie — 2 mecze", desc: "Ląduj na spokojnym POI i przetrwaj offspawn w obu meczach.", metric: "count", unit: "przeżytych offspawnów / 2", hint: "np. 2", benchmarks: { pro: 2, good: 2, ok: 1, bad: 0 } },
+            { name: "Zaplanuj loot route", desc: "Zanotuj swoją idealną trasę lootu na wybranej lokacji.", metric: "text", unit: "", hint: "np. Spawn → Chest #1 → Chest #2 → Ammo → Exit" }
+          ],
+          medium: [
+            { name: "Bezpieczna strefa — 4 mecze", desc: "4 mecze na tym samym spokojnym POI. % przetrwania offspawnu.", metric: "percent", unit: "% przetrwanych offspawnów", hint: "np. 75", benchmarks: { pro: 100, good: 75, ok: 50, bad: 25 } }
+          ],
+          long: [
+            { name: "Analiza zgonów offspawn — 6 mecze", desc: "6 meczów i zanotuj każdy zgon offspawn (co poszło nie tak).", metric: "count", unit: "zgonów offspawn / 6 gier", hint: "np. 3", benchmarks: { pro: 0, good: 1, ok: 3, bad: 5 } },
+            { name: "% przetrwania offspawnu", desc: "Ogólny wskaźnik przetrwania z tych 6 meczów.", metric: "percent", unit: "% przetrwania", hint: "np. 67", benchmarks: { pro: 100, good: 83, ok: 67, bad: 33 } }
+          ]
         },
         medium: {
-          quick: ["Wyląduj 2 razy na średnio zatłoczonym POI", "Przetestuj zrzut z różną wysokością otwarcia lotni"],
-          medium: ["Rozegraj 4 mecze zrzucając się na średnie POI", "Wyeliminuj przynajmniej jednego rywala offspawn", "Zdobądź pełne tarcze i min. 300 materiałów przed wyjściem z lokacji"],
-          long: ["Rozegraj 7 meczów ze średnim contestem", "Utrzymaj przeżywalność offspawnu na poziomie minimum 75%", "Opracuj zapasową trasę lootu na wypadek przegranego dropu"]
+          quick: [
+            { name: "Średnie POI — 2 mecze + 1 eliminacja", desc: "Ląduj na średnio zatłoczonej lokacji i zdobądź min. 1 kill offspawn.", metric: "count", unit: "eliminacji łącznie offspawn", hint: "np. 2", benchmarks: { pro: 4, good: 2, ok: 1, bad: 0 } }
+          ],
+          medium: [
+            { name: "Średnia lokacja — 4 mecze", desc: "Przetrwaj i zdobądź eliminację w każdym meczu.", metric: "percent", unit: "% gier z killiem offspawn", hint: "np. 50", benchmarks: { pro: 100, good: 75, ok: 50, bad: 25 } },
+            { name: "Pełen loot + 300 matsów przed wyjściem", desc: "% gier, w których wyszedłeś z lokacji z pełnymi tarczami i min 300 materiałów.", metric: "percent", unit: "% gier z kompletnym lootem", hint: "np. 50", benchmarks: { pro: 100, good: 75, ok: 50, bad: 25 } }
+          ],
+          long: [
+            { name: "Średni contest — 7 meczów", desc: "% przetrwania offspawnu przez 7 gier.", metric: "percent", unit: "% przetrwania", hint: "np. 71", benchmarks: { pro: 100, good: 86, ok: 71, bad: 43 } },
+            { name: "Zapasowa trasa lootu", desc: "Ile razy skorzystałeś z zapasowej trasy lootu?", metric: "count", unit: "razy użyto zapasowej trasy", hint: "np. 2", benchmarks: { pro: 0, good: 1, ok: 2, bad: 4 } }
+          ]
         },
         advanced: {
-          quick: ["Wyląduj 3 razy na mocno contestowanym POI (Hot Drop)", "Przeżyj pierwszą minutę"],
-          medium: ["Rozegraj 5 meczów z lądowaniem na Hot Dropie", "Wygraj walkę o główny budynek w co najmniej 3 grach", "Zabezpiecz lokalne pojazdy lub medale"],
-          long: ["Rozegraj 8 meczów na gorących POI", "Zdobądź minimum 5 eliminacji offspawn łącznie", "Przeanalizuj powtórki 3 zgonów z perspektywy lotu i lądowania"]
+          quick: [
+            { name: "Hot Drop — 3 mecze, przeżyj 1 minutę", desc: "Ląduj na gorącym POI i przeżyj min 60 sekund w każdym meczu.", metric: "count", unit: "przeżytych 1. minuty / 3", hint: "np. 2", benchmarks: { pro: 3, good: 2, ok: 1, bad: 0 } }
+          ],
+          medium: [
+            { name: "Hot Drop — wygraj główny budynek 3x/5 prób", desc: "% gier gdzie wygrałeś kontrolę nad główną lokacją.", metric: "percent", unit: "% wygranych hot dropów", hint: "np. 60", benchmarks: { pro: 100, good: 80, ok: 60, bad: 30 } },
+            { name: "Zabezpiecz pojazdy/medale offspawn", desc: "% gier gdzie zebrałeś pojazd lub medal przed wyjściem.", metric: "percent", unit: "% gier z bonusem", hint: "np. 40", benchmarks: { pro: 100, good: 80, ok: 60, bad: 20 } }
+          ],
+          long: [
+            { name: "Hot POI — 5 eliminacji offspawn łącznie / 8 gier", desc: "Łączna liczba killów offspawn przez 8 gier.", metric: "count", unit: "killów offspawn łącznie", hint: "np. 4", benchmarks: { pro: 8, good: 5, ok: 3, bad: 1 } },
+            { name: "Analiza VOD 3 zgonów offspawn", desc: "Obejrzyj i opisz błędy z 3 zgonów offspawn.", metric: "text", unit: "", hint: "np. 'Nie sprawdziłem piętra, zły kąt lotu'" }
+          ]
         },
         pro: {
-          quick: ["Wyląduj 3 razy w strefie zero-loot i zdobądź eliminację zbierakiem/pierwszą bronią", "Wygraj natychmiastową walkę o kluczową skrzynkę"],
-          medium: ["Rozegraj 6 meczów turniejowych/rankedów z rzędu na najtrudniejszym POI", "Wygraj lokację offspawn we wszystkich próbach", "Ogranicz czas zbierania pełnego lootu i materiałów do poniżej 90 sekund"],
-          long: ["Rozegraj 10 gier z rzędu na Hot Dropie", "Utrzymaj 90% wskaźnik przetrwania offspawnu", "Opanuj perfekcyjne lądowanie z dokładnością do 1 metra (kontrola kąta lotu)"]
+          quick: [
+            { name: "Zero-loot kill — 3 próby", desc: "Wyląduj bez lootu i zdobądź eliminację zbierakiem / pierwszą bronią.", metric: "count", unit: "udanych zero-loot killów / 3", hint: "np. 2", benchmarks: { pro: 3, good: 2, ok: 1, bad: 0 } }
+          ],
+          medium: [
+            { name: "Hot Drop 100% — 6 gier", desc: "Wygraj hot drop we wszystkich 6 meczach.", metric: "percent", unit: "% wygranych hot dropów", hint: "np. 67", benchmarks: { pro: 100, good: 83, ok: 67, bad: 33 } },
+            { name: "Pełen loot poniżej 90 sekund", desc: "% gier gdzie zebrałeś pełen loot i maty przed 90s.", metric: "percent", unit: "% gier < 90s loot", hint: "np. 50", benchmarks: { pro: 100, good: 83, ok: 50, bad: 17 } }
+          ],
+          long: [
+            { name: "Wskaźnik przetrwania 90% — 10 gier", desc: "% przetrwanych offspawnów przez 10 gier.", metric: "percent", unit: "% przetrwania", hint: "np. 90", benchmarks: { pro: 100, good: 90, ok: 70, bad: 50 } },
+            { name: "Perfekcyjne lądowanie — dokładność kąta", desc: "Ile razy wylądowałeś w zamierzonym punkcie?", metric: "percent", unit: "% lądowań w celu", hint: "np. 70", benchmarks: { pro: 100, good: 80, ok: 65, bad: 40 } }
+          ]
         }
       },
       midgame: {
-        name: "Midgame (Środek gry)",
-        description: "Doskonalenie rotacji w 2-4 strefie, unikanie niepotrzebnych walk, zbieranie informacji o wrogach i zbieranie materiałów.",
-        maps: ["Gry rankingowe (Ranked)", "Scenery Custom Matchmaking"],
+        name: "Midgame",
+        icon: "⚔️",
+        color: "var(--accent)",
+        description: "Rotacja w strefach 2–5, unikanie niepotrzebnych walk, zbieranie informacji o wrogach i zarządzanie materiałami.",
+        maps: ["Gry rankingowe (Ranked)"],
         easy: {
-          quick: ["Rozegraj 2 gry skupiając się wyłącznie na defensywnej grze w środkowej fazie", "Unikaj walk w 3 strefie"],
-          medium: ["Rozegraj 4 mecze rankingowe", "Rotuj zawsze środkiem bezpiecznej strefy (Center zones)", "Utrzymaj maks. materiały do 4 strefy"],
-          long: ["Rozegraj 6 meczów rankingowych", "W każdym meczu bezpiecznie przejdź od 2 do 5 strefy bez wdawania się w bójki na krawędzi burzy", "Używaj wyłącznie pojazdów lub naturalnych osłon do rotacji"]
+          quick: [
+            { name: "Defensywna gra 2 mecze — unikaj walk w 3 strefie", desc: "% gier gdzie dotarłeś do 4 strefy bez walki w 3 strefie.", metric: "percent", unit: "% gier bez walk w 3 strefie", hint: "np. 50", benchmarks: { pro: 100, good: 100, ok: 50, bad: 0 } }
+          ],
+          medium: [
+            { name: "Center rotate — 4 mecze", desc: "Rotuj zawsze środkiem bezpiecznej strefy. % sukcesu.", metric: "percent", unit: "% gier z center rotate", hint: "np. 75", benchmarks: { pro: 100, good: 100, ok: 75, bad: 50 } },
+            { name: "Maks. materiały do 4 strefy", desc: "Ile materiałów miałeś wchodząc w 4 strefę (avg).", metric: "count", unit: "matsów avg przy wejściu w 4 strefę", hint: "np. 1200", benchmarks: { pro: 2000, good: 1500, ok: 1000, bad: 500 } }
+          ],
+          long: [
+            { name: "Bezpieczna rotacja 2→5 strefa — 6 meczów", desc: "% gier gdzie bezpiecznie przeszedłeś przez środek gry.", metric: "percent", unit: "% sukcesu rotacji", hint: "np. 67", benchmarks: { pro: 100, good: 83, ok: 67, bad: 33 } }
+          ]
         },
         medium: {
-          quick: ["Rozegraj 2 mecze z rotacją po krawędzi strefy (Edge rotate)", "Zlokalizuj optymalne pozycje na wzgórzach"],
-          medium: ["Rozegraj 4 mecze rankingowe", "Wykonaj 2 rotacje pieszo bez używania przedmiotów ruchowych", "Zdobądź informacje o pozycjach przeciwników za pomocą punktów widokowych/wież prognozy"],
-          long: ["Rozegraj 7 meczów rankingowych", "Zdobądź min. 2 kille w mid-game poprzez złapanie rywali na rotacji (gatekeeping)", "Przetrwaj do 5 strefy w 80% gier"]
+          quick: [
+            { name: "Edge rotate — 2 mecze z pozycjami na wzgórzach", desc: "Ile wzgórzowych pozycji kontrolowałeś avg/grę.", metric: "count", unit: "wzgórz/pozycji kontrolowanych avg/grę", hint: "np. 2", benchmarks: { pro: 4, good: 3, ok: 2, bad: 0 } }
+          ],
+          medium: [
+            { name: "Piesza rotacja bez przedmiotów — 4 mecze", desc: "% rotacji wykonanych bez mobility itemów.", metric: "percent", unit: "% rotacji pieszo", hint: "np. 50", benchmarks: { pro: 100, good: 75, ok: 50, bad: 25 } },
+            { name: "Wywiad — punkty widokowe", desc: "Ile razy zdobyłeś info o przeciwnikach z wieży/wzgórza avg/grę.", metric: "count", unit: "razy/grę", hint: "np. 2", benchmarks: { pro: 5, good: 3, ok: 2, bad: 0 } }
+          ],
+          long: [
+            { name: "Gatekeeping — 2 kille w mid przez 7 gier", desc: "Łączna liczba killów na rotujących przeciwnikach.", metric: "count", unit: "killów łącznie z 7 gier", hint: "np. 5", benchmarks: { pro: 14, good: 8, ok: 4, bad: 0 } },
+            { name: "Przetrwanie do 5 strefy — 80% gier", desc: "% gier gdzie dotarłeś do 5 strefy.", metric: "percent", unit: "% gier do 5 strefy", hint: "np. 57", benchmarks: { pro: 100, good: 86, ok: 71, bad: 43 } }
+          ]
         },
         advanced: {
-          quick: ["Rozegraj 3 mecze z intencją szukania walk o Surge (Storm Surge tags)", "Zadaj min. 300 damage na odległość w midgame"],
-          medium: ["Rozegraj 5 meczów rankingowych", "Zajmij pozycję w centralnym boksie strefy i utrzymaj ją odpierając ataki (Base up)", "Utrzymuj poziom Storm Surge powyżej progu o min. 200 pkt"],
-          long: ["Rozegraj 8 meczów rankingowych", "Wykonaj rotację przez najtrudniejsze, gęsto zabudowane obszary", "Zadaj min. 800 damage z dystansu przed 5 strefą", "Przeanalizuj decyzje o podjęciu walk w midgame z ostatnich gier"]
+          quick: [
+            { name: "Surge tagging — 300 DMG z dystansu", desc: "Łączny damage oddany z dystansu w midgame (avg/grę).", metric: "count", unit: "DMG z dystansu avg/grę", hint: "np. 280", benchmarks: { pro: 500, good: 350, ok: 250, bad: 100 } }
+          ],
+          medium: [
+            { name: "Base up w centrum 5 meczów", desc: "% gier gdzie utrzymałeś centralne pozycjonowanie pod presją.", metric: "percent", unit: "% gier z base up w centrum", hint: "np. 60", benchmarks: { pro: 100, good: 80, ok: 60, bad: 30 } },
+            { name: "Storm Surge > próg o 200 pkt", desc: "% gier gdzie utrzymałeś surge powyżej progu.", metric: "percent", unit: "% gier nad surge", hint: "np. 60", benchmarks: { pro: 100, good: 80, ok: 60, bad: 20 } }
+          ],
+          long: [
+            { name: "Trudne rotacje — 8 meczów", desc: "% gier z perfekcyjną rotacją przez gęste obszary.", metric: "percent", unit: "% perfekcyjnych rotacji", hint: "np. 62", benchmarks: { pro: 100, good: 87, ok: 62, bad: 37 } },
+            { name: "800 DMG przed 5 strefą — łącznie 8 gier", desc: "Łączny damage z dystansu przez 8 gier.", metric: "count", unit: "DMG łącznie (8 gier)", hint: "np. 5000", benchmarks: { pro: 8000, good: 5500, ok: 3500, bad: 1500 } }
+          ]
         },
         pro: {
-          quick: ["Zadaj 500 damage z karabinu AR w 3 strefie bez otrzymania obrażeń w zamian", "Wykonaj perfekcyjny base-up w centrum 4 strefy"],
-          medium: ["Rozegraj 6 meczów w lobby o najwyższym poziomie trudności", "Zabezpiecz optymalną rotację w strefach z limitem Storm Surge", "Wyeliminuj zespół próbujący przejąć Twój boks w midgame"],
-          long: ["Rozegraj 10 meczów na poziomie Champion/Unreal lub w turnieju", "Osiągnij 90% sukcesu rotacji w midgame", "Utrzymuj zapas 1500 materiałów i pełnych leków przy wejściu do 5 strefy we wszystkich meczach"]
+          quick: [
+            { name: "500 DMG AR w 3 strefie bez receivowania", desc: "% gier gdzie zadałeś 500+ DMG bez otrzymania obrażeń w mid.", metric: "percent", unit: "% gier z 500 dmg / 0 received", hint: "np. 33", benchmarks: { pro: 100, good: 67, ok: 33, bad: 0 } }
+          ],
+          medium: [
+            { name: "Perfekcyjna rotacja w surge — 6 gier", desc: "% gier z optymalną rotacją przy surge.",  metric: "percent", unit: "% rotacji bez strat", hint: "np. 67", benchmarks: { pro: 100, good: 83, ok: 67, bad: 33 } }
+          ],
+          long: [
+            { name: "1500 matsów + full heale wchodząc w 5 strefę — 10 gier", desc: "% gier gdzie wejście do 5 strefy spełnia warunki.", metric: "percent", unit: "% gier ze spełnionymi warunkami", hint: "np. 70", benchmarks: { pro: 100, good: 80, ok: 60, bad: 30 } }
+          ]
         }
       },
       endgame: {
-        name: "Endgame (Późna faza)",
-        description: "Trening w końcowych, ruchomych strefach (moving zones), zarządzanie materiałami w locie, szukanie odświeżeń (refreshes) i walka w tunelach tarasowych.",
+        name: "Endgame",
+        icon: "🌀",
+        color: "#22c55e",
+        description: "Trening w ruchomych strefach, zarządzanie materiałami, szukanie odświeżeń i walka w tunelach tarasowych.",
         maps: ["Zone Wars (5422-9598-1002)", "Noble / Elite Scrims", "Custom Matchmaking"],
         easy: {
-          quick: ["Rozegraj 3 rundy Zone Wars", "Skup się wyłącznie na trzymaniu się przodu strefy (Front-side rotate)"],
-          medium: ["Rozegraj 5 rund Zone Wars", "Rotuj na najniższym poziomie (Ground layer) oszczędzając budulce", "Przetrwaj do Top 3 w co najmniej 2 rundach"],
-          long: ["Rozegraj 8 rund Zone Wars", "Wykonaj 2 udane odświeżenia materiałów (kills on rotate)", "Przetrwaj do Top 5 w 60% rund"]
+          quick: [
+            { name: "Zone Wars — 3 rundy, front-side rotate", desc: "% rund gdzie pozostałeś na przodzie strefy.", metric: "percent", unit: "% rund front-side", hint: "np. 33", benchmarks: { pro: 100, good: 67, ok: 33, bad: 0 } }
+          ],
+          medium: [
+            { name: "Zone Wars — 5 rund, ground layer", desc: "% rund gdzie rotowałeś dolną warstwą z zachowaniem materiałów.", metric: "percent", unit: "% rund ground layer", hint: "np. 60", benchmarks: { pro: 100, good: 80, ok: 60, bad: 20 } },
+            { name: "Top 3 w co najmniej 2/5 rundach", desc: "Liczba rund gdzie dotarłeś do Top 3.", metric: "count", unit: "Top 3 / 5 rund", hint: "np. 2", benchmarks: { pro: 5, good: 3, ok: 2, bad: 0 } }
+          ],
+          long: [
+            { name: "Zone Wars — 8 rund", desc: "Liczba Top 5 w 8 rundach.", metric: "count", unit: "Top 5 / 8 rund", hint: "np. 4", benchmarks: { pro: 7, good: 5, ok: 3, bad: 1 } }
+          ]
         },
         medium: {
-          quick: ["Rozegraj 3 mecze w Zone Wars", "Używaj warstw pośrednich (Mid-ground layers) do rotacji"],
-          medium: ["Rozegraj 5 gier Zone Wars lub Scrimów", "Wykonaj tunelowanie skośne (Diagonal tarasowanie) podczas ruchu strefy", "Zdobądź 3 eliminacje w strefach ruchomych"],
-          long: ["Rozegraj 10 rund Zone Wars", "Przetrwaj ruchome strefy w co najmniej 7 rundach", "Przećwicz asystowanie partnerowi z drużyny podczas tarasowania (double tarping)"]
+          quick: [
+            { name: "Mid-ground layers rotate — 3 rundy ZW", desc: "% rund gdzie skutecznie użyłeś warstwy środkowej.", metric: "percent", unit: "% rund z mid-ground", hint: "np. 67", benchmarks: { pro: 100, good: 100, ok: 67, bad: 33 } }
+          ],
+          medium: [
+            { name: "Diagonal tarowanie — 5 rund ZW/Scrims", desc: "Ile razy z powodzeniem tarpowałeś ukośnie.", metric: "count", unit: "udanych diagonal tarps / 5 rund", hint: "np. 4", benchmarks: { pro: 10, good: 7, ok: 4, bad: 1 } },
+            { name: "3 eliminacje w ruchomych strefach łącznie", desc: "Łączna liczba killów w ruchomych strefach.", metric: "count", unit: "killów w zone warrach", hint: "np. 3", benchmarks: { pro: 8, good: 5, ok: 3, bad: 0 } }
+          ],
+          long: [
+            { name: "Zone Wars — 10 rund, przetrwanie", desc: "% rund gdzie przetrwałeś ruchomą strefę.", metric: "percent", unit: "% przetrwanych rund", hint: "np. 70", benchmarks: { pro: 100, good: 80, ok: 60, bad: 30 } },
+            { name: "Double tarping z partnerem", desc: "Ile razy skoordynowałeś podwójne tarpy z teammatem.", metric: "count", unit: "udanych double tarpów", hint: "np. 3", benchmarks: { pro: 8, good: 5, ok: 3, bad: 0 } }
+          ]
         },
         advanced: {
-          quick: ["Rozegraj 5 rund zaawansowanych scrimów", "Przejmij kontrolę nad warstwą górną (High-ground control) w 4 strefie ruchomej"],
-          medium: ["Rozegraj 8 rund zaawansowanych scrimów", "Utrzymaj High-ground do samego końca rundy w co najmniej 3 grach", "Zrób 4 eliminacje za pomocą flopperów/heala w burzy (heal-off) lub presji z dołu"],
-          long: ["Rozegraj 12 rund scrimów", "Wykazuj średnią lokatę końcową Top 3", "Przećwicz zaawansowane techniki spadania z wysokości (waterfalling) pod presją ognia z góry"]
+          quick: [
+            { name: "High-ground control w 4 strefie ruchomej — 5 rund", desc: "% rund gdzie przejąłeś i utrzymałeś wysoką pozycję.", metric: "percent", unit: "% rund z HG control", hint: "np. 40", benchmarks: { pro: 100, good: 80, ok: 60, bad: 20 } }
+          ],
+          medium: [
+            { name: "HG do końca rundy — 3/8 rund", desc: "Liczba rund gdzie utrzymałeś high-ground do samego końca.", metric: "count", unit: "rund z HG do końca / 8", hint: "np. 3", benchmarks: { pro: 7, good: 5, ok: 3, bad: 1 } },
+            { name: "4 eliminacje heal-off / presja — łącznie 8 rund", desc: "Łączna liczba killów z presji lub burzy.", metric: "count", unit: "killów heal-off łącznie", hint: "np. 3", benchmarks: { pro: 8, good: 5, ok: 3, bad: 0 } }
+          ],
+          long: [
+            { name: "12 rund scrimów — avg Top 3", desc: "Avg placement z 12 rund scrimów.", metric: "score", unit: "avg placement", hint: "np. 4", benchmarks: { pro: 2, good: 3, ok: 5, bad: 8 } },
+            { name: "Waterfalling pod presją — ile razy poprawnie", desc: "Ile razy wykonałeś poprawne waterfalling podczas ostrzału z góry.", metric: "count", unit: "udanych waterfallów", hint: "np. 3", benchmarks: { pro: 8, good: 5, ok: 3, bad: 0 } }
+          ]
         },
         pro: {
-          quick: ["Rozegraj 5 gier w profesjonalnych lobby scrimowych", "Utrzymaj perfekcyjny tarping w 9 strefie"],
-          medium: ["Rozegraj 8 gier scrimowych", "Zrób min. 5 odświeżeń (refreshes) poprzez precyzyjne odcinanie rywali w burzy", "Koordynuj rotację zespołu na warstwie Mid-ground"],
-          long: ["Rozegraj 15 gier w lobby turniejowym/scrimowym premium", "Wygraj co najmniej 5 gier z wysoką liczbą eliminacji w końcówce", "Przeprowadź pełną analizę VOD z gry końcowej pod kątem optymalizacji zużycia materiałów"]
+          quick: [
+            { name: "Perfekcyjny tarping w 9 strefie — 5 gier", desc: "% gier z perfekcyjnym tarpingiem w ostatnich strefach.", metric: "percent", unit: "% gier perfekcyjny tarping", hint: "np. 40", benchmarks: { pro: 100, good: 80, ok: 60, bad: 20 } }
+          ],
+          medium: [
+            { name: "5 odświeżeń przez precyzyjne cięcia — 8 gier", desc: "Łączna liczba killów na odświeżeniu (refresh kills).", metric: "count", unit: "refresh killów łącznie", hint: "np. 4", benchmarks: { pro: 10, good: 6, ok: 3, bad: 0 } }
+          ],
+          long: [
+            { name: "5 wygranych z killami w końcówce — 15 gier", desc: "Liczba wygranych gier z eliminacjami w endgame.", metric: "count", unit: "wygranych z killami / 15 gier", hint: "np. 3", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } },
+            { name: "VOD analiza zarządzania matsami w endgame", desc: "Obejrzyj własny replay i opisz efektywność użycia matsów.", metric: "text", unit: "", hint: "np. 'Marnowałem w walce zamiast tarpować'" }
+          ]
         }
       },
       mechanics: {
-        name: "Mechanics (Budowanie + Edycja)",
-        description: "Trening łączony. Szybkie budowanie osłon, natychmiastowe edytowanie okien i resetowanie boksów w symulowanych sytuacjach 1v1.",
+        name: "Mechanics",
+        icon: "⚡",
+        color: "#f0c040",
+        description: "Trening łączony: budowanie + edycja. Symulacje 1v1, piece control, box fights i koordynacja rąk.",
         maps: ["MECHANICS TRAINING V5 🎯 (2424-4344-7824)"],
         easy: {
-          quick: ["10 minut treningu Triple-edits połączonych z boksowaniem botów"],
-          medium: ["15 minut Piece Control + natychmiastowa edycja ściany na botach", "Ukończenie 2 tras parkour budowlanego"],
-          long: ["25 minut ćwiczeń kombinowanych", "Ukończenie 5 tras Piece Control", "5 minut szybkiej wymiany boksu (Box replacing test)"]
+          quick: [
+            { name: "Triple-edity + boksowanie botów — 10 min", desc: "Łączna liczba poprawnych triple-edit → strzał sekwencji.", metric: "count", unit: "poprawnych sekwencji w 10 min", hint: "np. 40", benchmarks: { pro: 90, good: 65, ok: 40, bad: 15 } }
+          ],
+          medium: [
+            { name: "Piece Control + edit ściany na botach — 15 min", desc: "Ile razy poprawnie wykonałeś pełną sekwencję PC → edit → strzał.", metric: "count", unit: "pełnych sekwencji", hint: "np. 25", benchmarks: { pro: 60, good: 40, ok: 25, bad: 10 } },
+            { name: "Parkour budowlany — 2 trasy", desc: "Łączny czas ukończenia 2 tras parkour budowlanego.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 90", benchmarks: { pro: 45, good: 70, ok: 95, bad: 140 } }
+          ],
+          long: [
+            { name: "Kombinowane ćwiczenia — 25 min", desc: "25 min mixu Piece Control + edycja.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "5 tras Piece Control — łączny czas", desc: "Czas ukończenia 5 tras PC.", metric: "time_min", unit: "min", hint: "np. 8", benchmarks: { pro: 4, good: 7, ok: 10, bad: 16 } },
+            { name: "Box replacing test — 5 min", desc: "Ile razy w 5 min poprawnie zastąpiłeś boks bokxem (box replace).", metric: "count", unit: "poprawnych box replace'ów", hint: "np. 30", benchmarks: { pro: 70, good: 50, ok: 30, bad: 10 } }
+          ]
         },
         medium: {
-          quick: ["10 minut dynamicznej symulacji Piece Control (Ruchome boty)"],
-          medium: ["20 minut kombinacji: freebuild + podwójna edycja + strzał do tarczy", "Przejście trasy Mechanics Challenge #2"],
-          long: ["30 minut zaawansowanego treningu mechanicznego", "Pokonanie 10 botów w sekwencji edycji bocznej (Side jump shot)", "Przejście 3 tras Piece Control Tunneling bez chybionego strzału"]
+          quick: [
+            { name: "Dynamiczne PC z ruchomymi botami — 10 min", desc: "Piece Control na ruchomych botach. Ile trafień do bota.", metric: "count", unit: "trafień do bota w 10 min", hint: "np. 22", benchmarks: { pro: 50, good: 35, ok: 22, bad: 8 } }
+          ],
+          medium: [
+            { name: "Freebuild + double edit + strzał do tarczy — 20 min", desc: "Kombinacja wszystkich mechanik. Ilość błędów.", metric: "count", unit: "błędów łącznie", hint: "np. 12", benchmarks: { pro: 0, good: 5, ok: 12, bad: 25 } },
+            { name: "Mechanics Challenge #2 — czas", desc: "Czas ukończenia trasy Mechanics Challenge #2.", metric: "time_sec", unit: "sek", hint: "np. 95", benchmarks: { pro: 55, good: 80, ok: 100, bad: 140 } }
+          ],
+          long: [
+            { name: "Zaawansowany trening mechaniczny — 30 min", desc: "30 min kompleksowych mechanik.", metric: "text", unit: "", hint: "Notatka" },
+            { name: "10 botów w sekwencji side jump shot", desc: "Czas pokonania 10 botów z side-jump shotgunowaniem.", metric: "time_sec", unit: "sek", hint: "np. 120", benchmarks: { pro: 60, good: 90, ok: 130, bad: 200 } },
+            { name: "3 trasy PC Tunneling bez chybionego", desc: "Liczba chybień przez 3 trasy.", metric: "count", unit: "chybień łącznie", hint: "np. 4", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } }
+          ]
         },
         advanced: {
-          quick: ["12 minut treningu Side-jumps i Phase-tricks (wchodzenie do boksu)"],
-          medium: ["20 minut zaawansowanych mechanik (Clipped scenarios)", "Ukończenie trasy Piece Control na czas poniżej 3:00 min"],
-          long: ["35 minut intensywnego treningu mechanik", "Wykonanie 30 udanych eliminacji botów zza prawego kąta (Right-hand peek)", "Nauka i opanowanie 2 nowych zaawansowanych retakes"]
+          quick: [
+            { name: "Side-jumps i Phase-tricks — 12 min", desc: "Ile poprawnych phase-tricków (wejście do boksu przez edycję) wykonałeś.", metric: "count", unit: "poprawnych phase tricks", hint: "np. 25", benchmarks: { pro: 60, good: 40, ok: 25, bad: 8 } }
+          ],
+          medium: [
+            { name: "Clipped scenarios — 20 min zaawansowane", desc: "Czas ukończenia trasy Piece Control na czas.", metric: "time_sec", unit: "sek (najlepszy wynik)", hint: "np. 175", benchmarks: { pro: 130, good: 170, ok: 220, bad: 300 } }
+          ],
+          long: [
+            { name: "35 min intensywnych mechanik", desc: "Ilość błędów przez całą sesję (subiektywna ocena).", metric: "count", unit: "błędów subiektywnie", hint: "np. 8", benchmarks: { pro: 0, good: 3, ok: 8, bad: 18 } },
+            { name: "30 killów zza prawego kąta (right-hand peek)", desc: "Czas potrzebny do 30 killów right-hand peek.", metric: "time_min", unit: "min", hint: "np. 12", benchmarks: { pro: 6, good: 9, ok: 13, bad: 20 } },
+            { name: "2 nowe zaawansowane retakes — nauczono", desc: "Zanotuj nazwy/opis 2 nowych retakes których się nauczyłeś.", metric: "text", unit: "", hint: "np. 'Waterfall + instant retake, Cone flip into box'" }
+          ]
         },
         pro: {
-          quick: ["12 minut maksymalnie szybkich kombinacji mechanicznych (High APM)"],
-          medium: ["25 minut treningu mechanicznego w tempie 1.35x", "Perfekcyjne wykonanie 20 ruchów Piece Control w locie (in-air placement)"],
-          long: ["40 minut treningu mechanik", "Ukończenie całego modułu Mechanics Challenge w tempie PRO z celnością 95%", "Opracowanie autorskiej sekwencji startowej w pojedynkach 1v1"]
+          quick: [
+            { name: "High APM kombinacje — 12 min", desc: "Maksymalna liczba poprawnych kombinacji mechanik w 12 min.", metric: "count", unit: "kombinacji/min (avg)", hint: "np. 8", benchmarks: { pro: 14, good: 10, ok: 7, bad: 3 } }
+          ],
+          medium: [
+            { name: "Trening 1.35x tempo — 25 min", desc: "Liczba błędów w sesji na przyspieszonym tempie.", metric: "count", unit: "błędów w sesji", hint: "np. 5", benchmarks: { pro: 0, good: 2, ok: 5, bad: 12 } },
+            { name: "20 in-air placement — czas i błędy", desc: "Czas wykonania 20 budowli w powietrzu.", metric: "time_sec", unit: "sek", hint: "np. 95", benchmarks: { pro: 55, good: 80, ok: 100, bad: 140 } }
+          ],
+          long: [
+            { name: "Cały moduł Mechanics Challenge PRO — celność 95%", desc: "% celności podczas całego modułu.",  metric: "percent", unit: "% celności", hint: "np. 88", benchmarks: { pro: 98, good: 92, ok: 85, bad: 70 } },
+            { name: "Autorska sekwencja startowa 1v1 — opisz", desc: "Zanotuj własną sekwencję startową którą opracowałeś.", metric: "text", unit: "", hint: "np. 'Floor + ramp + wall + instant floor edit + strafe right + flick'" }
+          ]
         }
       },
       game: {
-        name: "Game (Gra Całościowa)",
-        description: "Pełny symulator meczowy. Połączenie wiedzy o lądowaniu (offspawn), rotacji (midgame) i radzenia sobie w końcówce (endgame).",
+        name: "Game (Pełna Gra)",
+        icon: "🏆",
+        color: "var(--text)",
+        description: "Symulator pełnych meczów. Łączy offspawn, midgame i endgame w jeden spójny trening.",
         maps: ["Gry rankingowe Fortnite (Ranked)", "Turnieje próbne (Scrims)"],
         easy: {
-          quick: ["Rozegraj 1 pełną grę rankingową", "Zapisz bilans decyzji i zgonów"],
-          medium: ["Rozegraj 3 pełne gry rankingowe", "Skup się na zrównoważonej grze i bezpiecznym przejściu stref"],
-          long: ["Rozegraj 5 pełnych gier rankingowych", "Przetrwaj do Top 15 w co najmniej 3 grach"]
+          quick: [
+            { name: "1 pełna gra rankingowa — zapisz wynik", desc: "Twój placement w tym meczu.", metric: "count", unit: "placement (np. 42)", hint: "np. 42", benchmarks: { pro: 1, good: 5, ok: 15, bad: 40 } }
+          ],
+          medium: [
+            { name: "3 pełne gry rankingowe — avg placement", desc: "Twój średni placement z 3 gier.", metric: "score", unit: "avg placement", hint: "np. 25", benchmarks: { pro: 5, good: 12, ok: 22, bad: 45 } }
+          ],
+          long: [
+            { name: "5 pełnych gier — Top 15 w min 3/5", desc: "Liczba gier gdzie trafiłeś do Top 15.", metric: "count", unit: "Top 15 / 5 gier", hint: "np. 2", benchmarks: { pro: 5, good: 4, ok: 3, bad: 1 } }
+          ]
         },
         medium: {
-          quick: ["Rozegraj 2 pełne gry rankingowe", "Zdobądź min. 2 eliminacje przed 5 strefą"],
-          medium: ["Rozegraj 4 mecze rankingowe", "Zajmij średnie miejsce powyżej Top 20", "Zdobądź łącznie min. 5 eliminacji"],
-          long: ["Rozegraj 6 meczów rankingowych", "Osiągnij placement Top 10 w przynajmniej 3 meczach", "Zapisz i przeanalizuj bilans leków oraz materiałów w końcówkach"]
+          quick: [
+            { name: "2 mecze — min 2 eliminacje przed 5 strefą", desc: "Łączna liczba eliminacji przed 5 strefą.", metric: "count", unit: "killów łącznie (2 gry)", hint: "np. 3", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } }
+          ],
+          medium: [
+            { name: "4 mecze rankingowe — avg placement", desc: "Twój średni placement z 4 gier.", metric: "score", unit: "avg placement", hint: "np. 18", benchmarks: { pro: 5, good: 10, ok: 18, bad: 30 } },
+            { name: "5 eliminacji łącznie z 4 gier", desc: "Łączna liczba killów przez 4 mecze.", metric: "count", unit: "killów łącznie", hint: "np. 4", benchmarks: { pro: 12, good: 7, ok: 4, bad: 1 } }
+          ],
+          long: [
+            { name: "6 meczów — Top 10 w min 3 grach", desc: "Liczba gier z Top 10 z 6 meczów.", metric: "count", unit: "Top 10 / 6 gier", hint: "np. 2", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } },
+            { name: "Analiza leków i matsów w końcówkach", desc: "Ile razy wchodząc w 6 strefę miałeś pełne leki i 1000+ matsów.", metric: "count", unit: "razy / 6 gier", hint: "np. 2", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } }
+          ]
         },
         advanced: {
-          quick: ["Rozegraj 3 gry rankingowe z agresywnym mid-game"],
-          medium: ["Rozegraj 5 gier w scrimach lub rankedach na wysokim poziomie", "Zdobądź średnio 3 eliminacje na mecz", "Przetrwaj do Top 5 w co najmniej 2 grach"],
-          long: ["Rozegraj 8 gier turniejowych lub scrimów premium", "Utrzymaj średni placement w Top 8", "Przeprowadź pełną analizę VOD z 2 meczów z perspektywy błędów w komunikacji i pozycjonowaniu"]
+          quick: [
+            { name: "3 agresywne mid-game gry rankingowe", desc: "Łączna liczba killów przez 3 agresywne gry.", metric: "count", unit: "killów łącznie", hint: "np. 5", benchmarks: { pro: 12, good: 8, ok: 5, bad: 1 } }
+          ],
+          medium: [
+            { name: "5 gier — avg 3 kille/mecz", desc: "Śr. liczba eliminacji na grę z 5 meczów.", metric: "score", unit: "avg killów/mecz", hint: "np. 2.5", benchmarks: { pro: 5, good: 3.5, ok: 2, bad: 0.5 } },
+            { name: "Top 5 w co najmniej 2/5 grach", desc: "Liczba gier z Top 5 z 5 meczów.", metric: "count", unit: "Top 5 / 5 gier", hint: "np. 1", benchmarks: { pro: 4, good: 3, ok: 2, bad: 0 } }
+          ],
+          long: [
+            { name: "8 gier — avg placement Top 8", desc: "Średni placement z 8 gier.",  metric: "score", unit: "avg placement", hint: "np. 9", benchmarks: { pro: 4, good: 7, ok: 10, bad: 20 } },
+            { name: "VOD analiza błędów komunikacji i pozycjonowania", desc: "Opisz główne błędy z 2 obejrzanych VODów.", metric: "text", unit: "", hint: "np. 'Zły kąt podczas walki, nie komunikowałem pozycji'" }
+          ]
         },
         pro: {
-          quick: ["Rozegraj 3 mecze turniejowe z pełnym skupieniem", "Zajmij miejsce w Top 5"],
-          medium: ["Rozegraj 6 gier turniejowych", "Zdobądź Victory Royale w co najmniej 1 meczu", "Utrzymaj średni wskaźnik K/D na poziomie powyżej 3.0"],
-          long: ["Rozegraj 10 meczów turniejowych o stawkę", "Wygraj min. 2 gry z dużą liczbą eliminacji", "Przeanalizuj decyzje o rotacji w strefach ruchomych pod kątem efektywności zużycia matsów i czasu odświeżeń"]
+          quick: [
+            { name: "3 mecze turniejowe — Top 5", desc: "Liczba gier z Top 5 z 3 meczów.", metric: "count", unit: "Top 5 / 3 gier", hint: "np. 1", benchmarks: { pro: 3, good: 2, ok: 1, bad: 0 } }
+          ],
+          medium: [
+            { name: "6 gier turniejowych — 1 Victory Royale", desc: "Liczba VR z 6 gier.", metric: "count", unit: "Victory Royale / 6 gier", hint: "np. 0", benchmarks: { pro: 3, good: 2, ok: 1, bad: 0 } },
+            { name: "Avg K/D powyżej 3.0 przez 6 gier", desc: "Twój K/D z tych 6 gier.", metric: "score", unit: "K/D", hint: "np. 2.5", benchmarks: { pro: 4, good: 3.2, ok: 2, bad: 0.8 } }
+          ],
+          long: [
+            { name: "10 meczów turniejowych — 2 VR + kille", desc: "Liczba wygranych z eliminacjami w końcówce.", metric: "count", unit: "VR z killami / 10 gier", hint: "np. 1", benchmarks: { pro: 4, good: 2, ok: 1, bad: 0 } },
+            { name: "Analiza rotacji w ruchomych strefach", desc: "Opisz efektywność rotacji z ostatnich meczów.", metric: "text", unit: "", hint: "np. 'W 3 z 5 meczów miałem złe pozycjonowanie w 8 strefie'" }
+          ]
         }
       }
     };
@@ -6629,26 +6931,45 @@
       const data = TRAINING_EXERCISES[selectedTrainingKey];
       if (!data) return;
 
-      const items = data[currentSelectedDifficulty][currentSelectedDuration] || [];
+      const items = data[currentSelectedDifficulty]?.[currentSelectedDuration] || [];
       const mapList = data.maps || [];
+      const catColor = data.color || 'var(--cyan)';
 
       let html = '';
       if (mapList.length > 0) {
         html += `
           <div style="background: rgba(245, 197, 86, 0.05); border: 1.5px solid var(--orange); padding: 12px 14px; border-radius: var(--radius-md); font-size:12.5px; line-height: 1.4; color: var(--text);">
-            📍 <b>Rekomendowana mapa/tryb:</b> ${mapList.join(', ')}
+            📍 <b>Rekomendowana mapa/tryb:</b> ${mapList.join(' · ')}
           </div>
         `;
       }
 
-      html += items.map((ex, idx) => `
-        <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 14px; border-radius:var(--radius-md);">
-          <div style="display:flex; gap:12px; align-items:center; margin-bottom:10px;">
-            <div style="width:24px; height:24px; border-radius:50%; background:var(--grad-main); color:#0c0f17; font-size:11px; font-weight:800; display:grid; place-items:center; flex-shrink:0;">${idx + 1}</div>
-            <div style="font-size:13.5px; color:var(--text); line-height:1.5; font-weight:600;">${escapeHtml(ex)}</div>
+      html += items.map((ex, idx) => {
+        const exName = typeof ex === 'object' ? ex.name : ex;
+        const exDesc = typeof ex === 'object' ? ex.desc : '';
+        const benchmarks = (typeof ex === 'object' && ex.benchmarks) ? ex.benchmarks : null;
+        let benchHtml = '';
+        if (benchmarks) {
+          benchHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+            <span style="font-size:10px;color:var(--text-dim);">Benchmarki:</span>
+            ${benchmarks.pro !== undefined ? `<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(100,255,100,0.1);color:#4ade80;font-weight:700;">PRO: ${benchmarks.pro}</span>` : ''}
+            ${benchmarks.good !== undefined ? `<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(56,189,248,0.1);color:var(--cyan);font-weight:700;">Dobry: ${benchmarks.good}</span>` : ''}
+            ${benchmarks.ok !== undefined ? `<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(245,197,86,0.1);color:var(--orange);">OK: ${benchmarks.ok}</span>` : ''}
+            ${benchmarks.bad !== undefined ? `<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,0.1);color:var(--danger);">Słaby: ${benchmarks.bad}</span>` : ''}
+          </div>`;
+        }
+        return `
+        <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 14px 16px; border-radius:var(--radius-md);">
+          <div style="display:flex; gap:12px; align-items:start;">
+            <div style="width:26px; height:26px; border-radius:50%; background:${catColor}; color:#0c0f17; font-size:11px; font-weight:800; display:grid; place-items:center; flex-shrink:0; margin-top:2px;">${idx + 1}</div>
+            <div style="flex:1;">
+              <div style="font-size:13.5px; color:var(--text); font-weight:700; margin-bottom:3px;">${escapeHtml(exName)}</div>
+              ${exDesc ? `<div style="font-size:12px;color:var(--text-dim);line-height:1.5;">${escapeHtml(exDesc)}</div>` : ''}
+              ${benchHtml}
+            </div>
           </div>
         </div>
-      `).join('');
+      `}).join('');
 
       container.innerHTML = html;
 
@@ -6660,30 +6981,66 @@
       const logContainer = document.getElementById('trainingExerciseLogRows');
       if (!logContainer) return;
 
-      logContainer.innerHTML = items.map((ex, idx) => `
-        <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-soft); border-radius:var(--radius-md); padding:16px;">
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:700; color:var(--text);">
-              <input type="checkbox" data-ex-idx="${idx}" id="exCheck${idx}" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;" />
-              <span>${idx + 1}. ${escapeHtml(ex)}</span>
-            </label>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      const metricInputHtml = (ex, idx) => {
+        if (typeof ex !== 'object' || ex.metric === 'text') {
+          return `<div class="field" style="margin:0;grid-column:span 2;">
+            <label style="font-size:11px;">Notatka do ćwiczenia</label>
+            <textarea id="exResult${idx}" placeholder="${ex.hint || 'Opisz jak poszło...'}" style="min-height:52px;resize:vertical;font-size:12px;padding:7px 10px;"></textarea>
+          </div>`;
+        }
+        const metric = ex.metric;
+        const unit = ex.unit;
+        const hint = ex.hint || '';
+        let inputType = 'number';
+        let inputStep = '1';
+        if (metric === 'time_sec' || metric === 'time_min') { inputType = 'number'; inputStep = '0.1'; }
+        if (metric === 'percent') { inputType = 'number'; inputStep = '1'; }
+
+        const unitLabel = metric === 'time_sec' ? 'sekund' : metric === 'time_min' ? 'minut' : metric === 'score' ? 'pkt' : metric === 'percent' ? '%' : metric === 'count' ? '' : '';
+        const labelText = unit || unitLabel;
+
+        return `<div class="field" style="margin:0;grid-column:span 2;">
+          <label style="font-size:11px;">Wynik <span style="color:var(--text-dim)">(${labelText})</span></label>
+          <input type="${inputType}" step="${inputStep}" id="exResult${idx}" placeholder="${hint}" style="font-size:12px;padding:7px 10px;" />
+        </div>`;
+      };
+
+      logContainer.innerHTML = items.map((ex, idx) => {
+        const exName = typeof ex === 'object' ? ex.name : ex;
+        const benchmarks = (typeof ex === 'object' && ex.benchmarks) ? ex.benchmarks : null;
+
+        let benchHint = '';
+        if (benchmarks) {
+          const entries = Object.entries(benchmarks)
+            .filter(([k]) => ['pro','good','ok','bad'].includes(k))
+            .map(([k, v]) => {
+              const colors = { pro: '#4ade80', good: 'var(--cyan)', ok: 'var(--orange)', bad: 'var(--danger)' };
+              const labels = { pro: 'PRO', good: 'Dobry', ok: 'OK', bad: 'Słaby' };
+              return `<span style="font-size:10px;color:${colors[k]};">${labels[k]}: <b>${v}</b></span>`;
+            }).join(' · ');
+          if (entries) benchHint = `<div style="font-size:10px;color:var(--text-dim);margin-bottom:8px;">${entries}</div>`;
+        }
+
+        return `
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:16px;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;">
+            <input type="checkbox" id="exCheck${idx}" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;flex-shrink:0;" />
+            <span style="font-size:13px;font-weight:700;color:var(--text);">${idx + 1}. ${escapeHtml(exName)}</span>
+          </label>
+          ${benchHint}
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            ${metricInputHtml(ex, idx)}
             <div class="field" style="margin:0;">
-              <label style="font-size:11px;">Wynik / Czas osiągnięty (opcjonalnie)</label>
-              <input type="text" id="exResult${idx}" placeholder="np. 1:45 min, 85 pkt, 3/5 rund" style="font-size:12px; padding: 7px 10px;" />
+              <label style="font-size:11px;">Trudność (1–10)</label>
+              <input type="number" id="exDifficulty${idx}" min="1" max="10" placeholder="np. 7" style="font-size:12px;padding:7px 10px;" />
             </div>
             <div class="field" style="margin:0;">
-              <label style="font-size:11px;">Trudność wykonania (1–10)</label>
-              <input type="number" id="exDifficulty${idx}" min="1" max="10" placeholder="np. 7" style="font-size:12px; padding: 7px 10px;" />
+              <label style="font-size:11px;">Notatka</label>
+              <input type="text" id="exNote${idx}" placeholder="Krótka notatka..." style="font-size:12px;padding:7px 10px;" />
             </div>
-          </div>
-          <div class="field" style="margin:12px 0 0 0;">
-            <label style="font-size:11px;">Notatka do ćwiczenia (opcjonalnie)</label>
-            <textarea id="exNote${idx}" placeholder="np. Miałem problem z prawą stroną, poprawię następnym razem..." style="min-height:55px; resize:vertical; font-size:12px; padding: 7px 10px;"></textarea>
           </div>
         </div>
-      `).join('');
+      `}).join('');
     }
 
     // ---------- Admin: Training tab list ----------
@@ -6691,42 +7048,59 @@
       const container = document.getElementById('adminTrainingCategoryList');
       if (!container) return;
 
-      const categoryColors = {
-        building: 'var(--orange)',
-        editing: 'var(--purple)',
-        aim: 'var(--danger)',
-        offspawn: 'var(--cyan)',
-        midgame: 'var(--accent)',
-        endgame: 'var(--green, #22c55e)',
-        mechanics: '#f0c040',
-        game: 'var(--text)'
+      const diffLabels = { easy: '🟢 Łatwy', medium: '🟡 Średni', advanced: '🔴 Zaawansowany', pro: '⭐ PRO' };
+      const durLabels = { quick: '⚡ Szybki', medium: '⏱ Średni', long: '🕐 Długi' };
+      const metricLabels = {
+        time_sec: '⏱ czas (sek)', time_min: '⏱ czas (min)', score: '🏆 wynik', count: '🔢 liczba',
+        percent: '📊 %', rounds: '🔄 rundy', text: '📝 notatka'
       };
 
-      const diffLabels = { easy: 'Łatwy', medium: 'Średni', advanced: 'Zaawansowany', pro: 'PRO' };
-      const durLabels = { quick: '⚡ Szybki', medium: '⏱ Średni', long: '🕐 Długi' };
-
       container.innerHTML = Object.entries(TRAINING_EXERCISES).map(([key, cat]) => {
-        const color = categoryColors[key] || 'var(--cyan)';
+        const color = cat.color || 'var(--cyan)';
+
         const mapsHtml = cat.maps && cat.maps.length > 0
-          ? `<div style="font-size:11.5px;color:var(--text-dim);margin-bottom:12px;">📍 ${cat.maps.join(' · ')}</div>`
+          ? `<div style="font-size:11.5px;color:var(--text-dim);margin-bottom:16px;padding:8px 12px;background:rgba(245,197,86,0.05);border-radius:6px;border:1px solid var(--orange);">📍 ${cat.maps.join(' · ')}</div>`
           : '';
 
         const diffsHtml = ['easy', 'medium', 'advanced', 'pro'].map(diff => {
           const block = cat[diff];
           if (!block) return '';
           return `
-            <div style="margin-bottom:12px;">
-              <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:${color};margin-bottom:8px;">${diffLabels[diff]}</div>
+            <div style="margin-bottom:16px;">
+              <div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:${color};margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-soft);">${diffLabels[diff]}</div>
               <div style="display:flex;flex-direction:column;gap:8px;">
                 ${['quick', 'medium', 'long'].map(dur => {
-            const exs = block[dur] || [];
-            return `
+                  const exs = block[dur] || [];
+                  if (!exs.length) return '';
+                  return `
                     <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-soft);border-radius:8px;padding:12px;">
-                      <div style="font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:8px;">${durLabels[dur]} (${exs.length} ćw.)</div>
-                      ${exs.map((e, i) => `<div style="font-size:12px;color:var(--text);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:8px;"><span style="color:${color};font-weight:700;flex-shrink:0;">${i + 1}.</span><span>${escapeHtml(e)}</span></div>`).join('')}
+                      <div style="font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:10px;">${durLabels[dur]} — ${exs.length} ćwiczeń</div>
+                      ${exs.map((e, i) => {
+                        const name = typeof e === 'object' ? e.name : e;
+                        const desc = typeof e === 'object' && e.desc ? e.desc : '';
+                        const metric = typeof e === 'object' && e.metric ? metricLabels[e.metric] || e.metric : '';
+                        const benchmarks = typeof e === 'object' && e.benchmarks ? e.benchmarks : null;
+                        let benchStr = '';
+                        if (benchmarks) {
+                          benchStr = Object.entries(benchmarks).map(([k,v]) => `${k.toUpperCase()}: ${v}`).join(' | ');
+                        }
+                        return `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03);">
+                          <div style="display:flex;gap:8px;align-items:start;">
+                            <span style="color:${color};font-weight:800;flex-shrink:0;font-size:12px;">${i+1}.</span>
+                            <div style="flex:1;">
+                              <div style="font-size:12.5px;color:var(--text);font-weight:600;">${escapeHtml(name)}</div>
+                              ${desc ? `<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">${escapeHtml(desc)}</div>` : ''}
+                              <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+                                ${metric ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,0.05);color:var(--text-dim);">${metric}</span>` : ''}
+                                ${benchStr ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,0.05);color:var(--text-dim);">${escapeHtml(benchStr)}</span>` : ''}
+                              </div>
+                            </div>
+                          </div>
+                        </div>`;
+                      }).join('')}
                     </div>
                   `;
-          }).join('')}
+                }).join('')}
               </div>
             </div>
           `;
@@ -6735,7 +7109,7 @@
         return `
           <div style="background:rgba(255,255,255,0.015);border:1.5px solid var(--border-soft);border-radius:var(--radius-lg);overflow:hidden;">
             <div style="padding:16px 20px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.02);">
-              <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;box-shadow:0 0 8px ${color};"></div>
+              <div style="font-size:22px;">${cat.icon || '🏋️'}</div>
               <div>
                 <div style="font-family:'Space Grotesk';font-size:16px;font-weight:700;color:var(--text);">${cat.name}</div>
                 <div style="font-size:12px;color:var(--text-dim);margin-top:3px;">${cat.description || ''}</div>
