@@ -3254,9 +3254,14 @@
                     teraz</button>
                 </div>
 
-                <h3
-                  style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: var(--text); display:flex; align-items:center; gap:8px;">
-                  📊 Profil Umiejętności Gracza</h3>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 16px 0;">
+                  <h3
+                    style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin:0; color: var(--text); display:flex; align-items:center; gap:8px;">
+                    📊 Profil Umiejętności Gracza</h3>
+                  <button type="button" class="btn-ghost" id="btnEditInitialSkills"
+                    style="padding:7px 12px; font-size:11.5px;"
+                    onclick="openInitialSkillsEditor()">✏️ Edytuj dane początkowe</button>
+                </div>
 
                 <!-- SKILL GRID -->
                 <div id="skillsGridContainer" style="display: flex; flex-direction: column; gap: 14px;">
@@ -6744,11 +6749,48 @@
             midgame: auto.midgame
           };
 
+          // Zachowaj dane źródłowe testów, aby można je było później ponownie edytować.
+          const initialVerificationData = {
+            buildTime,
+            buildFluidity,
+            editEasy,
+            editHard,
+            aimFlick,
+            aimTrack
+          };
+          localStorage.setItem('fn_initial_verification_data', JSON.stringify(initialVerificationData));
           localStorage.setItem('fn_user_skills', JSON.stringify(initialSkills));
           unlockOverlay.classList.add('hidden');
           loadTrainingPage();
         });
       }
+
+      // Ponowna edycja danych początkowych użytych do odblokowania profilu umiejętności.
+      window.openInitialSkillsEditor = function () {
+        const saved = JSON.parse(localStorage.getItem('fn_initial_verification_data') || 'null');
+        const form = document.getElementById('unlockSkillsForm');
+
+        if (saved) {
+          document.getElementById('verifyBuildTime').value = saved.buildTime ?? '';
+          document.getElementById('verifyBuildFluidity').value = saved.buildFluidity ?? '3';
+          document.getElementById('verifyEditEasy').value = saved.editEasy ?? '';
+          document.getElementById('verifyEditHard').value = saved.editHard ?? '';
+          document.getElementById('verifyAimFlick').value = saved.aimFlick ?? '';
+          document.getElementById('verifyAimTrack').value = saved.aimTrack ?? '';
+        } else if (form) {
+          form.reset();
+        }
+
+        const title = document.querySelector('#unlockSkillsModalOverlay .form-title');
+        const subtitle = document.querySelector('#unlockSkillsModalOverlay .form-sub');
+        const submit = document.getElementById('unlockSkillsSubmitBtn');
+
+        if (title) title.innerHTML = '<span class="ic">✏️</span> Edytuj dane początkowe';
+        if (subtitle) subtitle.textContent = 'Możesz ponownie wpisać lub poprawić wyniki testów. Po zapisaniu profil umiejętności i plan treningowy zostaną przeliczone.';
+        if (submit) submit.textContent = 'Zapisz zmiany i przelicz statystyki';
+
+        if (unlockOverlay) unlockOverlay.classList.remove('hidden');
+      };
 
       // Close training sessions modal
       const runClose = document.getElementById('runTrainingModalClose');
