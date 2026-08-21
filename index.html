@@ -3310,6 +3310,7 @@
               <button class="admin-tab active" data-admin-tab="users" type="button">👥 Użytkownicy</button>
               <button class="admin-tab" data-admin-tab="tournaments" type="button">📅 Turnieje</button>
               <button class="admin-tab" data-admin-tab="matches" type="button">🎮 Mecze</button>
+              <button class="admin-tab" data-admin-tab="training" type="button">🏋️ Trening</button>
             </div>
 
             <div class="admin-tour-panel" id="adminPanelUsers">
@@ -3608,6 +3609,17 @@
     <option value="brak rotacji">
   </datalist>
 
+  <!-- ===== ADMIN TAB: TRENING ===== -->
+  <div id="admin-content-training" class="admin-tab-content" style="display:none; padding: 20px 0;">
+    <div class="admin-card">
+      <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--text);margin:0 0 6px 0;">🏋️
+        Baza Ćwiczeń Treningowych</h3>
+      <p style="font-size:13px;color:var(--text-dim);margin:0 0 20px 0;">Podgląd wszystkich ćwiczeń pogrupowanych według
+        kategorii i poziomu trudności. Dane są generowane dynamicznie z konfiguracji programu.</p>
+      <div id="adminTrainingCategoryList" style="display:flex;flex-direction:column;gap:20px;"></div>
+    </div>
+  </div>
+
   <!-- ================= UNLOCK SKILLS MODAL ================= -->
   <div id="unlockSkillsModalOverlay" class="modal-overlay hidden" style="z-index:110;">
     <div class="modal-card" style="max-width: 680px; max-height: 90vh; overflow-y: auto; width: 100%;">
@@ -3737,21 +3749,34 @@
 
       <!-- LOGGER FORM -->
       <div style="border-top: 1px solid var(--border-soft); padding-top: 20px;">
-        <h3 style="font-family: 'Space Grotesk'; font-size: 15px; color: var(--cyan); margin-bottom: 12px;">📝
-          Zapisz Log Sesji</h3>
+        <h3 style="font-family: 'Space Grotesk'; font-size: 15px; color: var(--cyan); margin-bottom: 4px;">📝 Zapisz Log
+          Sesji</h3>
+        <p style="font-size:12px; color:var(--text-dim); margin-bottom:16px;">Uzupełnij opcjonalne szczegóły każdego
+          ćwiczenia — im więcej podasz, tym lepiej program dopasuje kolejne treningi.</p>
         <form id="saveTrainingLogForm">
-          <div class="settings-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 16px;">
+          <!-- Per-exercise detail rows (generated dynamically by JS) -->
+          <div id="trainingExerciseLogRows" style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
+          </div>
+
+          <!-- General session fields -->
+          <div class="settings-grid" style="grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
             <div class="field">
-              <label>Ocena Twojego wykonania (1-10)</label>
-              <input type="number" id="trainingSessionRating" placeholder="Wpisz np. 8" required min="1" max="10" />
+              <label>Ogólna ocena sesji (1–10)</label>
+              <input type="number" id="trainingSessionRating" placeholder="np. 8" min="1" max="10" />
             </div>
             <div class="field">
               <label>Czas trwania sesji (minuty)</label>
-              <input type="number" id="trainingSessionTime" placeholder="np. 30" required min="1" />
+              <input type="number" id="trainingSessionTime" placeholder="np. 30" min="1" />
             </div>
           </div>
-          <button class="btn-primary" type="submit" id="saveTrainingSessionBtn">Zapisz sesję i Zaktualizuj
-            Statystyki</button>
+          <div class="field" style="margin-bottom:20px;">
+            <label>Dodatkowe notatki z sesji (opcjonalnie)</label>
+            <textarea id="trainingSessionNotes"
+              placeholder="np. Miałem problemy z edytowaniem lewostronnym, double-edit szło dobrze..."
+              style="min-height:70px; resize:vertical;"></textarea>
+          </div>
+          <button class="btn-primary" type="submit" id="saveTrainingSessionBtn" style="width:100%;">✅ Zapisz sesję i
+            Zaktualizuj Statystyki</button>
         </form>
       </div>
     </div>
@@ -4147,6 +4172,11 @@
       adminPanelUsers.style.display = tab === 'users' ? 'block' : 'none';
       adminPanelTournaments.style.display = tab === 'tournaments' ? 'block' : 'none';
 
+      const adminPanelTraining = document.getElementById('admin-content-training');
+      if (adminPanelTraining) {
+        adminPanelTraining.style.display = tab === 'training' ? 'block' : 'none';
+      }
+
       if (tab === 'users') loadUsersList();
       if (tab === 'tournaments') loadAdminTournamentList();
       if (tab === 'matches') {
@@ -4154,6 +4184,7 @@
         loadAdminDeathsList();
         loadAdminFailuresList();
       }
+      if (tab === 'training') loadAdminTrainingList();
     }));
     adminPanelUsers.classList.add('active');
 
@@ -4838,6 +4869,7 @@
     adminNavLink.addEventListener('click', () => {
       const activeAdminTab = document.querySelector('.admin-tab.active');
       if (activeAdminTab && activeAdminTab.dataset.adminTab === 'tournaments') loadAdminTournamentList();
+      if (activeAdminTab && activeAdminTab.dataset.adminTab === 'training') loadAdminTrainingList();
       else loadUsersList();
     });
 
@@ -6457,28 +6489,50 @@
         saveTrainingLogForm.addEventListener('submit', (e) => {
           e.preventDefault();
 
-          const rating = parseFloat(document.getElementById('trainingSessionRating').value);
-          const time = parseFloat(document.getElementById('trainingSessionTime').value);
+          const ratingEl = document.getElementById('trainingSessionRating');
+          const timeEl = document.getElementById('trainingSessionTime');
+          const notesEl = document.getElementById('trainingSessionNotes');
 
-          const logs = JSON.parse(localStorage.getItem('fn_training_logs') || '[]');
-          logs.push({
-            id: 'session_' + Date.now(),
-            key: selectedTrainingKey,
-            rating,
-            time,
-            duration: currentSelectedDuration,
-            difficulty: currentSelectedDifficulty,
-            timestamp: new Date().toISOString()
+          const rating = ratingEl && ratingEl.value ? parseFloat(ratingEl.value) : 5;
+          const sessionTime = timeEl && timeEl.value ? parseFloat(timeEl.value) : 0;
+          const sessionNotes = notesEl ? notesEl.value.trim() : '';
+
+          // Collect per-exercise details from the form
+          const exData = TRAINING_EXERCISES[selectedTrainingKey];
+          const items = exData ? (exData[currentSelectedDifficulty]?.[currentSelectedDuration] || []) : [];
+          const exerciseDetails = items.map((ex, idx) => {
+            const checked = document.getElementById('exCheck' + idx)?.checked || false;
+            const result = document.getElementById('exResult' + idx)?.value?.trim() || '';
+            const diff = parseInt(document.getElementById('exDifficulty' + idx)?.value) || null;
+            const note = document.getElementById('exNote' + idx)?.value?.trim() || '';
+            return { exercise: ex, completed: checked, result, difficulty: diff, note };
           });
-          localStorage.setItem('fn_training_logs', JSON.stringify(logs));
 
-          // Adaptive Skill Adaptation!
-          // Every completed training session slightly improves relevant skill rating (e.g. +0.2 points)
+          const completedCount = exerciseDetails.filter(e => e.completed).length;
+          const completionRate = items.length > 0 ? completedCount / items.length : 1;
+
+          // Save extended log entry
+          const logEntry = {
+            id: 'session_' + Date.now(),
+            date: new Date().toISOString(),
+            type: selectedTrainingKey,
+            difficulty: currentSelectedDifficulty,
+            duration: currentSelectedDuration,
+            rating,
+            sessionTime,
+            notes: sessionNotes,
+            completionRate: Math.round(completionRate * 100),
+            exercises: exerciseDetails
+          };
+          const allLogs = JSON.parse(localStorage.getItem('fn_training_logs') || '[]');
+          allLogs.unshift(logEntry);
+          if (allLogs.length > 200) allLogs.length = 200;
+          localStorage.setItem('fn_training_logs', JSON.stringify(allLogs));
+
+          // Adaptive Skill Improvement
           const storedSkills = localStorage.getItem('fn_user_skills');
           if (storedSkills) {
             const skills = JSON.parse(storedSkills);
-
-            // Map training keys to skills affected
             const affected = [];
             if (selectedTrainingKey === 'building') affected.push('building');
             else if (selectedTrainingKey === 'editing') affected.push('editing');
@@ -6489,21 +6543,20 @@
             else if (selectedTrainingKey === 'mechanics') { affected.push('building'); affected.push('editing'); }
             else if (selectedTrainingKey === 'game') { affected.push('offspawn'); affected.push('midgame'); affected.push('lategame'); }
 
-            // Improve skill based on rating (higher rating = better gain)
-            const gain = 0.1 + (rating / 50); // e.g. rating 8 = 0.26 gain
+            // Gain is proportional to rating AND completion rate (encourages completing all exercises)
+            const gain = (0.08 + (rating / 55)) * (0.4 + 0.6 * completionRate);
             affected.forEach(s => {
               if (skills[s] !== undefined) {
-                skills[s] = Math.min(10, skills[s] + gain);
+                skills[s] = Math.min(10, parseFloat((skills[s] + gain).toFixed(2)));
               }
             });
-
             localStorage.setItem('fn_user_skills', JSON.stringify(skills));
           }
 
           if (runOverlay) runOverlay.classList.add('hidden');
           saveTrainingLogForm.reset();
           loadTrainingPage();
-          alert('Sesja treningowa została pomyślnie zapisana! Twój profil umiejętności oraz priorytety zostały zaktualizowane.');
+          alert(`✅ Sesja treningowa zapisana!\n\nUkończono ${Math.round(completionRate * 100)}% ćwiczeń.\nTwój profil umiejętności został zaktualizowany.`);
         });
       }
 
@@ -6582,20 +6635,119 @@
       let html = '';
       if (mapList.length > 0) {
         html += `
-          <div style="background: rgba(245, 197, 86, 0.05); border: 1.5px solid var(--orange); padding: 14px; border-radius: var(--radius-md); font-size:12.5px; line-height: 1.4; color: var(--text);">
+          <div style="background: rgba(245, 197, 86, 0.05); border: 1.5px solid var(--orange); padding: 12px 14px; border-radius: var(--radius-md); font-size:12.5px; line-height: 1.4; color: var(--text);">
             📍 <b>Rekomendowana mapa/tryb:</b> ${mapList.join(', ')}
           </div>
         `;
       }
 
       html += items.map((ex, idx) => `
-        <div style="display:flex; gap:12px; align-items:start; background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 14px; border-radius:var(--radius-md);">
-          <div style="width:22px; height:22px; border-radius:50%; background:var(--grad-main); color:#0c0f17; font-size:11px; font-weight:800; display:grid; place-items:center; flex-shrink:0;">${idx + 1}</div>
-          <div style="font-size:13px; color:var(--text); line-height:1.5;">${escapeHtml(ex)}</div>
+        <div style="background: rgba(255,255,255,0.015); border: 1px solid var(--border-soft); padding: 14px; border-radius:var(--radius-md);">
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:10px;">
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--grad-main); color:#0c0f17; font-size:11px; font-weight:800; display:grid; place-items:center; flex-shrink:0;">${idx + 1}</div>
+            <div style="font-size:13.5px; color:var(--text); line-height:1.5; font-weight:600;">${escapeHtml(ex)}</div>
+          </div>
         </div>
       `).join('');
 
       container.innerHTML = html;
+
+      // Populate log rows
+      buildExerciseLogRows(items);
+    }
+
+    function buildExerciseLogRows(items) {
+      const logContainer = document.getElementById('trainingExerciseLogRows');
+      if (!logContainer) return;
+
+      logContainer.innerHTML = items.map((ex, idx) => `
+        <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-soft); border-radius:var(--radius-md); padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:700; color:var(--text);">
+              <input type="checkbox" data-ex-idx="${idx}" id="exCheck${idx}" style="width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;" />
+              <span>${idx + 1}. ${escapeHtml(ex)}</span>
+            </label>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="field" style="margin:0;">
+              <label style="font-size:11px;">Wynik / Czas osiągnięty (opcjonalnie)</label>
+              <input type="text" id="exResult${idx}" placeholder="np. 1:45 min, 85 pkt, 3/5 rund" style="font-size:12px; padding: 7px 10px;" />
+            </div>
+            <div class="field" style="margin:0;">
+              <label style="font-size:11px;">Trudność wykonania (1–10)</label>
+              <input type="number" id="exDifficulty${idx}" min="1" max="10" placeholder="np. 7" style="font-size:12px; padding: 7px 10px;" />
+            </div>
+          </div>
+          <div class="field" style="margin:12px 0 0 0;">
+            <label style="font-size:11px;">Notatka do ćwiczenia (opcjonalnie)</label>
+            <textarea id="exNote${idx}" placeholder="np. Miałem problem z prawą stroną, poprawię następnym razem..." style="min-height:55px; resize:vertical; font-size:12px; padding: 7px 10px;"></textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ---------- Admin: Training tab list ----------
+    function loadAdminTrainingList() {
+      const container = document.getElementById('adminTrainingCategoryList');
+      if (!container) return;
+
+      const categoryColors = {
+        building: 'var(--orange)',
+        editing: 'var(--purple)',
+        aim: 'var(--danger)',
+        offspawn: 'var(--cyan)',
+        midgame: 'var(--accent)',
+        endgame: 'var(--green, #22c55e)',
+        mechanics: '#f0c040',
+        game: 'var(--text)'
+      };
+
+      const diffLabels = { easy: 'Łatwy', medium: 'Średni', advanced: 'Zaawansowany', pro: 'PRO' };
+      const durLabels = { quick: '⚡ Szybki', medium: '⏱ Średni', long: '🕐 Długi' };
+
+      container.innerHTML = Object.entries(TRAINING_EXERCISES).map(([key, cat]) => {
+        const color = categoryColors[key] || 'var(--cyan)';
+        const mapsHtml = cat.maps && cat.maps.length > 0
+          ? `<div style="font-size:11.5px;color:var(--text-dim);margin-bottom:12px;">📍 ${cat.maps.join(' · ')}</div>`
+          : '';
+
+        const diffsHtml = ['easy', 'medium', 'advanced', 'pro'].map(diff => {
+          const block = cat[diff];
+          if (!block) return '';
+          return `
+            <div style="margin-bottom:12px;">
+              <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:${color};margin-bottom:8px;">${diffLabels[diff]}</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                ${['quick', 'medium', 'long'].map(dur => {
+            const exs = block[dur] || [];
+            return `
+                    <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-soft);border-radius:8px;padding:12px;">
+                      <div style="font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:8px;">${durLabels[dur]} (${exs.length} ćw.)</div>
+                      ${exs.map((e, i) => `<div style="font-size:12px;color:var(--text);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;gap:8px;"><span style="color:${color};font-weight:700;flex-shrink:0;">${i + 1}.</span><span>${escapeHtml(e)}</span></div>`).join('')}
+                    </div>
+                  `;
+          }).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div style="background:rgba(255,255,255,0.015);border:1.5px solid var(--border-soft);border-radius:var(--radius-lg);overflow:hidden;">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.02);">
+              <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;box-shadow:0 0 8px ${color};"></div>
+              <div>
+                <div style="font-family:'Space Grotesk';font-size:16px;font-weight:700;color:var(--text);">${cat.name}</div>
+                <div style="font-size:12px;color:var(--text-dim);margin-top:3px;">${cat.description || ''}</div>
+              </div>
+            </div>
+            <div style="padding:16px 20px;">
+              ${mapsHtml}
+              ${diffsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
