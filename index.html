@@ -7689,7 +7689,7 @@ function loadTrainingPage() {
       }
       return Number(raw);
     }
-    function formatTrainingTime(seconds){
+    function formatTrainingResultTime(seconds){
       const total=Math.max(0,Math.round(Number(seconds)||0));
       const m=Math.floor(total/60),s=total%60;
       return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
@@ -7701,7 +7701,7 @@ function loadTrainingPage() {
         const m=minEl?.value===''?'':Number(minEl?.value),s=secEl?.value===''?'':Number(secEl?.value);
         if(m===''&&s==='')return '';
         if(!Number.isInteger(m)||m<0||!Number.isInteger(s)||s<0||s>59)return '';
-        return formatTrainingTime(m*60+s);
+        return formatTrainingResultTime(m*60+s);
       }
       return document.getElementById('exResult'+idx)?.value?.trim()||'';
     }
