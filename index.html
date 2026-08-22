@@ -2637,8 +2637,8 @@
         <div class="divider">lub e-mailem</div>
 
         <div class="tabs">
-          <button class="tab-btn active" id="tabLogin" type="button">Zaloguj się</button>
-          <button class="tab-btn" id="tabRegister" type="button">Zarejestruj się</button>
+          <button class="tab-btn active" id="tabLogin" type="button" onclick="document.getElementById('tabLogin').classList.add('active');document.getElementById('tabRegister').classList.remove('active');document.getElementById('loginForm').classList.remove('hidden');document.getElementById('registerForm').classList.add('hidden')">Zaloguj się</button>
+          <button class="tab-btn" id="tabRegister" type="button" onclick="document.getElementById('tabRegister').classList.add('active');document.getElementById('tabLogin').classList.remove('active');document.getElementById('registerForm').classList.remove('hidden');document.getElementById('loginForm').classList.add('hidden')">Zarejestruj się</button>
         </div>
 
         <div class="form-msg" id="authMsg"></div>
@@ -3983,6 +3983,8 @@
       loginForm.classList.add('hidden');
       clearMsg();
     }
+    window.__fnShowLogin = showLogin;
+    window.__fnShowRegister = showRegister;
     tabLogin.addEventListener('click', showLogin);
     tabRegister.addEventListener('click', showRegister);
 
@@ -4012,20 +4014,31 @@
     function isValidNick(n) { return /^[A-Za-z0-9_]{3,20}$/.test(n); }
 
     async function isNickTaken(nick, uid) {
-      const snap = await withTimeout(getDoc(doc(db, 'nicknames', normalizeNick(nick))));
-      return snap.exists() && snap.data().uid !== uid;
+      try {
+        const snap = await withTimeout(getDoc(doc(db, 'nicknames', normalizeNick(nick))), 7000);
+        return snap.exists() && snap.data().uid !== uid;
+      } catch (e) {
+        console.warn('Nie można zweryfikować unikalności nicku w Firestore:', e);
+        return false;
+      }
     }
 
     // Reserves `nick` for `uid`, releasing `oldNick` if it belonged to the same user.
     async function reserveNick(nick, uid, oldNick) {
       const key = normalizeNick(nick);
-      if (oldNick && normalizeNick(oldNick) === key) return; // unchanged
-      await withTimeout(setDoc(doc(db, 'nicknames', key), { uid, nick }));
-      if (oldNick) {
-        const oldKey = normalizeNick(oldNick);
-        if (oldKey !== key) {
-          try { await withTimeout(deleteDoc(doc(db, 'nicknames', oldKey))); } catch (e) { /* noop */ }
+      if (oldNick && normalizeNick(oldNick) === key) return true; // unchanged
+      try {
+        await withTimeout(setDoc(doc(db, 'nicknames', key), { uid, nick }), 7000);
+        if (oldNick) {
+          const oldKey = normalizeNick(oldNick);
+          if (oldKey !== key) {
+            try { await withTimeout(deleteDoc(doc(db, 'nicknames', oldKey)), 7000); } catch (e) { /* noop */ }
+          }
         }
+        return true;
+      } catch (e) {
+        console.warn('Nie udało się zarezerwować nicku w Firestore:', e);
+        return false;
       }
     }
 
@@ -4099,13 +4112,18 @@
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(cred.user, { displayName: name });
         await reserveNick(name, cred.user.uid);
-        await withTimeout(setDoc(doc(db, 'users', cred.user.uid), {
-          nick: name,
-          email: cred.user.email,
-          isAdmin: false,
-          createdAt: new Date().toISOString()
-        }));
+        try {
+          await withTimeout(setDoc(doc(db, 'users', cred.user.uid), {
+            nick: name,
+            email: cred.user.email,
+            isAdmin: false,
+            createdAt: new Date().toISOString()
+          }), 7000);
+        } catch (profileErr) {
+          console.warn('Profil Firestore nie został jeszcze zapisany — użytkownik zostanie wpuszczony do aplikacji:', profileErr);
+        }
 
+        suppressAuthHandler = false;
         await enterApp(cred.user);
       } catch (err) {
         showMsg(friendlyError(err.code), 'error');
@@ -7427,12 +7445,10 @@
         }
 
         if (fetchError) {
-          // Firestore is unreachable (likely not created yet, or rules blocking reads) —
-          // don't misroute the user, show a clear error on the login screen instead.
-          appScreen.classList.add('hidden');
-          nickScreen.classList.add('hidden');
-          authScreen.classList.remove('hidden');
-          showMsg(friendlyError(fetchError.code || 'firestore-timeout'), 'error');
+          // Authentication jest niezależna od Firestore. Nie wylogowuj wizualnie użytkownika tylko
+          // dlatego, że profil Firestore chwilowo nie odpowiada. enterApp ma własny fallback.
+          console.warn('Firestore nie odpowiedział podczas sprawdzania profilu — wchodzimy do aplikacji z danymi auth:', fetchError);
+          await enterApp(user);
           return;
         }
 
