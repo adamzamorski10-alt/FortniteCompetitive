@@ -3173,134 +3173,114 @@
         <!-- ================= TRAINING PAGE ================= -->
         <div class="page hidden" id="page-training">
           <!-- SUBTABS HEADER -->
-          <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-            <button type="button" class="tab-btn active" id="btnTrainingTabInfo"
-              style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">📊
-              Informacje</button>
-            <button type="button" class="tab-btn" id="btnTrainingTabPlan"
-              style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">🏋️ Plan
-              Treningowy</button>
+          <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+            <button type="button" class="tab-btn active" id="btnTrainingTabInfo" style="padding:10px 20px;font-size:13.5px;font-weight:700;border-radius:var(--radius-md);">📊 Informacje</button>
+            <button type="button" class="tab-btn" id="btnTrainingTabBlocks" style="padding:10px 20px;font-size:13.5px;font-weight:700;border-radius:var(--radius-md);">🧩 Bloki Treningowe</button>
+            <button type="button" class="tab-btn" id="btnTrainingTabPlan" style="padding:10px 20px;font-size:13.5px;font-weight:700;border-radius:var(--radius-md);">📅 Plan Treningowy</button>
           </div>
 
           <!-- TAB CONTENT: INFORMACJE -->
           <div id="trainingTabContentInfo" class="training-subtab-panel">
-            <div
-              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; align-items: start;">
-
-              <!-- KARTA UŻYTKOWNIKA -->
-              <div class="matches-card"
-                style="padding: 28px; margin: 0; background: linear-gradient(135deg, rgba(245, 197, 86, 0.05) 0%, rgba(12, 15, 23, 0.95) 100%); border: 1.5px solid var(--border-soft); position: relative; overflow: hidden; border-radius: var(--radius-lg);">
-                <div
-                  style="position: absolute; top: -50px; right: -50px; width: 160px; height: 160px; background: var(--grad-main); opacity: 0.08; filter: blur(40px); border-radius: 50%;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;align-items:start;">
+              <div class="matches-card" style="padding:28px;margin:0;background:linear-gradient(135deg,rgba(245,197,86,.05) 0%,rgba(12,15,23,.95) 100%);border:1.5px solid var(--border-soft);position:relative;overflow:hidden;border-radius:var(--radius-lg);">
+                <div style="position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:var(--grad-main);opacity:.08;filter:blur(40px);border-radius:50%;"></div>
+                <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;border-bottom:1px solid var(--border-soft);padding-bottom:18px;">
+                  <div style="width:56px;height:56px;border-radius:50%;background:var(--grad-main);display:grid;place-items:center;font-size:24px;font-weight:900;color:#0c0f17;text-transform:uppercase;" id="trainingCardAvatar">G</div>
+                  <div><h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800;margin:0;color:var(--text);" id="trainingCardNick">—</h2><span style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);font-weight:700;" id="trainingCardRole">Rola: —</span></div>
                 </div>
-
-                <!-- HEADER KARTY -->
-                <div
-                  style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 18px;">
-                  <div
-                    style="width: 56px; height: 56px; border-radius: 50%; background: var(--grad-main); display: grid; place-items: center; font-size: 24px; font-weight: 900; color: #0c0f17; text-transform: uppercase;"
-                    id="trainingCardAvatar">G</div>
-                  <div>
-                    <h2
-                      style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; margin: 0; color: var(--text);"
-                      id="trainingCardNick">—</h2>
-                    <span
-                      style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cyan); font-weight: 700;"
-                      id="trainingCardRole">Rola: —</span>
-                  </div>
-                </div>
-
-                <!-- ANALITYKA W KARCIE -->
-                <div style="margin-bottom: 24px;">
-                  <h4
-                    style="font-family: 'Space Grotesk'; font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: var(--danger); text-transform: uppercase; letter-spacing: 0.05em;">
-                    💀 5 Najczęstszych Przyczyn Śmierci</h4>
-                  <ul id="trainingTopDeaths"
-                    style="margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
-                    <li>Wczytywanie logów...</li>
-                  </ul>
-                </div>
-
-                <div style="margin-bottom: 0;">
-                  <h4
-                    style="font-family: 'Space Grotesk'; font-size: 13.5px; font-weight: 700; margin: 0 0 10px 0; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em;">
-                    ⚠️ 5 Najczęstszych Błędów</h4>
-                  <ul id="trainingTopFailures"
-                    style="margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px;">
-                    <li>Wczytywanie logów...</li>
-                  </ul>
-                </div>
+                <div style="margin-bottom:24px;"><h4 style="font-family:'Space Grotesk';font-size:13.5px;font-weight:700;margin:0 0 10px;color:var(--danger);text-transform:uppercase;letter-spacing:.05em;">💀 5 Najczęstszych Przyczyn Śmierci</h4><ul id="trainingTopDeaths" style="margin:0;padding-left:18px;font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:6px;"><li>Wczytywanie logów...</li></ul></div>
+                <div><h4 style="font-family:'Space Grotesk';font-size:13.5px;font-weight:700;margin:0 0 10px;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;">⚠️ 5 Najczęstszych Błędów</h4><ul id="trainingTopFailures" style="margin:0;padding-left:18px;font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:6px;"><li>Wczytywanie logów...</li></ul></div>
               </div>
-
-              <!-- PANEL UMIEJĘTNOŚCI (ZABLOKOWANY KŁÓDKĄ) -->
-              <div class="matches-card" style="padding: 28px; margin: 0; position: relative;">
-
-                <!-- LOCK OVERLAY -->
-                <div id="skillsLockOverlay"
-                  style="position: absolute; inset: 0; background: rgba(12, 15, 23, 0.82); backdrop-filter: blur(5px); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; border-radius: var(--radius-lg);">
-                  <div
-                    style="width: 64px; height: 64px; background: rgba(245, 197, 86, 0.1); border: 1.5px solid var(--orange); border-radius: 50%; display: grid; place-items: center; font-size: 26px; margin-bottom: 16px; box-shadow: 0 0 20px rgba(245, 197, 86, 0.15);">
-                    🔒</div>
-                  <h3
-                    style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
-                    Profil Umiejętności Zablokowany</h3>
-                  <p
-                    style="font-size: 12.5px; color: var(--text-dim); max-width: 320px; line-height: 1.5; margin: 0 0 20px 0;">
-                    Wykonaj testy weryfikacyjne w trybie kreatywnym Fortnite, aby odblokować oceny umiejętności i
-                    wygenerować spersonalizowany plan treningowy.</p>
-                  <button type="button" class="btn-primary" id="btnOpenUnlockSkills"
-                    style="width: auto; padding: 10px 20px; font-size: 13px; margin: 0;"
-                    onclick="document.getElementById('unlockSkillsModalOverlay').classList.remove('hidden')">Odblokuj
-                    teraz</button>
+              <div class="matches-card" style="padding:28px;margin:0;position:relative;">
+                <div id="skillsLockOverlay" style="position:absolute;inset:0;background:rgba(12,15,23,.82);backdrop-filter:blur(5px);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;border-radius:var(--radius-lg);">
+                  <div style="width:64px;height:64px;background:rgba(245,197,86,.1);border:1.5px solid var(--orange);border-radius:50%;display:grid;place-items:center;font-size:26px;margin-bottom:16px;">🔒</div><h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;margin:0 0 8px;color:var(--text);">Profil Umiejętności Zablokowany</h3><p style="font-size:12.5px;color:var(--text-dim);max-width:320px;line-height:1.5;margin:0 0 20px;">Wykonaj testy weryfikacyjne w trybie kreatywnym Fortnite, aby odblokować oceny umiejętności i wygenerować spersonalizowany plan treningowy.</p><button type="button" class="btn-primary" id="btnOpenUnlockSkills" style="width:auto;padding:10px 20px;font-size:13px;margin:0;">Odblokuj teraz</button>
                 </div>
-
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 16px 0;">
-                  <h3
-                    style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin:0; color: var(--text); display:flex; align-items:center; gap:8px;">
-                    📊 Profil Umiejętności Gracza</h3>
-                  <button type="button" class="btn-ghost" id="btnEditInitialSkills"
-                    style="padding:7px 12px; font-size:11.5px;"
-                    onclick="openInitialSkillsEditor()">✏️ Edytuj dane początkowe</button>
-                </div>
-
-                <!-- SKILL GRID -->
-                <div id="skillsGridContainer" style="display: flex; flex-direction: column; gap: 14px;">
-                  <!-- dynamicznie ładowane progress bary -->
-                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;"><h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;margin:0;color:var(--text);display:flex;align-items:center;gap:8px;">📊 Profil Umiejętności Gracza</h3><button type="button" class="btn-ghost" id="btnEditInitialSkills" style="padding:7px 12px;font-size:11.5px;" onclick="openInitialSkillsEditor()">✏️ Edytuj dane początkowe</button></div>
+                <div id="skillsGridContainer" style="display:flex;flex-direction:column;gap:14px;"></div>
               </div>
-
             </div>
+          </div>
+
+          <!-- TAB CONTENT: BLOKI TRENINGOWE -->
+          <div id="trainingTabContentBlocks" class="training-subtab-panel" style="display:none;">
+            <div class="tournaments-page-header" style="margin-bottom:16px;display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+              <div><h2 class="section-title" style="margin-bottom:8px;"><span class="ic">🧩</span> Bloki Treningowe</h2><p style="color:var(--text-dim);font-size:13px;margin:0;">Program dobiera bloki na podstawie Twoich najsłabszych umiejętności. Możesz też stworzyć własny blok.</p></div>
+              <button class="btn-primary" type="button" id="btnCreateCustomBlock" style="width:auto;margin:0;padding:10px 16px;">➕ Stwórz Sam</button>
+            </div>
+            <div id="trainingBlocksContainer" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;"></div>
           </div>
 
           <!-- TAB CONTENT: PLAN TRENINGOWY -->
-          <div id="trainingTabContentPlan" class="training-subtab-panel" style="display: none;">
-            <div class="tournaments-page-header" style="margin-bottom: 16px;">
-              <h2 class="section-title" style="margin-bottom: 8px;"><span class="ic">🏋️</span> Spersonalizowany Plan
-                Treningowy</h2>
-              <p style="color: var(--text-dim); font-size: 13px; margin: 0;">Rekomendowane mapy kreatywne, scenariusze
-                Aim Trainer i rutyny meczowe dopasowane do Twoich słabości.</p>
+          <div id="trainingTabContentPlan" class="training-subtab-panel" style="display:none;">
+            <div class="tournaments-page-header" style="margin-bottom:18px;display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+              <div><h2 class="section-title" style="margin-bottom:8px;"><span class="ic">📅</span> Plan Treningowy</h2><p style="color:var(--text-dim);font-size:13px;margin:0;">Tygodniowy kalendarz treningów dopasowany do Twoich umiejętności, dostępności i własnych bloków.</p></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="btn-ghost" id="btnPlanPrevWeek">← Poprzedni</button><button type="button" class="btn-ghost" id="btnPlanToday">Dziś</button><button type="button" class="btn-ghost" id="btnPlanNextWeek">Następny →</button><button type="button" class="btn-primary" id="btnCreateTrainingPlan" style="width:auto;margin:0;padding:10px 16px;">✨ Stwórz Plan</button><button type="button" class="btn-ghost" id="btnEditTrainingPlan" style="padding:10px 16px;">✏️ Edytuj plan</button></div>
             </div>
-
-            <!-- PLAN LOCK OVERLAY -->
-            <div id="planLockOverlay" class="matches-card"
-              style="padding: 40px; text-align: center; border: 1px dashed var(--border-soft); background: transparent;">
-              <div style="font-size: 40px; margin-bottom: 16px;">🔒</div>
-              <h3
-                style="font-family: 'Space Grotesk'; font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: var(--text);">
-                Plan treningowy jest niedostępny</h3>
-              <p style="color: var(--text-dim); font-size: 13px; max-width: 440px; margin: 0 auto; line-height: 1.6;">
-                Dziennik treningów zostanie wygenerowany automatycznie, gdy system oceni Twoje podstawowe umiejętności
-                na karcie weryfikacji profilu.</p>
-            </div>
-
-            <!-- TRAINING BLOCKS GRID -->
-            <div id="trainingBlocksContainer"
-              style="display: none; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-              <!-- dynamic blocks -->
-            </div>
+            <div id="trainingPlanSummary" style="margin-bottom:12px;"></div>
+            <div id="trainingWeekCalendar" style="display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:10px;overflow-x:auto;"></div>
           </div>
         </div>
 
+        <!-- BLOK MODALS -->
+        <div id="customBlockModalOverlay" class="modal-overlay hidden" style="z-index:130;">
+          <div class="modal-card" style="max-width:900px;max-height:92vh;overflow-y:auto;width:100%;">
+            <button class="modal-close" type="button" onclick="closeOverlay('customBlockModalOverlay')">✕</button>
+            <h2 class="form-title" style="margin-bottom:6px;">🧩 Stwórz własny blok</h2>
+            <p class="form-sub">Wybierz ćwiczenia z całej bazy. Zapisany blok będzie dostępny razem z blokami proponowanymi przez program.</p>
+            <form id="customBlockForm">
+              <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="field"><label>Nazwa bloku</label><input id="customBlockName" maxlength="100" required placeholder="np. Edity + szybki flick" /></div>
+                <div class="field"><label>Kolor bloku</label><input id="customBlockColor" type="color" value="#6d5bff" style="height:44px;padding:4px 8px;" /></div>
+              </div>
+              <div class="field"><label>Opis</label><textarea id="customBlockDescription" maxlength="500" required placeholder="Po co jest ten blok i na czym ma się skupiać?"></textarea></div>
+              <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="field"><label>Wyszukaj ćwiczenie</label><input id="customBlockExerciseSearch" placeholder="Nazwa, opis..." /></div>
+                <div class="field"><label>Filtr typu</label><select id="customBlockExerciseCategory"><option value="">Wszystkie typy</option><option value="building">Budowanie</option><option value="editing">Edytowanie</option><option value="aim">AIM</option><option value="offspawn">Offspawn</option><option value="midgame">Midgame</option><option value="endgame">Endgame</option></select></div>
+              </div>
+              <div id="customBlockExerciseList" style="display:flex;flex-direction:column;gap:8px;max-height:370px;overflow:auto;padding:4px;"></div>
+              <div id="customBlockSelectedSummary" style="margin:12px 0;padding:10px 12px;border:1px solid var(--border-soft);border-radius:10px;color:var(--text-dim);font-size:12px;">Wybrano: 0 ćwiczeń</div>
+              <div style="display:flex;justify-content:flex-end;gap:8px;"><button class="btn-ghost" type="button" onclick="closeOverlay('customBlockModalOverlay')">Anuluj</button><button class="btn-primary" type="submit" style="width:auto;margin:0;">💾 Zapisz blok</button></div>
+            </form>
+          </div>
+        </div>
+
+        <div id="trainingPlanBuilderModalOverlay" class="modal-overlay hidden" style="z-index:132;">
+          <div class="modal-card" style="max-width:980px;max-height:94vh;overflow-y:auto;width:100%;">
+            <button class="modal-close" type="button" onclick="closeOverlay('trainingPlanBuilderModalOverlay')">✕</button>
+            <h2 class="form-title" id="trainingPlanBuilderTitle">✨ Stwórz Plan</h2>
+            <p class="form-sub">Ustaw dostępne dni, liczbę bloków oraz preferencje. Program dobierze bloki z naciskiem na największe braki.</p>
+            <form id="trainingPlanBuilderForm">
+              <div class="field"><label>Dni, w które grasz</label><div id="planDayPicker" style="display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:7px;"></div></div>
+              <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="field"><label>Preferowana liczba bloków dziennie</label><input id="planBlocksPerDay" type="number" min="1" max="8" value="2" required /></div>
+                <div class="field"><label>Typy, na których chcesz się skupić (opcjonalnie)</label><div id="planFocusTypes" style="display:flex;gap:6px;flex-wrap:wrap;"></div></div>
+              </div>
+              <div class="field"><label>Używaj własnych bloków</label><label class="pill-checkbox"><input type="checkbox" id="planUseCustomBlocks" /> Tak, chcę uwzględnić moje własne bloki</label></div>
+              <div id="planCustomBlockPicker" style="display:none;margin-bottom:14px;"></div>
+              <div class="admin-section-label">USTAWIENIA DLA POSZCZEGÓLNYCH DNI</div>
+              <div id="planDaySettings" style="display:flex;flex-direction:column;gap:8px;"></div>
+              <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;"><button type="button" class="btn-ghost" onclick="closeOverlay('trainingPlanBuilderModalOverlay')">Anuluj</button><button type="submit" class="btn-primary" style="width:auto;margin:0;">➡️ Przejdź Do Podglądu</button></div>
+            </form>
+          </div>
+        </div>
+
+        <div id="trainingPlanPreviewModalOverlay" class="modal-overlay hidden" style="z-index:134;">
+          <div class="modal-card" style="max-width:1200px;max-height:94vh;overflow-y:auto;width:100%;">
+            <button class="modal-close" type="button" onclick="closeOverlay('trainingPlanPreviewModalOverlay')">✕</button>
+            <h2 class="form-title">👀 Podgląd planu</h2>
+            <p class="form-sub">Przeciągaj bloki między dniami, dodawaj i usuwaj je. Dopiero przy „Zapisz Plan” plan stanie się aktywny.</p>
+            <div id="planPreviewCalendar"></div>
+            <div id="planPreviewAddPanel" style="margin-top:14px;padding:12px;border:1px solid var(--border-soft);border-radius:12px;display:none;"></div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px;"><button type="button" class="btn-ghost" onclick="closeOverlay('trainingPlanPreviewModalOverlay')">Anuluj</button><button type="button" class="btn-primary" id="btnSavePreviewPlan" style="width:auto;margin:0;">💾 Zapisz Plan</button></div>
+          </div>
+        </div>
+
+        <div id="trainingBlockExecutionModalOverlay" class="modal-overlay hidden" style="z-index:136;">
+          <div class="modal-card" style="max-width:780px;max-height:92vh;overflow-y:auto;width:100%;">
+            <button class="modal-close" type="button" onclick="closeOverlay('trainingBlockExecutionModalOverlay')">✕</button>
+            <div id="trainingBlockExecutionContent"></div>
+          </div>
+        </div>
         <div class="page hidden" id="page-admin">
           <div class="admin-card admin-wide">
             <div class="admin-card-head">
@@ -6364,7 +6344,7 @@
     function normalizeTrainingExercise(raw){if(!raw||!TRAINING_CATEGORY_KEYS.includes(raw.category))return null;const difficulty=['easy','medium','hard'].includes(raw.difficulty)?raw.difficulty:'medium';const duration=['quick','medium','long'].includes(raw.duration)?raw.duration:'medium';const metric=['time_sec','time_min','count'].includes(raw.metric)?raw.metric:'count';const direction=raw.direction==='lower'?'lower':'higher';const b=raw.benchmarks||{};const ideal=Number(b.ideal),veryGood=Number(b.veryGood),average=Number(b.average),bad=Number(b.bad);if(![ideal,veryGood,average,bad].every(Number.isFinite))return null;return{id:String(raw.id||''),category:raw.category,difficulty,duration,metric,direction,name:String(raw.name||'').trim(),desc:String(raw.description||raw.desc||'').trim(),unit:metric==='time_sec'?'sekund':metric==='time_min'?'minut':'liczba',hint:metric==='time_sec'?'Wpisz czas w sekundach':metric==='time_min'?'Wpisz czas w minutach':'Wpisz ilość',benchmarks:{ideal,veryGood,average,bad},pro:ideal,good:veryGood,ok:average,bad,aimDistances:Array.isArray(raw.aimDistances)?raw.aimDistances.filter(x=>['near','medium','far'].includes(x)):[],aimWeapons:Array.isArray(raw.aimWeapons)?raw.aimWeapons.filter(x=>['pump','mk','smg'].includes(x)):[],custom:true,createdAt:raw.createdAt||'',updatedAt:raw.updatedAt||'',createdBy:raw.createdBy||''};}
     function removeLoadedCustomTrainingExercises(){TRAINING_CATEGORY_KEYS.forEach(category=>{const cat=TRAINING_EXERCISES[category];if(!cat)return;['easy','medium','advanced'].forEach(diff=>['quick','medium','long'].forEach(dur=>{if(Array.isArray(cat[diff]?.[dur]))cat[diff][dur]=cat[diff][dur].filter(ex=>!ex?.custom);}))});}
     async function getCustomTrainingExercisesFromDb(){let list=[];try{const snap=await withTimeout(getDocs(collection(db,'training_exercises')),12000);snap.forEach(d=>list.push({id:d.id,...d.data()}));}catch(err){console.warn('Nie udało się pobrać ćwiczeń z Firestore:',err);}const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]');const map={};list.forEach(x=>map[x.id]=x);local.forEach(x=>{if(!map[x.id])map[x.id]=x;});return Object.values(map).map(normalizeTrainingExercise).filter(Boolean).filter(x=>x.name);}
-    async function loadCustomTrainingExercises(){const list=await getCustomTrainingExercisesFromDb();customTrainingExercises=list;adminTrainingExercisesCache=[...list];removeLoadedCustomTrainingExercises();list.forEach(ex=>{const cat=TRAINING_EXERCISES[ex.category],diff=TRAINING_DIFFICULTY_MAP[ex.difficulty];if(cat?.[diff]?.[ex.duration])cat[diff][ex.duration].push(ex);});return list;}
+    async function loadCustomTrainingExercises(){const list=await getCustomTrainingExercisesFromDb();customTrainingExercises=list;adminTrainingExercisesCache=[...list];removeLoadedCustomTrainingExercises();list.forEach(ex=>{const cat=TRAINING_EXERCISES[ex.category],diff=TRAINING_DIFFICULTY_MAP[ex.difficulty];if(cat?.[diff]?.[ex.duration])cat[diff][ex.duration].push(ex);});customTrainingCatalogLoaded=true;return list;}
     function getTrainingExerciseSearchText(ex){return[ex.name,ex.desc,TRAINING_CATEGORY_LABELS[ex.category],TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],...(ex.aimDistances||[]).map(x=>AIM_DISTANCE_LABELS[x]),...(ex.aimWeapons||[]).map(x=>AIM_WEAPON_LABELS[x])].join(' ').toLowerCase();}
     function resetAdminTrainingExerciseForm(){const form=document.getElementById('adminTrainingExerciseForm');if(form)form.reset();document.getElementById('adminTrainingEditId').value='';document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj ćwiczenie';document.getElementById('cancelTrainingEditBtn').style.display='none';document.getElementById('adminTrainingDifficulty').value='medium';document.getElementById('adminTrainingDuration').value='medium';document.getElementById('adminTrainingMetric').value='time_sec';document.getElementById('adminTrainingCountDirectionWrap').style.display='none';document.getElementById('adminTrainingAimOptions').style.display='none';document.querySelectorAll('#adminTrainingDistances input,#adminTrainingWeapons input').forEach(i=>i.checked=false);}
     function fillAdminTrainingExerciseForm(ex){document.getElementById('adminTrainingEditId').value=ex.id;document.getElementById('adminTrainingCategory').value=ex.category;document.getElementById('adminTrainingDifficulty').value=ex.difficulty;document.getElementById('adminTrainingDuration').value=ex.duration;document.getElementById('adminTrainingMetric').value=ex.metric;document.getElementById('adminTrainingName').value=ex.name;document.getElementById('adminTrainingDescription').value=ex.desc;document.getElementById('adminTrainingIdeal').value=ex.benchmarks.ideal;document.getElementById('adminTrainingVeryGood').value=ex.benchmarks.veryGood;document.getElementById('adminTrainingAverage').value=ex.benchmarks.average;document.getElementById('adminTrainingBad').value=ex.benchmarks.bad;document.getElementById('adminTrainingCountDirection').value=ex.direction;document.getElementById('adminTrainingCountDirectionWrap').style.display=ex.metric==='count'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=ex.category==='aim'?'block':'none';document.querySelectorAll('#adminTrainingDistances input').forEach(i=>i.checked=ex.aimDistances.includes(i.value));document.querySelectorAll('#adminTrainingWeapons input').forEach(i=>i.checked=ex.aimWeapons.includes(i.value));document.getElementById('saveTrainingExerciseBtn').textContent='Zapisz zmiany';document.getElementById('cancelTrainingEditBtn').style.display='inline-flex';}
@@ -6598,7 +6578,9 @@
       const user = auth.currentUser;
       if (!user) return;
       if (!customTrainingCatalogLoaded) {
-        loadCustomTrainingExercises().then(() => loadTrainingPage()).catch(() => {});
+        loadCustomTrainingExercises().then(() => { loadTrainingPage(); }).catch(() => {});
+      } else if (!trainingBlocksLoaded) {
+        initTrainingPlanner().catch(() => {});
       }
 
       const cardNick = document.getElementById('trainingCardNick');
@@ -6711,35 +6693,58 @@
         // Profile locked!
         if (skillsLock) skillsLock.style.display = 'flex';
         if (planLock) planLock.style.display = 'block';
-        if (trainingBlocks) trainingBlocks.style.display = 'none';
+        if (trainingBlocks) trainingBlocks.style.display = 'grid';
 
-        // Render empty grid placeholders
-        const emptySkills = { building: 0, editing: 0, aim: 0, offspawn: 0, midgame: 0, lategame: 0 };
-        renderSkillsGrid(emptySkills);
+        // Render generic program blocks even before the skill profile is unlocked.
+        const emptySkills = { building: 50, editing: 50, aim: 50, offspawn: 50, midgame: 50, lategame: 50 };
+        renderSkillsGrid({building:0,editing:0,aim:0,offspawn:0,midgame:0,lategame:0});
+        renderTrainingPlanBlocks(emptySkills);
       }
     }
 
     // Modal triggers and save routines
     setTimeout(() => {
       const btnTrainingInfo = document.getElementById('btnTrainingTabInfo');
+      const btnTrainingBlocks = document.getElementById('btnTrainingTabBlocks');
       const btnTrainingPlan = document.getElementById('btnTrainingTabPlan');
       const contentTrainingInfo = document.getElementById('trainingTabContentInfo');
+      const contentTrainingBlocks = document.getElementById('trainingTabContentBlocks');
       const contentTrainingPlan = document.getElementById('trainingTabContentPlan');
+      const activateTrainingTab = (which) => {
+        [btnTrainingInfo,btnTrainingBlocks,btnTrainingPlan].forEach(b=>b?.classList.remove('active'));
+        [contentTrainingInfo,contentTrainingBlocks,contentTrainingPlan].forEach(c=>{if(c)c.style.display='none';});
+        if(which==='info'){btnTrainingInfo?.classList.add('active');if(contentTrainingInfo)contentTrainingInfo.style.display='block';}
+        if(which==='blocks'){btnTrainingBlocks?.classList.add('active');if(contentTrainingBlocks)contentTrainingBlocks.style.display='block';}
+        if(which==='plan'){btnTrainingPlan?.classList.add('active');if(contentTrainingPlan)contentTrainingPlan.style.display='block';renderWeeklyCalendar();}
+      };
+      btnTrainingInfo?.addEventListener('click',()=>activateTrainingTab('info'));
+      btnTrainingBlocks?.addEventListener('click',()=>activateTrainingTab('blocks'));
+      btnTrainingPlan?.addEventListener('click',()=>activateTrainingTab('plan'));
 
-      if (btnTrainingInfo && btnTrainingPlan) {
-        btnTrainingInfo.addEventListener('click', () => {
-          btnTrainingInfo.classList.add('active');
-          btnTrainingPlan.classList.remove('active');
-          if (contentTrainingInfo) contentTrainingInfo.style.display = 'block';
-          if (contentTrainingPlan) contentTrainingPlan.style.display = 'none';
-        });
-        btnTrainingPlan.addEventListener('click', () => {
-          btnTrainingPlan.classList.add('active');
-          btnTrainingInfo.classList.remove('active');
-          if (contentTrainingInfo) contentTrainingInfo.style.display = 'none';
-          if (contentTrainingPlan) contentTrainingPlan.style.display = 'block';
-        });
-      }
+      document.getElementById('btnCreateCustomBlock')?.addEventListener('click',openCreateCustomBlock);
+      document.getElementById('customBlockExerciseSearch')?.addEventListener('input',renderCustomBlockExerciseChooser);
+      document.getElementById('customBlockExerciseCategory')?.addEventListener('change',renderCustomBlockExerciseChooser);
+      document.getElementById('customBlockForm')?.addEventListener('submit',async e=>{
+        e.preventDefault();
+        const selected=[...document.querySelectorAll('.custom-block-exercise-check:checked')];
+        const exercises=flattenTrainingExercises();const refs=selected.map(c=>exercises.find(x=>x.id===c.value)).filter(Boolean).map(exerciseRef);
+        const name=document.getElementById('customBlockName').value.trim();const description=document.getElementById('customBlockDescription').value.trim();
+        if(!name||!description||!refs.length){alert('Podaj nazwę, opis i wybierz przynajmniej jedno ćwiczenie.');return;}
+        const editId=document.getElementById('customBlockEditId')?.value||'';const existing=userTrainingBlocks.find(x=>x.id===editId);const categories=[...new Set(refs.map(x=>x.category))];const category=categories[0]||'building';
+        const block={id:editId||`block_${auth.currentUser.uid}_${Date.now()}`,name,description,color:document.getElementById('customBlockColor').value||'#6d5bff',category,categories,exerciseRefs:refs,createdAt:existing?.createdAt||new Date().toISOString()};
+        try{await saveUserTrainingBlock(block);closeOverlay('customBlockModalOverlay');renderTrainingPlanBlocks(JSON.parse(localStorage.getItem('fn_user_skills')||'{}'));alert(editId?'✅ Blok zaktualizowany.':'✅ Blok zapisany.');}catch(err){alert(err.message||'Nie udało się zapisać bloku.');}
+      });
+      document.getElementById('planUseCustomBlocks')?.addEventListener('change',toggleCustomPlannerBlocks);
+      document.getElementById('trainingPlanBuilderForm')?.addEventListener('submit',e=>{e.preventDefault();const settings=collectPlannerPreferences();const enabled=Object.values(settings.daySettings).filter(x=>x.enabled);if(!enabled.length){alert('Wybierz przynajmniej jeden dzień.');return;}const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');const generated=generatePlanFromPreferences(settings,skills);previewPlan(generated);});
+      document.getElementById('btnCreateTrainingPlan')?.addEventListener('click',()=>openTrainingPlanBuilder(null));
+      document.getElementById('btnEditTrainingPlan')?.addEventListener('click',()=>{if(currentTrainingPlan){renderPlanPreview();openOverlay('trainingPlanPreviewModalOverlay');}else openTrainingPlanBuilder(null);});
+      document.getElementById('btnSavePreviewPlan')?.addEventListener('click',savePreviewPlan);
+      document.getElementById('btnPlanPrevWeek')?.addEventListener('click',async()=>{await loadTrainingPlanForWeek(addDays(currentPlannerWeekStart,-7));});
+      document.getElementById('btnPlanNextWeek')?.addEventListener('click',async()=>{await loadTrainingPlanForWeek(addDays(currentPlannerWeekStart,7));});
+      document.getElementById('btnPlanToday')?.addEventListener('click',async()=>{await loadTrainingPlanForWeek(new Date());});
+
+      // Freshly bind the custom block chooser when its modal is first opened.
+      if (typeof initTrainingPlanner==='function') initTrainingPlanner().catch(()=>{});
 
       // Unlock skills trigger
       const btnOpenUnlock = document.getElementById('btnOpenUnlockSkills');
@@ -7175,6 +7180,193 @@
     }
 
     // ---------- Admin: Training tab list ----------
+
+    // ================= TRAINING BLOCKS + WEEKLY PLANNER =================
+    let currentPlannerWeekStart = weekStartDate(new Date());
+    let currentTrainingPlan = null;
+    let plannerDraft = null;
+    let userTrainingBlocks = [];
+    let trainingBlocksLoaded = false;
+    let currentExecutionContext = null;
+
+    const TRAINING_DAY_KEYS = ['mon','tue','wed','thu','fri','sat','sun'];
+    const TRAINING_DAY_LABELS = {mon:'Pon',tue:'Wt',wed:'Śr',thu:'Czw',fri:'Pt',sat:'Sob',sun:'Nd'};
+    const TRAINING_DAY_FULL = {mon:'Poniedziałek',tue:'Wtorek',wed:'Środa',thu:'Czwartek',fri:'Piątek',sat:'Sobota',sun:'Niedziela'};
+    const TRAINING_CATEGORY_COLORS = {building:'#f59e0b',editing:'#a855f7',aim:'#fb4570',offspawn:'#22d3ee',midgame:'#6d5bff',endgame:'#22c55e'};
+
+    function closeOverlay(id){const el=document.getElementById(id);if(el)el.classList.add('hidden');}
+    function openOverlay(id){const el=document.getElementById(id);if(el)el.classList.remove('hidden');}
+    function uidScope(key){return `fn_${key}_${auth.currentUser?.uid||'guest'}`;}
+    function weekStartDate(date){const d=new Date(date);d.setHours(0,0,0,0);const day=d.getDay();const diff=day===0?-6:1-day;d.setDate(d.getDate()+diff);return d;}
+    function isoDate(date){return new Date(date).toISOString().slice(0,10);}
+    function addDays(date,n){const d=new Date(date);d.setDate(d.getDate()+n);return d;}
+    function stableExerciseId(ex){return `ex_${String(ex.category||'x')}_${String(ex.name||'x')}_${String(ex.difficulty||'medium')}_${String(ex.duration||'medium')}`.toLowerCase().replace(/[^a-z0-9]+/g,'_').slice(0,150);}
+    function flattenTrainingExercises(){
+      const out=[]; const seen=new Set();
+      TRAINING_CATEGORY_KEYS.forEach(category=>{
+        const cat=TRAINING_EXERCISES[category]; if(!cat)return;
+        ['easy','medium','advanced'].forEach(diff=>['quick','medium','long'].forEach(dur=>{
+          const arr=cat[diff]?.[dur]||[];
+          arr.forEach(raw=>{
+            if(!raw || typeof raw==='string')return;
+            const ex={...raw,category,difficulty:diff==='advanced'?'hard':diff,duration:dur,id:raw.custom&&raw.id?raw.id:stableExerciseId({...raw,category,difficulty:diff,duration:dur}),description:raw.desc||raw.description||'',aimDistances:raw.aimDistances||[],aimWeapons:raw.aimWeapons||[]};
+            if(!seen.has(ex.id)){seen.add(ex.id);out.push(ex);}
+          });
+        }));
+      });
+      return out;
+    }
+    function exerciseRef(ex){return {id:ex.id,name:ex.name,category:ex.category,difficulty:ex.difficulty||'medium',duration:ex.duration||'medium',metric:ex.metric||'count',unit:ex.unit||'',hint:ex.hint||'',description:ex.description||ex.desc||'',desc:ex.desc||ex.description||'',benchmarks:ex.benchmarks||{pro:0,good:0,ok:0,bad:0},direction:ex.direction||'higher',aimDistances:ex.aimDistances||[],aimWeapons:ex.aimWeapons||[],custom:!!ex.custom};}
+    function blockSnapshot(block){return {id:block.id,source:block.source||'program',category:block.category,categories:Array.isArray(block.categories)&&block.categories.length?block.categories:[block.category],name:block.name,description:block.description||'',color:block.color||TRAINING_CATEGORY_COLORS[block.category]||'#6d5bff',exerciseRefs:(block.exerciseRefs||[]).map(x=>({...x}))};}
+
+    async function loadUserTrainingBlocks(){
+      const uid=auth.currentUser?.uid; if(!uid)return[];
+      const localKey=uidScope('training_blocks'); const map=new Map();
+      try{const snap=await withTimeout(getDocs(collection(db,'training_blocks')),12000);snap.forEach(d=>{const x={id:d.id,...d.data()};if(x.userId===uid)map.set(x.id,x);});}catch(e){console.warn('Bloki własne: Firestore niedostępne',e);}
+      try{const local=JSON.parse(localStorage.getItem(localKey)||'[]');local.forEach(x=>{if(!map.has(x.id))map.set(x.id,x);});}catch(_){ }
+      userTrainingBlocks=[...map.values()]; trainingBlocksLoaded=true; return userTrainingBlocks;
+    }
+    async function saveUserTrainingBlock(block){
+      const uid=auth.currentUser?.uid;if(!uid)throw new Error('Brak zalogowanego użytkownika.');
+      const id=block.id||`block_${uid}_${Date.now()}`; const data={...block,id,userId:uid,updatedAt:new Date().toISOString(),createdAt:block.createdAt||new Date().toISOString()};
+      try{await withTimeout(setDoc(doc(db,'training_blocks',id),data),12000);}catch(e){console.warn('Blok nie został zapisany w Firestore',e);}
+      const key=uidScope('training_blocks');let local=[];try{local=JSON.parse(localStorage.getItem(key)||'[]');}catch(_){ }
+      local=local.filter(x=>x.id!==id);local.unshift(data);localStorage.setItem(key,JSON.stringify(local));
+      await loadUserTrainingBlocks(); return data;
+    }
+    async function deleteUserTrainingBlock(id){
+      try{await withTimeout(deleteDoc(doc(db,'training_blocks',id)),12000);}catch(e){console.warn('Nie udało się usunąć bloku z Firestore',e);}
+      const key=uidScope('training_blocks');let local=[];try{local=JSON.parse(localStorage.getItem(key)||'[]');}catch(_){ }
+      local=local.filter(x=>x.id!==id);localStorage.setItem(key,JSON.stringify(local));await loadUserTrainingBlocks();
+    }
+
+    function programTrainingBlocks(skills={}){
+      const all=flattenTrainingExercises();
+      const safeSkills={building:Number(skills.building)||50,editing:Number(skills.editing)||50,aim:Number(skills.aim)||50,offspawn:Number(skills.offspawn)||50,midgame:Number(skills.midgame)||50,endgame:Number(skills.lategame)||50};
+      return TRAINING_CATEGORY_KEYS.map(category=>{
+        const score=safeSkills[category]; const target=score<=35?'easy':score<=70?'medium':'hard';
+        const candidates=all.filter(ex=>ex.category===category);
+        const same=candidates.filter(ex=>ex.difficulty===target);
+        const chosen=(same.length?same:candidates).slice(0,3);
+        return {id:`program_${category}`,source:'program',category,name:category==='aim'?'🎯 AIM — priorytet dystansu':`Program — ${TRAINING_CATEGORY_LABELS[category]}`,description:`Blok generowany z uwzględnieniem aktualnej oceny ${Math.round(score)}/100.`,color:TRAINING_CATEGORY_COLORS[category],score,exerciseRefs:chosen.map(exerciseRef)};
+      });
+    }
+    function getSuggestedBlocks(skills){return programTrainingBlocks(skills);}
+    function allBlockCatalog(skills){return [...getSuggestedBlocks(skills),...userTrainingBlocks.map(x=>({...x,source:'custom',exerciseRefs:(x.exerciseRefs||[]).map(y=>({...y}))}))];}
+
+    function renderTrainingPlanBlocks(skills){
+      const container=document.getElementById('trainingBlocksContainer');if(!container)return;
+      const blocks=getSuggestedBlocks(skills);
+      const custom=userTrainingBlocks.map(x=>({...x,source:'custom'}));
+      const all=[...blocks,...custom];
+      if(!all.length){container.innerHTML='<div class="tour-empty"><strong>Brak bloków</strong>Utwórz własny blok lub poczekaj na wczytanie bazy ćwiczeń.</div>';return;}
+      container.innerHTML=all.map(block=>{
+        const score=block.source==='custom'?null:(block.score||50);const prio=score==null?{label:'Własny',class:'purple'}:getPriorityLabel(score);const refs=block.exerciseRefs||[];
+        const chips=refs.slice(0,4).map(ex=>`<span class="tour-tag" style="font-size:9.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(ex.name)}</span>`).join('');
+        const own=block.source==='custom'?`<button type="button" class="btn-ghost" style="width:auto;padding:6px 8px;font-size:10px;" onclick="event.stopPropagation();editOwnTrainingBlock('${block.id}')">✏️</button><button type="button" class="btn-danger-outline" style="width:auto;padding:6px 8px;font-size:10px;" onclick="event.stopPropagation();removeOwnTrainingBlock('${block.id}')">Usuń</button>`:'';
+        return `<div class="matches-card" style="padding:20px;margin:0;border-radius:var(--radius-md);border:1.5px solid ${escapeHtml(block.color||TRAINING_CATEGORY_COLORS[block.category]||'#6d5bff')};background:linear-gradient(145deg,rgba(255,255,255,.025),rgba(255,255,255,.01));">
+          <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;"><span class="tour-tag ${prio.class}" style="font-size:9px;">${prio.label}</span><span style="font-size:10px;color:var(--text-faint);">${block.source==='custom'?'Własny':`Ocena ${Math.round(score)}/100`}</span></div>
+          <h3 style="font-family:'Space Grotesk';font-size:17px;margin:12px 0 6px;color:var(--text);">${escapeHtml(block.name)}</h3>
+          <p style="font-size:12px;line-height:1.5;color:var(--text-dim);min-height:38px;margin:0 0 10px;">${escapeHtml(block.description||'')}</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">${chips||'<span style="font-size:11px;color:var(--text-faint);">Brak przypisanych ćwiczeń</span>'}</div>
+          <div style="display:flex;gap:7px;"><button type="button" class="btn-primary" style="flex:1;padding:9px 10px;font-size:11px;margin:0;" onclick="openTrainingBlockPreviewById('${block.id}',${block.source==='custom'?'true':'false'})">▶ Szczegóły bloku</button>${own}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function openTrainingBlockPreviewById(id,isCustom){
+      const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');const cat=allBlockCatalog(skills);const block=cat.find(x=>x.id===id);if(!block)return;
+      currentExecutionContext={block:JSON.parse(JSON.stringify(block)),standalone:true};renderTrainingBlockExecution(block,null);openOverlay('trainingBlockExecutionModalOverlay');
+    }
+    function renderTrainingBlockExecution(block,occurrence){
+      const el=document.getElementById('trainingBlockExecutionContent');if(!el)return;const refs=block.exerciseRefs||[];
+      const title=occurrence?.date?`<span style="font-size:11px;color:var(--text-faint);">${escapeHtml(occurrence.date)}</span>`:'';
+      el.innerHTML=`<div style="display:flex;align-items:start;justify-content:space-between;gap:12px;"><div><h2 class="form-title" style="margin-bottom:4px;">${escapeHtml(block.name)}</h2><p class="form-sub">${escapeHtml(block.description||'')}</p></div>${title}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 16px;"><span class="tour-tag accent">${TRAINING_CATEGORY_LABELS[block.category]||block.category}</span><span class="tour-tag">${refs.length} ćwiczeń</span></div>
+        <form id="trainingExecutionForm"><div style="display:flex;flex-direction:column;gap:10px;">${refs.map((ex,i)=>{
+          const result=occurrence?.results?.[ex.id]??'';const metric=ex.metric;const label=metric==='time_sec'?'Czas (sekundy)':metric==='time_min'?'Czas (minuty)':metric==='count'?'Ilość / wynik':'Wynik';const type=metric==='text'?'textarea':'input';
+          const extra=metric==='time_sec'||metric==='time_min'?'step="0.1" min="0"':metric==='count'?'step="0.1" min="0"':'';
+          return `<div style="padding:14px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.02);"><div style="display:flex;justify-content:space-between;gap:10px;"><div><b style="font-size:12.5px;color:var(--text);">${i+1}. ${escapeHtml(ex.name)}</b><div style="font-size:11px;color:var(--text-dim);line-height:1.45;margin-top:4px;">${escapeHtml(ex.description||ex.desc||'')}</div></div></div><div style="font-size:10.5px;color:var(--text-faint);margin:8px 0;">${escapeHtml(label)} • Idealny ${escapeHtml(String(ex.benchmarks?.ideal??ex.benchmarks?.pro??''))} • Bardzo dobry ${escapeHtml(String(ex.benchmarks?.veryGood??ex.benchmarks?.good??''))} • Przeciętny ${escapeHtml(String(ex.benchmarks?.average??ex.benchmarks?.ok??''))} • Słaby ${escapeHtml(String(ex.benchmarks?.bad??''))}</div>${type==='textarea'?`<textarea id="exec_${i}" style="min-height:58px;resize:vertical;" placeholder="${escapeHtml(ex.hint||'Opcjonalnie wpisz wynik...')}">${escapeHtml(String(result))}</textarea>`:`<input id="exec_${i}" type="number" ${extra} value="${escapeHtml(String(result))}" placeholder="${escapeHtml(ex.hint||'Opcjonalnie wpisz wynik...')}" />`}</div>`;
+        }).join('')}</div><div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;"><span style="font-size:11px;color:var(--text-faint);">Nie musisz uzupełniać wszystkich pól.</span><button class="btn-primary" type="submit" style="width:auto;margin:0;">✅ Wykonane</button></div></form>`;
+      const form=document.getElementById('trainingExecutionForm');form.addEventListener('submit',async e=>{e.preventDefault();const results={};refs.forEach((ex,i)=>{const v=document.getElementById(`exec_${i}`)?.value?.trim()||'';if(v)results[ex.id]=v;});await saveTrainingExecution(block,occurrence,results);closeOverlay('trainingBlockExecutionModalOverlay');});
+    }
+    function scoreLoggedExercise(ex, rawValue){
+      if(rawValue===undefined||rawValue===null||String(rawValue).trim()==='')return null;
+      if(ex.metric==='text')return null;
+      const value=Number(rawValue); if(!Number.isFinite(value))return null;
+      const b=ex.benchmarks||{};
+      const points=(b.ideal!==undefined)?[
+        {x:Number(b.ideal),score:100},{x:Number(b.veryGood),score:90},{x:Number(b.average),score:60},{x:Number(b.bad),score:35},{x:Number(b.bad)*1.5,score:15}
+      ]:[
+        {x:Number(b.pro),score:100},{x:Number(b.good),score:90},{x:Number(b.ok),score:60},{x:Number(b.bad),score:35}
+      ];
+      const direction=ex.direction||((ex.metric==='time_sec'||ex.metric==='time_min')?'lower':'higher');
+      if(!points.every(p=>Number.isFinite(p.x)))return null;
+      return interpolateBenchmark(value,points,direction);
+    }
+    async function applyTrainingExecutionProgress(block,results){
+      const scoresByCategory={}; const aimDistanceScores={};
+      (block.exerciseRefs||[]).forEach(ex=>{const score=scoreLoggedExercise(ex,results[ex.id]);if(score===null)return;(scoresByCategory[ex.category]??=[]).push(score);if(ex.category==='aim'&&Array.isArray(ex.aimDistances))ex.aimDistances.forEach(d=>(aimDistanceScores[d]??=[]).push(score));});
+      const rawSkills=JSON.parse(localStorage.getItem('fn_user_skills')||'null');if(rawSkills){const skills={...rawSkills};Object.entries(scoresByCategory).forEach(([cat,vals])=>{const key=cat==='endgame'?'lategame':cat;const observed=weightedSkillScore(vals);const old=Number(skills[key])||50;skills[key]=clamp100(old*0.92+observed*0.08);});localStorage.setItem('fn_user_skills',JSON.stringify(skills));}
+      if(Object.keys(aimDistanceScores).length){let prev={};try{prev=JSON.parse(localStorage.getItem('fn_aim_distance_progress')||'{}');}catch(_){ }Object.entries(aimDistanceScores).forEach(([d,vals])=>{const observed=weightedSkillScore(vals);const old=Number(prev[d])||50;prev[d]=clamp100(old*0.9+observed*0.1);});localStorage.setItem('fn_aim_distance_progress',JSON.stringify(prev));}
+    }
+
+    async function saveTrainingExecution(block,occurrence,results){
+      const uid=auth.currentUser?.uid;if(!uid)return;const log={id:`exec_${uid}_${Date.now()}`,userId:uid,blockId:block.id,blockName:block.name,category:block.category,source:block.source||'program',date:new Date().toISOString(),weekStart:currentPlannerWeekStart?isoDate(currentPlannerWeekStart):isoDate(new Date()),results};
+      try{await withTimeout(setDoc(doc(db,'training_logs',log.id),log),12000);}catch(e){console.warn('Nie zapisano logu w Firestore',e);}
+      const key=uidScope('training_logs');let logs=[];try{logs=JSON.parse(localStorage.getItem(key)||'[]');}catch(_){ }logs.unshift(log);logs=logs.slice(0,500);localStorage.setItem(key,JSON.stringify(logs));
+      await applyTrainingExecutionProgress(block,results);
+      if(occurrence&&currentTrainingPlan){const day=currentTrainingPlan.days[occurrence.dayKey];const target=day?.blocks?.find(x=>x.occurrenceId===occurrence.occurrenceId);if(target){target.results={...(target.results||{}),...results};target.completedExercises=Object.keys(target.results).length;target.lastCompletedAt=new Date().toISOString();await saveCurrentPlan(false);renderWeeklyCalendar();}}
+    }
+
+    function getPlannerDayKey(date){const d=new Date(date);const idx=(d.getDay()+6)%7;return TRAINING_DAY_KEYS[idx];}
+    function buildPlanDayPicker(selected={}){const el=document.getElementById('planDayPicker');if(!el)return;el.innerHTML=TRAINING_DAY_KEYS.map(k=>`<label class="pill-checkbox" style="justify-content:center;"><input type="checkbox" class="plan-day-check" value="${k}" ${selected[k]?.enabled?'checked':''}/> ${TRAINING_DAY_LABELS[k]}</label>`).join('');}
+    function buildPlanFocusTypes(selected=[]){const el=document.getElementById('planFocusTypes');if(!el)return;el.innerHTML=TRAINING_CATEGORY_KEYS.map(k=>`<label class="pill-checkbox"><input type="checkbox" class="plan-focus-check" value="${k}" ${selected.includes(k)?'checked':''}/> ${TRAINING_CATEGORY_LABELS[k]}</label>`).join('');}
+    function buildPlanDaySettings(daySettings={}){const el=document.getElementById('planDaySettings');if(!el)return;const base=daySettings||{};el.innerHTML=TRAINING_DAY_KEYS.map(k=>{const cfg=base[k]||{enabled:false,difficulty:'medium',duration:'medium',from:'',to:''};return `<div data-plan-day-row="${k}" style="display:grid;grid-template-columns:85px 1fr 1fr 1fr 1fr;gap:8px;align-items:end;padding:10px;border:1px solid var(--border-soft);border-radius:10px;opacity:${cfg.enabled?1:.55};"><label class="pill-checkbox" style="height:40px;"><input type="checkbox" class="plan-day-enabled" value="${k}" ${cfg.enabled?'checked':''}/> ${TRAINING_DAY_LABELS[k]}</label><div class="field" style="margin:0;"><label>Trudność</label><select class="plan-day-difficulty"><option value="easy" ${cfg.difficulty==='easy'?'selected':''}>Łatwy</option><option value="medium" ${cfg.difficulty==='medium'?'selected':''}>Średni</option><option value="hard" ${cfg.difficulty==='hard'?'selected':''}>Trudny</option></select></div><div class="field" style="margin:0;"><label>Długość</label><select class="plan-day-duration"><option value="quick" ${cfg.duration==='quick'?'selected':''}>Szybki</option><option value="medium" ${cfg.duration==='medium'?'selected':''}>Średni</option><option value="long" ${cfg.duration==='long'?'selected':''}>Długi</option></select></div><div class="field" style="margin:0;"><label>Od (opc.)</label><input class="plan-day-from" type="time" value="${escapeHtml(cfg.from||'')}" /></div><div class="field" style="margin:0;"><label>Do (opc.)</label><input class="plan-day-to" type="time" value="${escapeHtml(cfg.to||'')}" /></div></div>`;}).join('');el.querySelectorAll('.plan-day-enabled').forEach(cb=>cb.addEventListener('change',e=>{e.target.closest('[data-plan-day-row]').style.opacity=e.target.checked?'1':'.55';}));}
+    function toggleCustomPlannerBlocks(){const on=document.getElementById('planUseCustomBlocks')?.checked;const el=document.getElementById('planCustomBlockPicker');if(!el)return;if(!on){el.style.display='none';el.innerHTML='';return;}el.style.display='block';el.innerHTML=userTrainingBlocks.length?`<div style="display:flex;flex-wrap:wrap;gap:7px;">${userTrainingBlocks.map(b=>`<label class="pill-checkbox"><input type="checkbox" class="plan-custom-block-check" value="${b.id}" /> ${escapeHtml(b.name)}</label>`).join('')}</div>`:'<div class="tour-empty"><strong>Brak własnych bloków</strong>Najpierw utwórz własny blok w zakładce Bloki Treningowe.</div>';}
+
+    function openTrainingPlanBuilder(existing=null){
+      const plan=existing||{preferences:{blocksPerDay:2,focusTypes:[],useCustomBlocks:false,customBlockIds:[]},daySettings:{}};
+      document.getElementById('trainingPlanBuilderTitle').textContent=existing?'✏️ Ustawienia planu':'✨ Stwórz Plan';
+      document.getElementById('planBlocksPerDay').value=plan.preferences?.blocksPerDay||2;document.getElementById('planUseCustomBlocks').checked=!!plan.preferences?.useCustomBlocks;
+      buildPlanDayPicker(plan.daySettings||{});buildPlanFocusTypes(plan.preferences?.focusTypes||[]);buildPlanDaySettings(plan.daySettings||{});toggleCustomPlannerBlocks();
+      plannerDraft=existing?JSON.parse(JSON.stringify(existing)):null;openOverlay('trainingPlanBuilderModalOverlay');
+    }
+    function collectPlannerPreferences(){
+      const prefs={blocksPerDay:Math.max(1,Math.min(8,Number(document.getElementById('planBlocksPerDay').value)||2)),focusTypes:[...document.querySelectorAll('.plan-focus-check:checked')].map(x=>x.value),useCustomBlocks:!!document.getElementById('planUseCustomBlocks').checked,customBlockIds:[...document.querySelectorAll('.plan-custom-block-check:checked')].map(x=>x.value)};
+      const daySettings={};document.querySelectorAll('[data-plan-day-row]').forEach(row=>{const k=row.dataset.planDayRow;daySettings[k]={enabled:row.querySelector('.plan-day-enabled').checked,difficulty:row.querySelector('.plan-day-difficulty').value,duration:row.querySelector('.plan-day-duration').value,from:row.querySelector('.plan-day-from').value,to:row.querySelector('.plan-day-to').value};});return {preferences:prefs,daySettings};
+    }
+    function chooseBlockForPlan(candidates,categoryUsage,usedIds,focusTypes){
+      const scored=candidates.map(b=>{const cats=Array.isArray(b.categories)&&b.categories.length?b.categories:[b.category];let weight=1;if(cats.some(c=>focusTypes.includes(c)))weight*=2;const uses=cats.reduce((sum,c)=>sum+(categoryUsage[c]||0),0)/Math.max(1,cats.length);weight*=Math.max(.5,1-uses*.15);if(usedIds.has(b.id))weight*=.55;return {b,weight};}).sort((a,b)=>b.weight-a.weight);return scored[0]?.b||null;
+    }
+    function generatePlanFromPreferences(settings,skills){
+      const prefs=settings.preferences;const daySettings=settings.daySettings;const catalog=allBlockCatalog(skills);const program=catalog.filter(x=>x.source==='program');const custom=catalog.filter(x=>x.source==='custom'&&prefs.customBlockIds.includes(x.id));
+      const candidates=[...program,...(prefs.useCustomBlocks?custom:[])];const days={};const categoryUsage={};const usedIds=new Set();let occurrenceCounter=0;
+      TRAINING_DAY_KEYS.forEach((dayKey,idx)=>{const cfg=daySettings[dayKey];if(!cfg?.enabled)return;const date=isoDate(addDays(currentPlannerWeekStart,idx));const dayBlocks=[];for(let i=0;i<prefs.blocksPerDay;i++){let pool=candidates.filter(b=>!prefs.focusTypes.length||prefs.focusTypes.includes(b.category)||i>0);if(!pool.length)pool=candidates;const targetDiff=cfg.difficulty;const exact=pool.filter(b=>(b.exerciseRefs||[]).some(ex=>ex.difficulty===targetDiff));if(exact.length)pool=exact;const block=chooseBlockForPlan(pool,categoryUsage,usedIds,prefs.focusTypes);if(!block)continue;const snap=blockSnapshot(block);const occurrence={occurrenceId:`occ_${Date.now()}_${occurrenceCounter++}`,blockId:snap.id,source:snap.source,category:snap.category,name:snap.name,description:snap.description,color:snap.color,exerciseRefs:snap.exerciseRefs,dayKey,date,duration:cfg.duration,difficulty:cfg.difficulty,timeFrom:cfg.from||'',timeTo:cfg.to||'',completedExercises:0,results:{}};dayBlocks.push(occurrence);(block.categories||[block.category]).forEach(c=>categoryUsage[c]=(categoryUsage[c]||0)+1);usedIds.add(block.id);}days[dayKey]={date,blocks:dayBlocks};});
+      return {id:`plan_${auth.currentUser?.uid||'guest'}_${isoDate(currentPlannerWeekStart)}`,userId:auth.currentUser?.uid||'',weekStart:isoDate(currentPlannerWeekStart),preferences:prefs,daySettings,days,createdAt:plannerDraft?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+    }
+    function previewPlan(plan){plannerDraft=plan;renderPlanPreview();closeOverlay('trainingPlanBuilderModalOverlay');openOverlay('trainingPlanPreviewModalOverlay');}
+    function renderPlanPreview(){
+      const el=document.getElementById('planPreviewCalendar');if(!el||!plannerDraft)return;el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));gap:8px;overflow-x:auto;">${TRAINING_DAY_KEYS.map(k=>{const d=plannerDraft.days[k]||{date:isoDate(addDays(currentPlannerWeekStart,TRAINING_DAY_KEYS.indexOf(k))),blocks:[]};return `<div data-preview-day="${k}" style="border:1px solid var(--border-soft);border-radius:12px;padding:8px;min-height:250px;background:rgba(255,255,255,.015);" ondragover="event.preventDefault()" ondrop="handlePlanDrop(event,'${k}')"><div style="font-weight:800;color:var(--text);font-size:12px;margin-bottom:8px;">${TRAINING_DAY_FULL[k]}<div style="font-size:10px;color:var(--text-faint);">${escapeHtml(d.date)}</div></div><div style="display:flex;flex-direction:column;gap:7px;">${(d.blocks||[]).map((b,i)=>`<div draggable="true" ondragstart="handlePlanDragStart(event,'${k}',${i})" style="padding:10px;border-radius:9px;background:${escapeHtml(b.color||'#6d5bff')}18;border:1px solid ${escapeHtml(b.color||'#6d5bff')}66;cursor:grab;"><div style="font-size:11px;font-weight:800;color:var(--text);">${escapeHtml(b.name)}</div><div style="font-size:9.5px;color:var(--text-dim);margin-top:3px;">${Object.keys(b.results||{}).length}/${(b.exerciseRefs||[]).length} ćwiczeń • ${escapeHtml(b.duration||'medium')}</div><div style="display:flex;justify-content:flex-end;margin-top:6px;gap:4px;"><button type="button" class="btn-danger-outline" style="width:auto;padding:4px 6px;font-size:9px;" onclick="event.stopPropagation();removePreviewBlock('${k}',${i})">Usuń</button></div></div>`).join('')}</div><button type="button" class="btn-ghost" style="width:100%;padding:7px;margin-top:8px;font-size:10px;" onclick="openPreviewAddPanel('${k}')">➕ Dodaj blok</button></div>`;}).join('')}</div>`;
+    }
+    function handlePlanDragStart(ev,dayKey,index){ev.dataTransfer.setData('text/plain',JSON.stringify({dayKey,index}));}
+    function handlePlanDrop(ev,targetDay){ev.preventDefault();if(!plannerDraft)return;try{const src=JSON.parse(ev.dataTransfer.getData('text/plain'));const b=plannerDraft.days[src.dayKey]?.blocks?.splice(src.index,1)[0];if(!b)return;plannerDraft.days[targetDay]=plannerDraft.days[targetDay]||{date:isoDate(addDays(currentPlannerWeekStart,TRAINING_DAY_KEYS.indexOf(targetDay))),blocks:[]};b.dayKey=targetDay;b.date=plannerDraft.days[targetDay].date;plannerDraft.days[targetDay].blocks.push(b);renderPlanPreview();}catch(_){}}
+    function removePreviewBlock(dayKey,index){plannerDraft?.days?.[dayKey]?.blocks?.splice(index,1);renderPlanPreview();}
+    function openPreviewAddPanel(dayKey){const panel=document.getElementById('planPreviewAddPanel');if(!panel)return;const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');const candidates=allBlockCatalog(skills);panel.style.display='block';panel.dataset.dayKey=dayKey;panel.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><b>Dodaj blok do ${TRAINING_DAY_FULL[dayKey]}</b><button type="button" class="btn-ghost" style="padding:5px 7px;font-size:9px;" onclick="this.closest('#planPreviewAddPanel').style.display='none'">✕</button></div><div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:8px;"><input id="previewAddSearch" placeholder="Szukaj bloku..."/><select id="previewAddCategory"><option value="">Wszystkie typy</option>${TRAINING_CATEGORY_KEYS.map(k=>`<option value="${k}">${TRAINING_CATEGORY_LABELS[k]}</option>`).join('')}</select></div><div id="previewAddList" style="display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:240px;overflow:auto;"></div>`;const render=()=>{const q=(document.getElementById('previewAddSearch').value||'').toLowerCase();const c=document.getElementById('previewAddCategory').value;document.getElementById('previewAddList').innerHTML=candidates.filter(b=>(!c||b.category===c)&&(!q||`${b.name} ${b.description}`.toLowerCase().includes(q))).map(b=>`<button type="button" class="btn-ghost" style="text-align:left;padding:8px;" onclick="addBlockToPreview('${dayKey}','${b.id}',${b.source==='custom'?'true':'false'})">${escapeHtml(b.name)} <span style="font-size:9px;color:var(--text-faint);">${TRAINING_CATEGORY_LABELS[b.category]}</span></button>`).join('')};render();document.getElementById('previewAddSearch').oninput=render;document.getElementById('previewAddCategory').onchange=render;}
+    function addBlockToPreview(dayKey,id,isCustom){const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');const block=allBlockCatalog(skills).find(b=>b.id===id);if(!block||!plannerDraft)return;plannerDraft.days[dayKey]=plannerDraft.days[dayKey]||{date:isoDate(addDays(currentPlannerWeekStart,TRAINING_DAY_KEYS.indexOf(dayKey))),blocks:[]};const snap=blockSnapshot(block);plannerDraft.days[dayKey].blocks.push({occurrenceId:`occ_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,...snap,dayKey,date:plannerDraft.days[dayKey].date,duration:plannerDraft.daySettings?.[dayKey]?.duration||'medium',difficulty:plannerDraft.daySettings?.[dayKey]?.difficulty||'medium',timeFrom:plannerDraft.daySettings?.[dayKey]?.from||'',timeTo:plannerDraft.daySettings?.[dayKey]?.to||'',completedExercises:0,results:{}});renderPlanPreview();document.getElementById('planPreviewAddPanel').style.display='none';}
+    async function saveCurrentPlan(showAlert=true){if(!currentTrainingPlan)return;currentTrainingPlan.updatedAt=new Date().toISOString();const data=currentTrainingPlan;try{await withTimeout(setDoc(doc(db,'training_plans',data.id),data),12000);}catch(e){console.warn('Plan nie został zapisany w Firestore',e);}localStorage.setItem(uidScope(`training_plan_${data.weekStart}`),JSON.stringify(data));if(showAlert)alert('✅ Plan został zapisany.');}
+    async function savePreviewPlan(){if(!plannerDraft)return;currentTrainingPlan=plannerDraft;await saveCurrentPlan(true);closeOverlay('trainingPlanPreviewModalOverlay');await loadTrainingPlanForWeek(currentPlannerWeekStart);renderWeeklyCalendar();}
+    async function loadTrainingPlanForWeek(date){const start=isoDate(weekStartDate(date));currentPlannerWeekStart=weekStartDate(date);const uid=auth.currentUser?.uid;let plan=null;try{const snap=await withTimeout(getDoc(doc(db,'training_plans',`plan_${uid}_${start}`)),10000);if(snap.exists())plan=snap.data();}catch(e){console.warn('Nie udało się pobrać planu',e);}if(!plan){try{plan=JSON.parse(localStorage.getItem(uidScope(`training_plan_${start}`)||'')||'null');}catch(_){plan=null;}}currentTrainingPlan=plan;renderWeeklyCalendar();}
+    function renderWeeklyCalendar(){const el=document.getElementById('trainingWeekCalendar'),summary=document.getElementById('trainingPlanSummary');if(!el||!summary)return;const plan=currentTrainingPlan;summary.innerHTML=plan?`<div style="padding:10px 12px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.02);display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text-dim);"><span>📅 ${isoDate(currentPlannerWeekStart)} → ${isoDate(addDays(currentPlannerWeekStart,6))}</span><span>🏋️ ${(Object.values(plan.days||{}).reduce((a,d)=>a+(d.blocks||[]).length,0))} bloków</span><span>✅ ${(Object.values(plan.days||{}).reduce((a,d)=>a+(d.blocks||[]).reduce((x,b)=>x+(b.completedExercises||0),0),0))} wykonanych ćwiczeń</span></div>`:'<div class="tour-empty"><strong>Brak planu na ten tydzień</strong>Kliknij „Stwórz Plan”, aby wygenerować kalendarz.</div>';
+      el.innerHTML=TRAINING_DAY_KEYS.map((k,i)=>{const date=addDays(currentPlannerWeekStart,i),d=plan?.days?.[k]||{date:isoDate(date),blocks:[]};return `<div style="min-width:155px;border:1px solid var(--border-soft);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.015);"><div style="padding:10px;border-bottom:1px solid var(--border-soft);background:rgba(255,255,255,.02);"><b style="font-size:12px;">${TRAINING_DAY_FULL[k]}</b><div style="font-size:10px;color:var(--text-faint);">${isoDate(date)}</div></div><div style="padding:8px;display:flex;flex-direction:column;gap:7px;min-height:260px;">${(d.blocks||[]).map(b=>`<button type="button" style="text-align:left;padding:10px;border-radius:10px;background:${escapeHtml(b.color||'#6d5bff')}18;border:1px solid ${escapeHtml(b.color||'#6d5bff')}70;color:var(--text);cursor:pointer;" onclick="openCalendarBlock('${k}','${b.occurrenceId}')"><div style="font-size:11px;font-weight:800;">${escapeHtml(b.name)}</div><div style="font-size:9.5px;color:var(--text-dim);margin-top:4px;">${Object.keys(b.results||{}).length}/${(b.exerciseRefs||[]).length} ćwiczeń</div>${b.timeFrom||b.timeTo?`<div style="font-size:9px;color:var(--text-faint);margin-top:3px;">${escapeHtml(b.timeFrom||'?')} – ${escapeHtml(b.timeTo||'?')}</div>`:''}</button>`).join('')||'<div style="font-size:10px;color:var(--text-faint);text-align:center;padding:24px 4px;">Brak treningu</div>'}</div></div>`;}).join('');}
+    function openCalendarBlock(dayKey,occurrenceId){const b=currentTrainingPlan?.days?.[dayKey]?.blocks?.find(x=>x.occurrenceId===occurrenceId);if(!b)return;const block={id:b.blockId||b.id,source:b.source,category:b.category,name:b.name,description:b.description,color:b.color,exerciseRefs:b.exerciseRefs};currentExecutionContext={block,occurrence:{...b,dayKey}};renderTrainingBlockExecution(block,currentExecutionContext.occurrence);openOverlay('trainingBlockExecutionModalOverlay');}
+    async function initTrainingPlanner(){await loadUserTrainingBlocks();await loadTrainingPlanForWeek(currentPlannerWeekStart);if(currentTrainingPlan===null&&document.getElementById('trainingWeekCalendar'))renderWeeklyCalendar();}
+    function openCreateCustomBlock(){document.getElementById('customBlockForm')?.reset();const id=document.getElementById('customBlockEditId');if(id)id.value='';document.getElementById('customBlockColor').value='#6d5bff';renderCustomBlockExerciseChooser();openOverlay('customBlockModalOverlay');}
+    function renderCustomBlockExerciseChooser(){const list=document.getElementById('customBlockExerciseList');if(!list)return;const q=(document.getElementById('customBlockExerciseSearch')?.value||'').trim().toLowerCase();const cat=document.getElementById('customBlockExerciseCategory')?.value||'';const exercises=flattenTrainingExercises().filter(ex=>(!cat||ex.category===cat)&&(!q||`${ex.name} ${ex.description} ${TRAINING_CATEGORY_LABELS[ex.category]}`.toLowerCase().includes(q)));list.innerHTML=exercises.map(ex=>`<label style="display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border-soft);border-radius:10px;background:rgba(255,255,255,.015);cursor:pointer;"><input type="checkbox" class="custom-block-exercise-check" value="${escapeHtml(ex.id)}" /><span><b style="font-size:11.5px;color:var(--text);">${escapeHtml(ex.name)}</b><span style="display:block;font-size:10px;color:var(--text-faint);margin-top:3px;">${escapeHtml(TRAINING_CATEGORY_LABELS[ex.category])} • ${escapeHtml(ex.difficulty)} • ${escapeHtml(ex.duration)}</span></span></label>`).join('')||'<div class="tour-empty"><strong>Brak ćwiczeń</strong>Spróbuj zmienić filtr lub wyszukiwanie.</div>';const update=()=>{document.getElementById('customBlockSelectedSummary').textContent=`Wybrano: ${document.querySelectorAll('.custom-block-exercise-check:checked').length} ćwiczeń`;};list.querySelectorAll('input').forEach(x=>x.addEventListener('change',update));update();}
+    function editOwnTrainingBlock(id){const b=userTrainingBlocks.find(x=>x.id===id);if(!b)return;document.getElementById('customBlockName').value=b.name||'';document.getElementById('customBlockDescription').value=b.description||'';document.getElementById('customBlockColor').value=b.color||'#6d5bff';let hidden=document.getElementById('customBlockEditId');if(!hidden){hidden=document.createElement('input');hidden.type='hidden';hidden.id='customBlockEditId';document.getElementById('customBlockForm').appendChild(hidden);}hidden.value=id;renderCustomBlockExerciseChooser();setTimeout(()=>{const ids=new Set((b.exerciseRefs||[]).map(x=>x.id));document.querySelectorAll('.custom-block-exercise-check').forEach(c=>{c.checked=ids.has(c.value);});document.getElementById('customBlockSelectedSummary').textContent=`Wybrano: ${document.querySelectorAll('.custom-block-exercise-check:checked').length} ćwiczeń`;},50);openOverlay('customBlockModalOverlay');}
+    async function removeOwnTrainingBlock(id){const b=userTrainingBlocks.find(x=>x.id===id);if(!b||!confirm(`Usunąć blok „${b.name}”?`))return;await deleteUserTrainingBlock(id);const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');renderTrainingPlanBlocks(skills);if(currentTrainingPlan){Object.keys(currentTrainingPlan.days||{}).forEach(k=>{currentTrainingPlan.days[k].blocks=(currentTrainingPlan.days[k].blocks||[]).filter(x=>x.blockId!==id);});await saveCurrentPlan(false);renderWeeklyCalendar();}}
+    window.handlePlanDragStart=handlePlanDragStart;window.handlePlanDrop=handlePlanDrop;window.removePreviewBlock=removePreviewBlock;window.openPreviewAddPanel=openPreviewAddPanel;window.addBlockToPreview=addBlockToPreview;window.openCalendarBlock=openCalendarBlock;window.editOwnTrainingBlock=editOwnTrainingBlock;window.removeOwnTrainingBlock=removeOwnTrainingBlock;window.openTrainingBlockPreviewById=openTrainingBlockPreviewById;
+
     // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
     async function enterApp(user) {
       authScreen.classList.add('hidden');
