@@ -44,10 +44,10 @@
 
     body {
       margin: 0;
-      background:
-        radial-gradient(1100px 600px at 12% -10%, rgba(109, 91, 255, 0.16), transparent 60%),
-        radial-gradient(900px 500px at 100% 0%, rgba(34, 211, 238, 0.10), transparent 55%),
-        var(--bg);
+      /* Keep the document backing layer flat. Large CSS gradients on the
+         scrolling document can be rasterized in tiles by Chromium and may
+         produce horizontal repaint bands while scrolling. */
+      background: var(--bg);
       color: var(--text);
       font-family: 'Inter', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -988,6 +988,23 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative;
+      isolation: isolate;
+    }
+
+    /* Fixed visual atmosphere instead of a gradient painted across the
+       entire scrolling document. This avoids the periodic coloured
+       compositor/repaint bands visible in long admin pages. */
+    #appScreen::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(1100px 600px at 12% -10%, rgba(109, 91, 255, 0.16), transparent 60%),
+        radial-gradient(900px 500px at 100% 0%, rgba(34, 211, 238, 0.10), transparent 55%);
+      contain: paint;
     }
 
     .topbar {
@@ -1173,8 +1190,15 @@
 
     .main {
       flex: 1;
+      min-height: 0;
       padding: 34px 36px;
       overflow-y: auto;
+      overflow-x: hidden;
+      /* Give the scroll surface a stable compositor layer/backing. */
+      isolation: isolate;
+      background: transparent;
+      position: relative;
+      z-index: 1;
     }
 
     .page {
