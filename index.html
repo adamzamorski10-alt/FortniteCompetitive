@@ -2637,8 +2637,8 @@
         <div class="divider">lub e-mailem</div>
 
         <div class="tabs">
-          <button class="tab-btn active" id="tabLogin" type="button" onclick="document.getElementById('tabLogin').classList.add('active');document.getElementById('tabRegister').classList.remove('active');document.getElementById('loginForm').classList.remove('hidden');document.getElementById('registerForm').classList.add('hidden')">Zaloguj się</button>
-          <button class="tab-btn" id="tabRegister" type="button" onclick="document.getElementById('tabRegister').classList.add('active');document.getElementById('tabLogin').classList.remove('active');document.getElementById('registerForm').classList.remove('hidden');document.getElementById('loginForm').classList.add('hidden')">Zarejestruj się</button>
+          <button class="tab-btn active" id="tabLogin" type="button">Zaloguj się</button>
+          <button class="tab-btn" id="tabRegister" type="button">Zarejestruj się</button>
         </div>
 
         <div class="form-msg" id="authMsg"></div>
@@ -3844,6 +3844,8 @@
       GoogleAuthProvider,
       signOut,
       onAuthStateChanged,
+      setPersistence,
+      browserLocalPersistence,
       sendPasswordResetEmail,
       updateProfile
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -3876,6 +3878,12 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // Firebase domyślnie zapisuje sesję lokalnie, ale ustawiamy to jawnie,
+    // żeby odświeżenie strony nie kończyło sesji na hostingu.
+    const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch((err) => {
+      console.warn('Nie udało się ustawić trwałej sesji Firebase:', err);
+    });
     const googleProvider = new GoogleAuthProvider();
     // Adres Twojego Cloudflare Workera — podmień po `wrangler deploy` (zobacz WDROZENIE.md).
     const TOURNAMENT_API_WORKER_URL = "https://fn-coach-tournament-api.zamorski-adam-10.workers.dev";
@@ -4077,8 +4085,14 @@
       loginBtn.disabled = true;
       loginBtn.textContent = 'Logowanie…';
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await authPersistenceReady;
+        // Nie polegamy wyłącznie na onAuthStateChanged. Po udanym logowaniu
+        // od razu przechodzimy do aplikacji; listener pozostaje jako obsługa
+        // odświeżenia strony / wylogowania.
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        await enterApp(cred.user);
       } catch (err) {
+        console.error('FN Coach / logowanie:', err);
         showMsg(friendlyError(err.code), 'error');
       } finally {
         loginBtn.disabled = false;
@@ -4109,6 +4123,7 @@
         }
 
         registerBtn.textContent = 'Tworzenie konta…';
+        await authPersistenceReady;
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(cred.user, { displayName: name });
         await reserveNick(name, cred.user.uid);
