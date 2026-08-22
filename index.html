@@ -3655,13 +3655,13 @@
                   </div>
                   <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
                     <div class="field"><label for="adminTrainingDuration">Długość ćwiczenia</label><select id="adminTrainingDuration" required><option value="quick">Szybki</option><option value="medium" selected>Średni</option><option value="long">Długi</option></select></div>
-                    <div class="field"><label for="adminTrainingMetric">Rodzaj wyniku</label><select id="adminTrainingMetric" required><option value="time_sec">Czas — sekundy</option><option value="time_min">Czas — minuty</option><option value="count">Ilość</option><option value="percent">Procent (%)</option><option value="score">Wynik / punkty</option><option value="text">Tekst / notatka</option></select></div>
+                    <div class="field"><label for="adminTrainingMetric">Rodzaj wyniku</label><select id="adminTrainingMetric" required><option value="time">Czas</option><option value="count">Ilość</option><option value="percent">Procent</option><option value="text">Tekst</option><option value="rating">Ocena (1–10)</option></select></div>
                   </div>
                   <div class="field"><label for="adminTrainingName">Nazwa ćwiczenia</label><input type="text" id="adminTrainingName" maxlength="120" placeholder="np. Piece Control Tunnel #2 — 5 przejść" required autocomplete="off" /></div>
                   <div class="field"><label for="adminTrainingDescription">Opis / instrukcja</label><textarea id="adminTrainingDescription" style="min-height:220px;resize:vertical;font-family:inherit;" maxlength="1000" placeholder="Dokładnie opisz, co gracz ma zrobić, na jakiej mapie i jak zmierzyć wynik." required></textarea></div>
-                  <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;"><div class="field"><label for="adminTrainingUnit">Jednostka wyniku</label><input id="adminTrainingUnit" maxlength="80" placeholder="np. % celności, pkt, sekund"></div><div class="field"><label for="adminTrainingHint">Podpowiedź przy wpisywaniu wyniku</label><input id="adminTrainingHint" maxlength="160" placeholder="np. wpisz średni wynik z rundy"></div></div>
+                  <div class="field"><label for="adminTrainingResultHint">Co wpisać do wyniku</label><input id="adminTrainingResultHint" maxlength="160" placeholder="np. wpisz średni wynik z rundy"></div>
                   <div class="field"><label for="adminTrainingMapCode">Kod mapy kreatywnej Fortnite</label><div style="display:flex;gap:8px;align-items:center;"><input id="adminTrainingMapCode" maxlength="32" inputmode="numeric" autocomplete="off" placeholder="np. 1234-5678-9012" style="flex:1;"><span class="hint" style="margin:0;white-space:nowrap;">Kliknięcie kodu u użytkownika skopiuje go do schowka.</span></div></div>
-                  <div id="adminTrainingCountDirectionWrap" class="field" style="display:none;"><label for="adminTrainingCountDirection">Kierunek wyniku dla ilości</label><select id="adminTrainingCountDirection"><option value="higher">Więcej = lepiej</option><option value="lower">Mniej = lepiej</option></select><div class="hint">Przykład „trafienia” = więcej lepiej; „błędy” = mniej lepiej.</div></div>
+                  <div id="adminTrainingCountDirectionWrap" class="field" style="display:none;"><label for="adminTrainingCountDirection">Kierunek wyniku dla ilości</label><select id="adminTrainingCountDirection"><option value="higher">Więcej = lepiej</option><option value="lower">Mniej = lepiej</option></select><div class="hint">Dla Czas, Ilość, Procent i Ocena wybierz, czy większa czy mniejsza wartość oznacza lepszy wynik.</div></div>
                   <div class="admin-section-label">PROGI OCENY</div>
                   <div style="display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:10px;">
                     <div class="field"><label for="adminTrainingIdeal">Idealny</label><input type="number" id="adminTrainingIdeal" min="0" step="0.1" required /></div>
@@ -6177,7 +6177,7 @@
 
     // Training definitions containing exercises for combinations
     // Each exercise object:
-    // { name, desc, metric ('time_sec'|'time_min'|'score'|'count'|'percent'|'rounds'|'text'),
+    // { name, desc, metric ('time'|'count'|'percent'|'text'|'rating'),
     //   unit (display string), hint (placeholder), benchmarks: {bad, ok, good, pro} }
     const TRAINING_EXERCISES = {
       building: {
@@ -6193,41 +6193,41 @@
           ],
           medium: [
             { name: "Freebuild 15 min — niskie tempo", desc: "Freebuild z wolnym tempem gry.", metric: "text", unit: "", hint: "Notatka z sesji" },
-            { name: "Tunnel #1 i #2 — 5 razy każdy", desc: "Przejdź tunele #1 i #2 pięć razy każdy, mierząc łączny czas.", metric: "time_min", unit: "min (łączny czas)", hint: "np. 4.5", benchmarks: { pro: 3, good: 4.5, ok: 7, bad: 10 } }
+            { name: "Tunnel #1 i #2 — 5 razy każdy", desc: "Przejdź tunele #1 i #2 pięć razy każdy, mierząc łączny czas.", metric: "time", unit: "min (łączny czas)", hint: "np. 4.5", benchmarks: { pro: 3, good: 4.5, ok: 7, bad: 10 } }
           ],
           long: [
             { name: "Freebuild 25 min — zmienne tempo", desc: "25 minut freebuildu w różnym tempie gry.", metric: "text", unit: "", hint: "Co było trudne?" },
-            { name: "Tunnel #1, #2, #3 — 5 razy każdy", desc: "Łączny czas przejścia wszystkich 3 tuneli.", metric: "time_min", unit: "min", hint: "np. 8", benchmarks: { pro: 5, good: 8, ok: 12, bad: 18 } },
+            { name: "Tunnel #1, #2, #3 — 5 razy każdy", desc: "Łączny czas przejścia wszystkich 3 tuneli.", metric: "time", unit: "min", hint: "np. 8", benchmarks: { pro: 5, good: 8, ok: 12, bad: 18 } },
             { name: "Ramp Rush z asekuracją stożka — 3 min", desc: "Ćwicz ramp rush z natychmiastowym wstawianiem stożków.", metric: "text", unit: "", hint: "Ocena płynności (1-10)" }
           ]
         },
         medium: {
           quick: [
             { name: "Freebuild szybkie tempo — 10 min", desc: "Freebuild w przyspieszonym tempie gry.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Piece Control #1 i #2 — 3 razy każdy", desc: "Przejdź scenariusze Piece Control #1 i #2.", metric: "time_sec", unit: "sek (średni czas scenariusza)", hint: "np. 45", benchmarks: { pro: 30, good: 45, ok: 70, bad: 100 } }
+            { name: "Piece Control #1 i #2 — 3 razy każdy", desc: "Przejdź scenariusze Piece Control #1 i #2.", metric: "time", unit: "sek (średni czas scenariusza)", hint: "np. 45", benchmarks: { pro: 30, good: 45, ok: 70, bad: 100 } }
           ],
           medium: [
             { name: "Freebuild triple-edit focus — 15 min", desc: "Freebuild z naciskiem na płynne triple-edity podczas budowy.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Piece Control #1–#3 — 5 razy każdy", desc: "Łączny czas ukończenia wszystkich 3 scenariuszy (1 runda).", metric: "time_min", unit: "min", hint: "np. 5", benchmarks: { pro: 3, good: 5, ok: 8, bad: 12 } }
+            { name: "Piece Control #1–#3 — 5 razy każdy", desc: "Łączny czas ukończenia wszystkich 3 scenariuszy (1 runda).", metric: "time", unit: "min", hint: "np. 5", benchmarks: { pro: 3, good: 5, ok: 8, bad: 12 } }
           ],
           long: [
             { name: "Freebuild 30 min — zróżnicowany", desc: "30 minut kompleksowego freebuildu.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Piece Control #1–#5 — 4 razy każdy", desc: "Łączny czas ukończenia 5 scenariuszy.", metric: "time_min", unit: "min", hint: "np. 12", benchmarks: { pro: 8, good: 12, ok: 18, bad: 25 } },
+            { name: "Piece Control #1–#5 — 4 razy każdy", desc: "Łączny czas ukończenia 5 scenariuszy.", metric: "time", unit: "min", hint: "np. 12", benchmarks: { pro: 8, good: 12, ok: 18, bad: 25 } },
             { name: "Defensywne boksowanie — 10 min", desc: "Trening szybkiego zamykania boksu i dodawania stożka.", metric: "text", unit: "", hint: "Liczba błędów w boksie" }
           ]
         },
         advanced: {
           quick: [
             { name: "High-ground Retakes — 10 min bez błędu", desc: "Ciągłe podbieranie wysokiego gruntu nad przeciwnikiem.", metric: "count", unit: "błędów/upadków", hint: "np. 3", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } },
-            { name: "Piece Control #3 i #4 — 8 razy każdy", desc: "Przejście zaawansowanych scenariuszy.", metric: "time_sec", unit: "sek (śred. czas/scenariusz)", hint: "np. 35", benchmarks: { pro: 20, good: 35, ok: 55, bad: 80 } }
+            { name: "Piece Control #3 i #4 — 8 razy każdy", desc: "Przejście zaawansowanych scenariuszy.", metric: "time", unit: "sek (śred. czas/scenariusz)", hint: "np. 35", benchmarks: { pro: 20, good: 35, ok: 55, bad: 80 } }
           ],
           medium: [
             { name: "High-ground Retakes + Freebuild — 15 min", desc: "Połączenie retakes z freebuildem.", metric: "text", unit: "", hint: "Notatka z sesji" },
-            { name: "Piece Control #3–#5 — 8 razy każdy", desc: "Łączny czas na tempo 1.2x.", metric: "time_min", unit: "min", hint: "np. 6", benchmarks: { pro: 4, good: 6, ok: 9, bad: 14 } }
+            { name: "Piece Control #3–#5 — 8 razy każdy", desc: "Łączny czas na tempo 1.2x.", metric: "time", unit: "min", hint: "np. 6", benchmarks: { pro: 4, good: 6, ok: 9, bad: 14 } }
           ],
           long: [
             { name: "Zaawansowany Freebuild — 30 min", desc: "30 minut zaawansowanego freebuildu.", metric: "text", unit: "", hint: "Co poprawić?" },
-            { name: "Piece Control #1–#8 — 5 razy każdy", desc: "Wszystkie scenariusze na 1.2x. Łączny czas.", metric: "time_min", unit: "min", hint: "np. 20", benchmarks: { pro: 12, good: 20, ok: 30, bad: 45 } },
+            { name: "Piece Control #1–#8 — 5 razy każdy", desc: "Wszystkie scenariusze na 1.2x. Łączny czas.", metric: "time", unit: "min", hint: "np. 20", benchmarks: { pro: 12, good: 20, ok: 30, bad: 45 } },
             { name: "Rotacje z osłoną pleców — 10 min", desc: "Trening automatycznego stawiania osłon podczas rotacji.", metric: "count", unit: "utraceń rotacji", hint: "np. 4", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } }
           ]
         },
@@ -6238,7 +6238,7 @@
           ],
           medium: [
             { name: "Non-stop Freebuild + Retakes — 20 min", desc: "Bez przerwy — freebuild i retakes w tempie turniejowym.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Cały dział Piece Control — poniżej 4 min", desc: "Wszystkie scenariusze bez przerwy.", metric: "time_min", unit: "min", hint: "np. 3.5", benchmarks: { pro: 3, good: 4, ok: 6, bad: 9 } }
+            { name: "Cały dział Piece Control — poniżej 4 min", desc: "Wszystkie scenariusze bez przerwy.", metric: "time", unit: "min", hint: "np. 3.5", benchmarks: { pro: 3, good: 4, ok: 6, bad: 9 } }
           ],
           long: [
             { name: "Perfekcyjny Freebuild w tempie turniejowym — 35 min", desc: "35 minut z zachowaniem tempa pro.", metric: "text", unit: "", hint: "Płynność 1-10" },
@@ -6256,62 +6256,62 @@
         easy: {
           quick: [
             { name: "Single Wall Edit — 5 min", desc: "Ćwicz edycję pojedynczej ściany (okno/łuk) do budowania nawyku resetowania.", metric: "text", unit: "", hint: "Notatka — czy był reset?" },
-            { name: "Easy Edit Course #1 — 1 runda", desc: "Przejście podstawowego edit course na czas.", metric: "time_sec", unit: "sek", hint: "np. 90", benchmarks: { pro: 40, good: 60, ok: 90, bad: 130 } }
+            { name: "Easy Edit Course #1 — 1 runda", desc: "Przejście podstawowego edit course na czas.", metric: "time", unit: "sek", hint: "np. 90", benchmarks: { pro: 40, good: 60, ok: 90, bad: 130 } }
           ],
           medium: [
             { name: "Edycja ściana + schody — 10 min", desc: "Ćwicz edycję mieszaną ściana → schody → reset.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Easy Edit Course — 3 rundy", desc: "Łączny czas 3 rund Easy Edit Course.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 220", benchmarks: { pro: 120, good: 180, ok: 250, bad: 360 } }
+            { name: "Easy Edit Course — 3 rundy", desc: "Łączny czas 3 rund Easy Edit Course.", metric: "time", unit: "sek (łącznie)", hint: "np. 220", benchmarks: { pro: 120, good: 180, ok: 250, bad: 360 } }
           ],
           long: [
             { name: "Edycja ze schodami i podłogą — 15 min", desc: "Kompleksowy trening edycji 3 typów struktur.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Easy Edit Course — pobicie rekordu", desc: "Wpisz najlepszy czas rundy jaki osiągnąłeś.", metric: "time_sec", unit: "sek (rekord)", hint: "np. 38", benchmarks: { pro: 30, good: 40, ok: 55, bad: 75 } },
+            { name: "Easy Edit Course — pobicie rekordu", desc: "Wpisz najlepszy czas rundy jaki osiągnąłeś.", metric: "time", unit: "sek (rekord)", hint: "np. 38", benchmarks: { pro: 30, good: 40, ok: 55, bad: 75 } },
             { name: "Szybkie resetowanie — 5 min", desc: "Tylko reset po edycji (bez strzału), ile razy w 5 min.", metric: "count", unit: "resetów wykonanych", hint: "np. 180", benchmarks: { pro: 300, good: 220, ok: 160, bad: 100 } }
           ]
         },
         medium: {
           quick: [
             { name: "Double Edit Run — 5 min", desc: "Sekwencja double-editów bez przerwy.", metric: "count", unit: "poprawnych double-editów w 5 min", hint: "np. 80", benchmarks: { pro: 150, good: 110, ok: 80, bad: 50 } },
-            { name: "Medium Edit Course — 1 runda", desc: "Czas ukończenia 1 rundy Medium Edit Course.", metric: "time_sec", unit: "sek", hint: "np. 75", benchmarks: { pro: 40, good: 60, ok: 80, bad: 110 } }
+            { name: "Medium Edit Course — 1 runda", desc: "Czas ukończenia 1 rundy Medium Edit Course.", metric: "time", unit: "sek", hint: "np. 75", benchmarks: { pro: 40, good: 60, ok: 80, bad: 110 } }
           ],
           medium: [
             { name: "Double i Triple Edit Run — 10 min", desc: "Naprzemienne double i triple edity.", metric: "text", unit: "", hint: "Ile błędów popełniłeś?" },
-            { name: "Medium Edit Course — 3 rundy", desc: "Łączny czas 3 rund.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 200", benchmarks: { pro: 110, good: 160, ok: 220, bad: 310 } },
+            { name: "Medium Edit Course — 3 rundy", desc: "Łączny czas 3 rund.", metric: "time", unit: "sek (łącznie)", hint: "np. 200", benchmarks: { pro: 110, good: 160, ok: 220, bad: 310 } },
             { name: "Right-hand peek edit — 5 min", desc: "Edycja okna i strzał zza prawego narożnika.", metric: "count", unit: "poprawnych peeks", hint: "np. 45", benchmarks: { pro: 80, good: 60, ok: 40, bad: 20 } }
           ],
           long: [
             { name: "Zaawansowany edit course — 20 min", desc: "20 minut ciągłego edit runu bez przerwy.", metric: "text", unit: "", hint: "Notatka — co bolało?" },
-            { name: "Medium Edit Course — 5 rund", desc: "Łączny czas 5 rund.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 320", benchmarks: { pro: 180, good: 260, ok: 360, bad: 480 } },
+            { name: "Medium Edit Course — 5 rund", desc: "Łączny czas 5 rund.", metric: "time", unit: "sek (łącznie)", hint: "np. 320", benchmarks: { pro: 180, good: 260, ok: 360, bad: 480 } },
             { name: "Zero-error edycja — 2 min", desc: "Edytuj przez 2 min bez żadnego błędnego kliku.", metric: "count", unit: "błędów w 2 min", hint: "np. 3", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } }
           ]
         },
         advanced: {
           quick: [
             { name: "Triple Edit Run bez utraty pędu — 5 min", desc: "Triple edity w ciągłym ruchu.", metric: "count", unit: "poprawnych triple-editów", hint: "np. 60", benchmarks: { pro: 100, good: 75, ok: 55, bad: 30 } },
-            { name: "Hard Edit Course — 1 runda", desc: "Czas ukończenia Hard Edit Course.", metric: "time_sec", unit: "sek", hint: "np. 55", benchmarks: { pro: 30, good: 50, ok: 70, bad: 100 } }
+            { name: "Hard Edit Course — 1 runda", desc: "Czas ukończenia Hard Edit Course.", metric: "time", unit: "sek", hint: "np. 55", benchmarks: { pro: 30, good: 50, ok: 70, bad: 100 } }
           ],
           medium: [
             { name: "Triple + Quad Edit Run — 12 min", desc: "Naprzemienne triple i quadruple edity przez 12 min.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Hard Edit Course — 3 rundy", desc: "Łączny czas 3 rund Hard Edit Course.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 165", benchmarks: { pro: 85, good: 140, ok: 200, bad: 280 } },
+            { name: "Hard Edit Course — 3 rundy", desc: "Łączny czas 3 rund Hard Edit Course.", metric: "time", unit: "sek (łącznie)", hint: "np. 165", benchmarks: { pro: 85, good: 140, ok: 200, bad: 280 } },
             { name: "Edit + reset w biegu — 5 min", desc: "Edycja z natychmiastowym resetem podczas sprintu.", metric: "count", unit: "błędów resetowania", hint: "np. 8", benchmarks: { pro: 0, good: 3, ok: 8, bad: 15 } }
           ],
           long: [
             { name: "Hard Edit Course — 25 min ciągłe", desc: "25 minut bez przerwy na Hard Edit Course.", metric: "text", unit: "", hint: "Notatka zmęczenia" },
-            { name: "Hard Edit Course — 5 rund", desc: "Łączny czas 5 rund.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 265", benchmarks: { pro: 140, good: 230, ok: 330, bad: 460 } },
+            { name: "Hard Edit Course — 5 rund", desc: "Łączny czas 5 rund.", metric: "time", unit: "sek (łącznie)", hint: "np. 265", benchmarks: { pro: 140, good: 230, ok: 330, bad: 460 } },
             { name: "Tunel dynamiczny ze stożkami — 10 min", desc: "Edycja tunelu z automatycznym stożkowaniem.", metric: "count", unit: "perfekcyjnych sekwencji", hint: "np. 12", benchmarks: { pro: 25, good: 15, ok: 9, bad: 4 } }
           ]
         },
         pro: {
           quick: [
             { name: "Quad Edit Run w tempie 1.25x — 8 min", desc: "Quadruple edity na maksymalnym tempie.", metric: "count", unit: "quadów bez błędu", hint: "np. 50", benchmarks: { pro: 90, good: 60, ok: 40, bad: 20 } },
-            { name: "Impossible Edit Course — 1 runda", desc: "Czas ukończenia Impossible Edit Course.", metric: "time_sec", unit: "sek", hint: "np. 85", benchmarks: { pro: 55, good: 80, ok: 110, bad: 150 } }
+            { name: "Impossible Edit Course — 1 runda", desc: "Czas ukończenia Impossible Edit Course.", metric: "time", unit: "sek", hint: "np. 85", benchmarks: { pro: 55, good: 80, ok: 110, bad: 150 } }
           ],
           medium: [
             { name: "Ekstremalny Edit Run — 15 min", desc: "15 minut nieprzerwanie na najtrudniejszych kursach.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "Hard Edit Course — poniżej 1:20 min", desc: "Ukończ Hard Edit Course w czasie krótszym niż 80 sekund.", metric: "time_sec", unit: "sek", hint: "np. 75", benchmarks: { pro: 58, good: 75, ok: 90, bad: 110 } },
+            { name: "Hard Edit Course — poniżej 1:20 min", desc: "Ukończ Hard Edit Course w czasie krótszym niż 80 sekund.", metric: "time", unit: "sek", hint: "np. 75", benchmarks: { pro: 58, good: 75, ok: 90, bad: 110 } },
             { name: "Edit 180° bez zatrzymania — 5 min", desc: "Edycja z obróceniem o 180 stopni bez utraty tempa.", metric: "count", unit: "poprawnych obrotów", hint: "np. 20", benchmarks: { pro: 40, good: 25, ok: 14, bad: 6 } }
           ],
           long: [
-            { name: "Impossible Edit Course — 3 razy pod rząd", desc: "Łączny czas 3 ukończeń Impossible Edit Course.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 265", benchmarks: { pro: 160, good: 240, ok: 330, bad: 450 } },
+            { name: "Impossible Edit Course — 3 razy pod rząd", desc: "Łączny czas 3 ukończeń Impossible Edit Course.", metric: "time", unit: "sek (łącznie)", hint: "np. 265", benchmarks: { pro: 160, good: 240, ok: 330, bad: 450 } },
             { name: "Precyzja celownika podczas edycji — 10 min", desc: "Ćwicz edit → strzał z crosshair placement na głowę.", metric: "percent", unit: "% trafień w głowę", hint: "np. 65", benchmarks: { pro: 80, good: 65, ok: 45, bad: 25 } }
           ]
         }
@@ -6325,27 +6325,27 @@
         easy: {
           quick: [
             { name: "Horizontal Tracking — 5 min", desc: "Śledzenie celu poruszającego się poziomo na bliskim dystansie.", metric: "percent", unit: "% celności", hint: "np. 55", benchmarks: { pro: 85, good: 70, ok: 55, bad: 35 } },
-            { name: "Tile Frenzy — wolne tempo", desc: "Strzelaj do płytek w spokojnym tempie. Zapisz wynik z rundy.", metric: "score", unit: "pkt", hint: "np. 55", benchmarks: { pro: 90, good: 70, ok: 50, bad: 30 } }
+            { name: "Tile Frenzy — wolne tempo", desc: "Strzelaj do płytek w spokojnym tempie. Zapisz wynik z rundy.", metric: "rating", unit: "pkt", hint: "np. 55", benchmarks: { pro: 90, good: 70, ok: 50, bad: 30 } }
           ],
           medium: [
             { name: "Horizontal Tracking — 10 min", desc: "Dłuższa sesja trackingu poziomego. Skupienie na 100% celności.", metric: "percent", unit: "% celności", hint: "np. 62", benchmarks: { pro: 88, good: 72, ok: 58, bad: 38 } },
-            { name: "Tile Frenzy — 100% celność focus", desc: "Wynik z najlepszej rundy Tile Frenzy w tej sesji.", metric: "score", unit: "pkt", hint: "np. 60", benchmarks: { pro: 95, good: 75, ok: 55, bad: 35 } }
+            { name: "Tile Frenzy — 100% celność focus", desc: "Wynik z najlepszej rundy Tile Frenzy w tej sesji.", metric: "rating", unit: "pkt", hint: "np. 60", benchmarks: { pro: 95, good: 75, ok: 55, bad: 35 } }
           ],
           long: [
             { name: "Horizontal + Vertical Tracking — 15 min", desc: "Śledzenie w obu osiach.", metric: "percent", unit: "% celności", hint: "np. 58", benchmarks: { pro: 85, good: 68, ok: 52, bad: 32 } },
-            { name: "Tile Frenzy — 15 min", desc: "Najlepszy wynik z sesji.", metric: "score", unit: "pkt", hint: "np. 65", benchmarks: { pro: 98, good: 78, ok: 58, bad: 38 } },
+            { name: "Tile Frenzy — 15 min", desc: "Najlepszy wynik z sesji.", metric: "rating", unit: "pkt", hint: "np. 65", benchmarks: { pro: 98, good: 78, ok: 58, bad: 38 } },
             { name: "Popcorn (cele w powietrzu) — 5 min", desc: "Strzelanie do ruchomych celów w powietrzu.", metric: "percent", unit: "% trafień", hint: "np. 40", benchmarks: { pro: 72, good: 55, ok: 38, bad: 20 } }
           ]
         },
         medium: {
           quick: [
-            { name: "Shotgun Flick zza osłony — 5 min", desc: "Wypada z boku i strzał z shotguna do celu. Rekord wyników rundy.", metric: "score", unit: "pkt (Tile Frenzy Shotgun)", hint: "np. 70", benchmarks: { pro: 100, good: 80, ok: 60, bad: 40 } },
+            { name: "Shotgun Flick zza osłony — 5 min", desc: "Wypada z boku i strzał z shotguna do celu. Rekord wyników rundy.", metric: "rating", unit: "pkt (Tile Frenzy Shotgun)", hint: "np. 70", benchmarks: { pro: 100, good: 80, ok: 60, bad: 40 } },
             { name: "Bounce 360 Tracking — 5 min", desc: "Śledzenie celu odbijającego się po całym ekranie. Celność.", metric: "percent", unit: "% celności", hint: "np. 52", benchmarks: { pro: 80, good: 63, ok: 48, bad: 30 } }
           ],
           medium: [
             { name: "Shotgun Flick — 10 min", desc: "Pełna sesja flicowania shotgunem. Avg celność.", metric: "percent", unit: "% trafień w głowę/tors", hint: "np. 45", benchmarks: { pro: 70, good: 55, ok: 40, bad: 22 } },
             { name: "Bounce 360 Tracking — 10 min", desc: "Wydłużona sesja. Avg celność.", metric: "percent", unit: "% celności", hint: "np. 55", benchmarks: { pro: 82, good: 65, ok: 50, bad: 32 } },
-            { name: "Reaction Time Training — 5 min", desc: "Średni czas reakcji (ms) z sesji.", metric: "score", unit: "ms (średni czas reakcji)", hint: "np. 280", benchmarks: { pro: 190, good: 240, ok: 300, bad: 380 } }
+            { name: "Reaction Time Training — 5 min", desc: "Średni czas reakcji (ms) z sesji.", metric: "rating", unit: "ms (średni czas reakcji)", hint: "np. 280", benchmarks: { pro: 190, good: 240, ok: 300, bad: 380 } }
           ],
           long: [
             { name: "Dynamiczne ficki shotgunem — 15 min", desc: "Cele w różnych kątach i ruchomych warunkach. Celność.", metric: "percent", unit: "% trafień krytycznych", hint: "np. 38", benchmarks: { pro: 68, good: 50, ok: 35, bad: 18 } },
@@ -6355,13 +6355,13 @@
         },
         advanced: {
           quick: [
-            { name: "Advanced Flick Trainer — 6 min", desc: "Zaawansowane ficki do małych i poruszających się celów.", metric: "score", unit: "pkt (najlepszy wynik rundy)", hint: "np. 85", benchmarks: { pro: 115, good: 90, ok: 70, bad: 45 } },
+            { name: "Advanced Flick Trainer — 6 min", desc: "Zaawansowane ficki do małych i poruszających się celów.", metric: "rating", unit: "pkt (najlepszy wynik rundy)", hint: "np. 85", benchmarks: { pro: 115, good: 90, ok: 70, bad: 45 } },
             { name: "Fast Tracking (skaczący bot) — 6 min", desc: "Śledzenie bota wykonującego skoki i zmiany kierunku.", metric: "percent", unit: "% celności", hint: "np. 55", benchmarks: { pro: 82, good: 65, ok: 50, bad: 30 } }
           ],
           medium: [
-            { name: "Advanced Flick — 12 min", desc: "Rozszerzona sesja zaawansowanych fliców.", metric: "score", unit: "pkt (śred. wynik rundy)", hint: "np. 90", benchmarks: { pro: 120, good: 95, ok: 72, bad: 48 } },
+            { name: "Advanced Flick — 12 min", desc: "Rozszerzona sesja zaawansowanych fliców.", metric: "rating", unit: "pkt (śred. wynik rundy)", hint: "np. 90", benchmarks: { pro: 120, good: 95, ok: 72, bad: 48 } },
             { name: "Fast Tracking — 12 min", desc: "Rozszerzona sesja śledzenia dynamicznych botów.", metric: "percent", unit: "% celności", hint: "np. 58", benchmarks: { pro: 84, good: 67, ok: 52, bad: 33 } },
-            { name: "Dynamic Target Switching — 6 min", desc: "Szybkie przełączanie pomiędzy wieloma celami.", metric: "score", unit: "eliminacji/min", hint: "np. 4", benchmarks: { pro: 7, good: 5, ok: 3.5, bad: 2 } }
+            { name: "Dynamic Target Switching — 6 min", desc: "Szybkie przełączanie pomiędzy wieloma celami.", metric: "rating", unit: "eliminacji/min", hint: "np. 4", benchmarks: { pro: 7, good: 5, ok: 3.5, bad: 2 } }
           ],
           long: [
             { name: "Microflicks — 20 min", desc: "Ficki do bardzo małych celów (precyzja). Celność.", metric: "percent", unit: "% trafień microflick", hint: "np. 42", benchmarks: { pro: 70, good: 54, ok: 38, bad: 20 } },
@@ -6371,12 +6371,12 @@
         },
         pro: {
           quick: [
-            { name: "Microflick tempo pro — 8 min", desc: "Ficki do mikro-celów w najszybszym tempie.", metric: "score", unit: "pkt/rundę", hint: "np. 110", benchmarks: { pro: 140, good: 112, ok: 85, bad: 55 } },
+            { name: "Microflick tempo pro — 8 min", desc: "Ficki do mikro-celów w najszybszym tempie.", metric: "rating", unit: "pkt/rundę", hint: "np. 110", benchmarks: { pro: 140, good: 112, ok: 85, bad: 55 } },
             { name: "Skaczący Bot 140 HP Tracking — 8 min", desc: "Śledzenie najszybszego bota z pełnym HP. Celność.", metric: "percent", unit: "% celności", hint: "np. 62", benchmarks: { pro: 85, good: 68, ok: 52, bad: 32 } }
           ],
           medium: [
             { name: "Perfekcyjny tracking — 15 min", desc: "Śledzenie dynamicznych celów na wszystkich dystansach.", metric: "percent", unit: "% celności avg (wszystkie dystanse)", hint: "np. 70", benchmarks: { pro: 88, good: 72, ok: 57, bad: 38 } },
-            { name: "Tile Frenzy — powyżej 100 punktów", desc: "Wynik z rundy Tile Frenzy w tej sesji.", metric: "score", unit: "pkt", hint: "np. 108", benchmarks: { pro: 120, good: 103, ok: 85, bad: 65 } },
+            { name: "Tile Frenzy — powyżej 100 punktów", desc: "Wynik z rundy Tile Frenzy w tej sesji.", metric: "rating", unit: "pkt", hint: "np. 108", benchmarks: { pro: 120, good: 103, ok: 85, bad: 65 } },
             { name: "Aim Duels z pro botem — 10 min", desc: "1v1 z najtrudniejszym botem aim trainera. % wygranych.", metric: "percent", unit: "% wygranych duelów", hint: "np. 55", benchmarks: { pro: 80, good: 62, ok: 45, bad: 25 } }
           ],
           long: [
@@ -6541,7 +6541,7 @@
             { name: "4 eliminacje heal-off / presja — łącznie 8 rund", desc: "Łączna liczba killów z presji lub burzy.", metric: "count", unit: "killów heal-off łącznie", hint: "np. 3", benchmarks: { pro: 8, good: 5, ok: 3, bad: 0 } }
           ],
           long: [
-            { name: "12 rund scrimów — avg Top 3", desc: "Avg placement z 12 rund scrimów.", metric: "score", unit: "avg placement", hint: "np. 4", benchmarks: { pro: 2, good: 3, ok: 5, bad: 8 } },
+            { name: "12 rund scrimów — avg Top 3", desc: "Avg placement z 12 rund scrimów.", metric: "rating", unit: "avg placement", hint: "np. 4", benchmarks: { pro: 2, good: 3, ok: 5, bad: 8 } },
             { name: "Waterfalling pod presją — ile razy poprawnie", desc: "Ile razy wykonałeś poprawne waterfalling podczas ostrzału z góry.", metric: "count", unit: "udanych waterfallów", hint: "np. 3", benchmarks: { pro: 8, good: 5, ok: 3, bad: 0 } }
           ]
         },
@@ -6573,7 +6573,31 @@
     let adminTrainingExercisesCache=[];
     let customTrainingCatalogLoaded=false;
     let disabledTrainingExerciseIds=new Set();
-    function normalizeTrainingExercise(raw){if(!raw||raw.disabled===true||!TRAINING_CATEGORY_KEYS.includes(raw.category))return null;const difficulty=['easy','medium','hard'].includes(raw.difficulty)?raw.difficulty:'medium';const duration=['quick','medium','long'].includes(raw.duration)?raw.duration:'medium';const metric=['time_sec','time_min','count','percent','score','text'].includes(raw.metric)?raw.metric:'count';const direction=raw.direction==='lower'?'lower':'higher';const b=raw.benchmarks||{};const ideal=Number(b.ideal),veryGood=Number(b.veryGood),average=Number(b.average),bad=Number(b.bad);if(![ideal,veryGood,average,bad].every(Number.isFinite))return null;return{id:String(raw.id||''),category:raw.category,difficulty,duration,metric,direction,name:String(raw.name||'').trim(),desc:String(raw.description||raw.desc||'').trim(),unit:String(raw.unit|| (metric==='time_sec'?'sekund':metric==='time_min'?'minut':metric==='percent'?'%':metric==='score'?'pkt':'')).trim(),hint:String(raw.hint|| (metric==='time_sec'?'Wpisz czas w sekundach':metric==='time_min'?'Wpisz czas w minutach':metric==='percent'?'Wpisz procent':metric==='score'?'Wpisz wynik':'Notatka')).trim(),mapCode:String(raw.mapCode||raw.map||'').trim(),benchmarks:{ideal,veryGood,average,bad},pro:ideal,good:veryGood,ok:average,bad,aimDistances:Array.isArray(raw.aimDistances)?raw.aimDistances.filter(x=>['near','medium','far'].includes(x)):[],aimWeapons:Array.isArray(raw.aimWeapons)?raw.aimWeapons.filter(x=>['pump','mk','smg'].includes(x)):[],custom:true,createdAt:raw.createdAt||'',updatedAt:raw.updatedAt||'',createdBy:raw.createdBy||''};}
+    function normalizeTrainingExercise(raw){
+      if(!raw||raw.disabled===true||!TRAINING_CATEGORY_KEYS.includes(raw.category))return null;
+      const difficulty=['easy','medium','hard'].includes(raw.difficulty)?raw.difficulty:'medium';
+      const duration=['quick','medium','long'].includes(raw.duration)?raw.duration:'medium';
+      const legacyMetric=raw.metric;
+      const metricMap={time_sec:'time',time_min:'time',score:'rating',rounds:'count'};
+      const metric=['time','count','percent','text','rating'].includes(legacyMetric)?legacyMetric:(metricMap[legacyMetric]||'count');
+      const defaultDirection=metric==='time'?'lower':metric==='count'||metric==='percent'||metric==='rating'?'higher':null;
+      const direction=metric==='text'?null:(raw.direction==='lower'||raw.direction==='higher'?raw.direction:defaultDirection);
+      const b=raw.benchmarks||{};
+      const ideal=Number(b.ideal!==undefined?b.ideal:b.pro),veryGood=Number(b.veryGood!==undefined?b.veryGood:b.good),average=Number(b.average!==undefined?b.average:b.ok),bad=Number(b.bad);
+      if(![ideal,veryGood,average,bad].every(Number.isFinite))return null;
+      // Backward compatibility: old "Jednostka wyniku" is the new "Co wpisać do wyniku".
+      const resultHint=String(raw.resultHint!==undefined?raw.resultHint:(raw.unit!==undefined?raw.unit:(raw.hint||''))).trim();
+      return{
+        id:String(raw.id||''),category:raw.category,difficulty,duration,metric,direction,
+        name:String(raw.name||'').trim(),desc:String(raw.description||raw.desc||'').trim(),
+        resultHint,unit:resultHint,hint:resultHint,
+        mapCode:String(raw.mapCode||raw.map||'').trim(),
+        benchmarks:{ideal,veryGood,average,bad},pro:ideal,good:veryGood,ok:average,bad,
+        aimDistances:Array.isArray(raw.aimDistances)?raw.aimDistances.filter(x=>['near','medium','far'].includes(x)):[],
+        aimWeapons:Array.isArray(raw.aimWeapons)?raw.aimWeapons.filter(x=>['pump','mk','smg'].includes(x)):[],
+        custom:true,createdAt:raw.createdAt||'',updatedAt:raw.updatedAt||'',createdBy:raw.createdBy||''
+      };
+    }
     function removeLoadedCustomTrainingExercises(){TRAINING_CATEGORY_KEYS.forEach(category=>{const cat=TRAINING_EXERCISES[category];if(!cat)return;['easy','medium','advanced'].forEach(diff=>['quick','medium','long'].forEach(dur=>{if(Array.isArray(cat[diff]?.[dur]))cat[diff][dur]=cat[diff][dur].filter(ex=>!ex?.custom);}))});}
     async function getCustomTrainingExercisesFromDb(){
       let list=[]; disabledTrainingExerciseIds=new Set();
@@ -6593,7 +6617,7 @@
       customTrainingCatalogLoaded=true; adminTrainingExercisesCache=getAllTrainingExercises(); return list;
     }
     function getTrainingExerciseSearchText(ex){return[ex.name,ex.desc,ex.mapCode||'',TRAINING_CATEGORY_LABELS[ex.category],TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],...(ex.aimDistances||[]).map(x=>AIM_DISTANCE_LABELS[x]),...(ex.aimWeapons||[]).map(x=>AIM_WEAPON_LABELS[x])].join(' ').toLowerCase();}
-    function resetAdminTrainingExerciseForm(){const form=document.getElementById('adminTrainingExerciseForm');if(form)form.reset();document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='create';document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj ćwiczenie';document.getElementById('cancelTrainingEditBtn').style.display='none';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj edycję';document.getElementById('adminTrainingDifficulty').value='medium';document.getElementById('adminTrainingDuration').value='medium';document.getElementById('adminTrainingMetric').value='time_sec';document.getElementById('adminTrainingUnit').value='';document.getElementById('adminTrainingHint').value='';document.getElementById('adminTrainingMapCode').value='';document.getElementById('adminTrainingCountDirectionWrap').style.display='none';document.getElementById('adminTrainingAimOptions').style.display='none';document.querySelectorAll('#adminTrainingDistances input,#adminTrainingWeapons input').forEach(i=>i.checked=false);}
+    function resetAdminTrainingExerciseForm(){const form=document.getElementById('adminTrainingExerciseForm');if(form)form.reset();document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='create';document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj ćwiczenie';document.getElementById('cancelTrainingEditBtn').style.display='none';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj edycję';document.getElementById('adminTrainingDifficulty').value='medium';document.getElementById('adminTrainingDuration').value='medium';document.getElementById('adminTrainingMetric').value='time';document.getElementById('adminTrainingResultHint').value='';document.getElementById('adminTrainingCountDirection').value='lower';document.getElementById('adminTrainingMapCode').value='';document.getElementById('adminTrainingCountDirectionWrap').style.display='none';document.getElementById('adminTrainingAimOptions').style.display='none';document.querySelectorAll('#adminTrainingDistances input,#adminTrainingWeapons input').forEach(i=>i.checked=false);}
     function fillAdminTrainingExerciseForm(ex){
       if(!ex)return;
       const byId=id=>document.getElementById(id);
@@ -6608,8 +6632,7 @@
       set('adminTrainingMetric',ex.metric);
       set('adminTrainingName',ex.name);
       set('adminTrainingDescription',ex.desc||ex.description||'');
-      set('adminTrainingUnit',ex.unit||'');
-      set('adminTrainingHint',ex.hint||'');
+      set('adminTrainingResultHint',ex.resultHint||ex.unit||ex.hint||'');
       set('adminTrainingMapCode',ex.mapCode||ex.map||'');
       set('adminTrainingIdeal',benchmarks.ideal);
       set('adminTrainingVeryGood',benchmarks.veryGood);
@@ -6618,7 +6641,7 @@
       set('adminTrainingCountDirection',ex.direction||'higher');
       const countWrap=byId('adminTrainingCountDirectionWrap');
       const aimWrap=byId('adminTrainingAimOptions');
-      if(countWrap)countWrap.style.display=ex.metric==='count'?'block':'none';
+      if(countWrap)countWrap.style.display=ex.metric!=='text'?'block':'none';
       if(aimWrap)aimWrap.style.display=ex.category==='aim'?'block':'none';
       document.querySelectorAll('#adminTrainingDistances input').forEach(i=>i.checked=aimDistances.includes(i.value));
       document.querySelectorAll('#adminTrainingWeapons input').forEach(i=>i.checked=aimWeapons.includes(i.value));
@@ -6635,7 +6658,7 @@
       if(!list.length){container.innerHTML='<div class="tour-empty"><strong>Brak ćwiczeń</strong>Nie znaleziono ćwiczeń pasujących do wyszukiwania.</div>';return;}
       const groups={};list.forEach(ex=>(groups[ex.category]??=[]).push(ex));
       container.innerHTML=Object.keys(groups).map(category=>{const items=groups[category].sort((a,b)=>a.name.localeCompare(b.name,'pl'));return `<div class="admin-collapsible-card"><div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);"><h4 style="margin:0;font-family:'Space Grotesk';">${TRAINING_CATEGORY_LABELS[category]} <span class="admin-tour-count">${items.length}</span></h4></div><div style="padding:10px 14px;">${items.map(ex=>{
-        const tags=[TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],ex.metric==='time_sec'?'Czas • sek.':ex.metric==='time_min'?'Czas • min.':`Ilość • ${ex.direction==='lower'?'mniej lepiej':'więcej lepiej'}`];
+        const metricLabels={time:'Czas',count:'Ilość',percent:'Procent',text:'Tekst',rating:'Ocena 1–10'}; const tags=[TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],metricLabels[ex.metric]||ex.metric]; if(ex.metric!=='text')tags.push(ex.direction==='lower'?'Mniej = lepiej':'Więcej = lepiej');
         if(category==='aim'){if(ex.aimDistances?.length)tags.push(ex.aimDistances.map(d=>AIM_DISTANCE_LABELS[d]).join(' + '));if(ex.aimWeapons?.length)tags.push(ex.aimWeapons.map(w=>AIM_WEAPON_LABELS[w]).join(' + '));}
         return `<div style="padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:12px;align-items:flex-start;"><div style="flex:1;min-width:0;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><div style="font-weight:700;color:var(--text);font-size:13px;">${escapeHtml(ex.name)}</div><span class="tour-tag ${ex.custom?'purple':'accent'}" style="font-size:9px;">${ex.custom?'BAZA':'WBUDOWANE'}</span></div><div style="font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;white-space:pre-line;">${escapeHtml(ex.desc)}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">${tags.map(t=>`<span class="tour-tag accent" style="font-size:9px;">${escapeHtml(t)}</span>`).join('')}</div><div style="font-size:10.5px;color:var(--text-faint);margin-top:6px;">Idealny ${ex.benchmarks.ideal} · Bardzo dobry ${ex.benchmarks.veryGood} · Przeciętny ${ex.benchmarks.average} · Słaby ${ex.benchmarks.bad}</div>${ex.mapCode?`<div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">🗺️ Kod mapy: <b style="color:var(--text);">${escapeHtml(ex.mapCode)}</b></div>`:''}</div><div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;"><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="editTrainingExercise('${escapeAttr(ex.id)}')">✏️ Edytuj</button><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="copyTrainingExercise('${escapeAttr(ex.id)}')">📋 Kopiuj</button><button class="btn-danger-outline" type="button" style="width:auto;padding:7px 10px;font-size:10.5px;" onclick="deleteTrainingExercise('${escapeAttr(ex.id)}')">Usuń</button></div></div>`;}).join('')}</div></div>`;}).join('');
     }
@@ -6649,8 +6672,8 @@
     function bindAdminTrainingUI(){
       const form=document.getElementById('adminTrainingExerciseForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';
       const metric=document.getElementById('adminTrainingMetric'),category=document.getElementById('adminTrainingCategory');
-      const sync=()=>{document.getElementById('adminTrainingCountDirectionWrap').style.display=metric.value==='count'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=category.value==='aim'?'block':'none';};
-      metric.addEventListener('change',sync);category.addEventListener('change',sync);
+      const sync=()=>{document.getElementById('adminTrainingCountDirectionWrap').style.display=metric.value!=='text'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=category.value==='aim'?'block':'none';};
+      metric.addEventListener('change',()=>{if(metric.value==='time')document.getElementById('adminTrainingCountDirection').value='lower';else if(metric.value!=='text')document.getElementById('adminTrainingCountDirection').value='higher';sync();});category.addEventListener('change',sync);
       document.getElementById('adminTrainingSearchInput')?.addEventListener('input',e=>renderAdminTrainingList(e.target.value));
       document.getElementById('cancelTrainingEditBtn')?.addEventListener('click',resetAdminTrainingExerciseForm);
       form.addEventListener('submit',async e=>{
@@ -6662,6 +6685,15 @@
         const id=editingId||('training_'+Date.now()+'_'+Math.random().toString(36).slice(2,8));
         const cat=category.value,metricVal=metric.value;
         const name=document.getElementById('adminTrainingName').value.trim();
+        if(!['time','count','percent','text','rating'].includes(metricVal)){msg.textContent='Wybierz poprawny rodzaj wyniku.';msg.className='form-msg show error';return;}
+        if(metricVal==='rating'){
+          const ratingBenchmarks=['adminTrainingIdeal','adminTrainingVeryGood','adminTrainingAverage','adminTrainingBad'].map(id=>Number(document.getElementById(id).value));
+          if(ratingBenchmarks.some(v=>!Number.isFinite(v)||v<1||v>10)){msg.textContent='Dla Oceny progi muszą mieścić się w zakresie 1–10.';msg.className='form-msg show error';return;}
+        }
+        if(metricVal==='percent'){
+          const percentBenchmarks=['adminTrainingIdeal','adminTrainingVeryGood','adminTrainingAverage','adminTrainingBad'].map(id=>Number(document.getElementById(id).value));
+          if(percentBenchmarks.some(v=>!Number.isFinite(v)||v<0||v>100)){msg.textContent='Dla Procentu progi muszą mieścić się w zakresie 0–100.';msg.className='form-msg show error';return;}
+        }
         if(!name){msg.textContent='Nazwa ćwiczenia jest wymagana.';msg.className='form-msg show error';return;}
         // Refresh the source list immediately before validating the name. This makes the uniqueness check
         // cover the latest Firestore state as well as the built-in exercises and local fallback.
@@ -6669,7 +6701,7 @@
         const duplicate=findDuplicateTrainingExerciseName(name,editingId);
         if(duplicate){msg.textContent=`Ćwiczenie o nazwie „${duplicate.name}” już istnieje. Każde ćwiczenie musi mieć unikalną nazwę.`;msg.className='form-msg show error';document.getElementById('adminTrainingName')?.focus();return;}
         const existing=adminTrainingExercisesCache.find(x=>String(x.id)===String(editingId));
-        const data={id,category:cat,difficulty:document.getElementById('adminTrainingDifficulty').value,duration:document.getElementById('adminTrainingDuration').value,metric:metricVal,unit:document.getElementById('adminTrainingUnit').value.trim(),hint:document.getElementById('adminTrainingHint').value.trim(),mapCode:document.getElementById('adminTrainingMapCode').value.trim().replace(/\s+/g,''),name,description:document.getElementById('adminTrainingDescription').value.trim(),direction:metricVal==='count'?document.getElementById('adminTrainingCountDirection').value:'lower',benchmarks:{ideal:Number(document.getElementById('adminTrainingIdeal').value),veryGood:Number(document.getElementById('adminTrainingVeryGood').value),average:Number(document.getElementById('adminTrainingAverage').value),bad:Number(document.getElementById('adminTrainingBad').value)},aimDistances:cat==='aim'?[...document.querySelectorAll('#adminTrainingDistances input:checked')].map(i=>i.value):[],aimWeapons:cat==='aim'?[...document.querySelectorAll('#adminTrainingWeapons input:checked')].map(i=>i.value):[],createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),createdBy:existing?.createdBy||auth.currentUser.uid};
+        const data={id,category:cat,difficulty:document.getElementById('adminTrainingDifficulty').value,duration:document.getElementById('adminTrainingDuration').value,metric:metricVal,resultHint:document.getElementById('adminTrainingResultHint').value.trim(),unit:document.getElementById('adminTrainingResultHint').value.trim(),hint:document.getElementById('adminTrainingResultHint').value.trim(),mapCode:document.getElementById('adminTrainingMapCode').value.trim().replace(/\s+/g,''),name,description:document.getElementById('adminTrainingDescription').value.trim(),direction:metricVal==='text'?null:document.getElementById('adminTrainingCountDirection').value,benchmarks:{ideal:Number(document.getElementById('adminTrainingIdeal').value),veryGood:Number(document.getElementById('adminTrainingVeryGood').value),average:Number(document.getElementById('adminTrainingAverage').value),bad:Number(document.getElementById('adminTrainingBad').value)},aimDistances:cat==='aim'?[...document.querySelectorAll('#adminTrainingDistances input:checked')].map(i=>i.value):[],aimWeapons:cat==='aim'?[...document.querySelectorAll('#adminTrainingWeapons input:checked')].map(i=>i.value):[],createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),createdBy:existing?.createdBy||auth.currentUser.uid};
         if(!data.description){msg.textContent='Nazwa i opis są wymagane.';msg.className='form-msg show error';return;}
         const order=data.direction==='lower'?[data.benchmarks.ideal,data.benchmarks.veryGood,data.benchmarks.average,data.benchmarks.bad]:[data.benchmarks.bad,data.benchmarks.average,data.benchmarks.veryGood,data.benchmarks.ideal];
         if(!order.every(Number.isFinite)||!(order[0]<=order[1]&&order[1]<=order[2]&&order[2]<=order[3])){msg.textContent='Progi są niespójne. Ułóż je od najlepszego do najsłabszego wyniku.';msg.className='form-msg show error';return;}
@@ -6966,7 +6998,7 @@
           const benchmarks=rb.ideal!==undefined?rb:{ideal:Number(rb.pro),veryGood:Number(rb.good),average:Number(rb.ok),bad:Number(rb.bad)};
           const direction=source.direction||(Number(benchmarks.ideal)<=Number(benchmarks.bad)?'lower':'higher');
           seen.add(id);
-          out.push({...source,id,category:sourceCategory,difficulty:sourceDifficulty,duration:sourceDuration,benchmarks,pro:benchmarks.ideal,good:benchmarks.veryGood,ok:benchmarks.average,bad:benchmarks.bad,direction,unit:source.unit||'',hint:source.hint||''});
+          out.push({...source,id,category:sourceCategory,difficulty:sourceDifficulty,duration:sourceDuration,benchmarks,pro:benchmarks.ideal,good:benchmarks.veryGood,ok:benchmarks.average,bad:benchmarks.bad,direction,unit:source.resultHint||source.unit||'',resultHint:source.resultHint||source.unit||source.hint||'',hint:source.resultHint||source.unit||source.hint||''});
         });
       }));});
 
@@ -7059,7 +7091,7 @@
       let selectedDuration=(typeof block.duration==='number'||/^\d+$/.test(String(block.duration||'')))?(Number(block.duration)<=30?'quick':Number(block.duration)<=45?'medium':'long'):(block.duration||'medium');
       const getItems=()=>{if(block.auto){const pool=getAllTrainingExercises().filter(x=>x.category===block.category&&x.difficulty===selectedDiff&&x.duration===selectedDuration);const score=Number(block.score||50);return pool.sort((a,b)=>Math.abs((a.score||50)-score)-Math.abs((b.score||50)-score)).slice(0,4);}const selected=(block.exerciseIds||[]).map(findTrainingExerciseById).filter(Boolean);return selected.filter(ex=>ex.difficulty===selectedDiff&&ex.duration===selectedDuration);};
       const render=()=>{const items=getItems();const fallback=!items.length&&!block.auto?(block.exerciseIds||[]).map(findTrainingExerciseById).filter(Boolean):[];const shown=items.length?items:fallback;
-        c.innerHTML=`<div style="border-left:4px solid ${escapeAttr(block.color||'#6d5bff')};padding-left:14px;"><h2 class="form-title">${escapeHtml(block.name)}</h2><p class="form-sub">${escapeHtml(block.desc||'')}</p></div><div class="block-meta" style="margin-bottom:14px;"><span class="tour-tag">${escapeHtml(TRAINING_CATEGORY_LABELS[block.category]||'Własny')}</span>${block.auto?'<span class="tour-tag accent">Program dobiera ćwiczenia dla wariantu</span>':''}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;"><div class="field" style="margin:0;"><label>Poziom trudności</label><select id="blockDetailDifficulty"><option value="easy">Łatwy</option><option value="medium">Średni</option><option value="hard">Trudny</option></select></div><div class="field" style="margin:0;"><label>Długość</label><select id="blockDetailDuration"><option value="quick">Szybki</option><option value="medium">Średni</option><option value="long">Długi</option></select></div></div><div style="display:flex;flex-direction:column;gap:10px;">${shown.map((ex,i)=>{const b=ex.benchmarks||{};const metric=ex.metric==='time_sec'?'Czas • sek.':ex.metric==='time_min'?'Czas • min.':ex.metric==='percent'?'Procent':ex.metric==='score'?'Wynik':'Ilość';return `<div style="padding:14px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.018);"><div style="font-weight:700;color:var(--text);font-size:13px;">${i+1}. ${escapeHtml(ex.name)}</div><div style="font-size:11.5px;color:var(--text-dim);line-height:1.55;margin-top:5px;white-space:pre-line;">${escapeHtml(ex.desc||'')}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;"><span class="tour-tag">${escapeHtml(metric)}</span><span class="tour-tag">${escapeHtml(ex.unit||'')}</span>${b.ideal!==undefined?`<span class="tour-tag accent">Idealny: ${escapeHtml(String(b.ideal))}</span>`:''}${b.veryGood!==undefined?`<span class="tour-tag accent">Bardzo dobry: ${escapeHtml(String(b.veryGood))}</span>`:''}${b.average!==undefined?`<span class="tour-tag">Średni: ${escapeHtml(String(b.average))}</span>`:''}${b.bad!==undefined?`<span class="tour-tag purple">Słaby: ${escapeHtml(String(b.bad))}</span>`:''}</div>${ex.hint?`<div style="font-size:10.5px;color:var(--text-faint);margin-top:7px;">Wynik: ${escapeHtml(ex.hint)}</div>`:''}${trainingMapCodeHtml(ex.mapCode)}</div>`}).join('')||'<div class="tour-empty"><strong>Brak ćwiczeń dla tego wariantu</strong>Wybierz inny poziom lub długość.</div>'}</div>`;
+        c.innerHTML=`<div style="border-left:4px solid ${escapeAttr(block.color||'#6d5bff')};padding-left:14px;"><h2 class="form-title">${escapeHtml(block.name)}</h2><p class="form-sub">${escapeHtml(block.desc||'')}</p></div><div class="block-meta" style="margin-bottom:14px;"><span class="tour-tag">${escapeHtml(TRAINING_CATEGORY_LABELS[block.category]||'Własny')}</span>${block.auto?'<span class="tour-tag accent">Program dobiera ćwiczenia dla wariantu</span>':''}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;"><div class="field" style="margin:0;"><label>Poziom trudności</label><select id="blockDetailDifficulty"><option value="easy">Łatwy</option><option value="medium">Średni</option><option value="hard">Trudny</option></select></div><div class="field" style="margin:0;"><label>Długość</label><select id="blockDetailDuration"><option value="quick">Szybki</option><option value="medium">Średni</option><option value="long">Długi</option></select></div></div><div style="display:flex;flex-direction:column;gap:10px;">${shown.map((ex,i)=>{const b=ex.benchmarks||{};const metricLabels={time:'Czas',count:'Ilość',percent:'Procent',text:'Tekst',rating:'Ocena 1–10'};const metric=metricLabels[ex.metric]||ex.metric;return `<div style="padding:14px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.018);"><div style="font-weight:700;color:var(--text);font-size:13px;">${i+1}. ${escapeHtml(ex.name)}</div><div style="font-size:11.5px;color:var(--text-dim);line-height:1.55;margin-top:5px;white-space:pre-line;">${escapeHtml(ex.desc||'')}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;"><span class="tour-tag">${escapeHtml(metric)}</span><span class="tour-tag">${escapeHtml(ex.unit||'')}</span>${b.ideal!==undefined?`<span class="tour-tag accent">Idealny: ${escapeHtml(String(b.ideal))}</span>`:''}${b.veryGood!==undefined?`<span class="tour-tag accent">Bardzo dobry: ${escapeHtml(String(b.veryGood))}</span>`:''}${b.average!==undefined?`<span class="tour-tag">Średni: ${escapeHtml(String(b.average))}</span>`:''}${b.bad!==undefined?`<span class="tour-tag purple">Słaby: ${escapeHtml(String(b.bad))}</span>`:''}</div>${ex.hint?`<div style="font-size:10.5px;color:var(--text-faint);margin-top:7px;">Wynik: ${escapeHtml(ex.hint)}</div>`:''}${trainingMapCodeHtml(ex.mapCode)}</div>`}).join('')||'<div class="tour-empty"><strong>Brak ćwiczeń dla tego wariantu</strong>Wybierz inny poziom lub długość.</div>'}</div>`;
         const d=document.getElementById('blockDetailDifficulty'),dur=document.getElementById('blockDetailDuration');if(d)d.value=selectedDiff;if(dur)dur.value=selectedDuration;d?.addEventListener('change',()=>{selectedDiff=d.value;render()});dur?.addEventListener('change',()=>{selectedDuration=dur.value;render()});
       };render();modal.classList.remove('hidden');
     }
@@ -7394,10 +7426,12 @@ function loadTrainingPage() {
           const items = exData ? (exData[currentSelectedDifficulty]?.[currentSelectedDuration] || []) : [];
           const exerciseDetails = items.map((ex, idx) => {
             const checked = document.getElementById('exCheck' + idx)?.checked || false;
-            const result = document.getElementById('exResult' + idx)?.value?.trim() || '';
+            const validation = validateTrainingExerciseResult(ex, idx);
+            if (!validation.valid) throw new Error(`Nieprawidłowy wynik w ćwiczeniu „${ex?.name||idx+1}”.`);
+            const result = validation.value;
             const diff = parseInt(document.getElementById('exDifficulty' + idx)?.value) || null;
             const note = document.getElementById('exNote' + idx)?.value?.trim() || '';
-            return { exercise: ex, completed: checked, result, difficulty: diff, note };
+            return { exercise: ex, completed: checked, result, direction: typeof ex==='object'?ex.direction:null, difficulty: diff, note };
           });
 
           const completedCount = exerciseDetails.filter(e => e.completed).length;
@@ -7583,38 +7617,90 @@ function loadTrainingPage() {
       buildExerciseLogRows(items);
     }
 
+    function parseTrainingTimeToSeconds(value){
+      const raw=String(value??'').trim();
+      if(!raw)return NaN;
+      if(/^\d+:\d{1,2}$/.test(raw)){
+        const [m,s]=raw.split(':').map(Number);
+        return m*60+s;
+      }
+      return Number(raw);
+    }
+    function formatTrainingTime(seconds){
+      const total=Math.max(0,Math.round(Number(seconds)||0));
+      const m=Math.floor(total/60),s=total%60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    function getTrainingExerciseResultValue(ex, idx){
+      if(typeof ex!=='object')return document.getElementById('exResult'+idx)?.value?.trim()||'';
+      if(ex.metric==='time'){
+        const minEl=document.getElementById('exResultMin'+idx),secEl=document.getElementById('exResultSec'+idx);
+        const m=minEl?.value===''?'':Number(minEl?.value),s=secEl?.value===''?'':Number(secEl?.value);
+        if(m===''&&s==='')return '';
+        if(!Number.isInteger(m)||m<0||!Number.isInteger(s)||s<0||s>59)return '';
+        return formatTrainingTime(m*60+s);
+      }
+      return document.getElementById('exResult'+idx)?.value?.trim()||'';
+    }
+    function validateTrainingExerciseResult(ex, idx){
+      const value=getTrainingExerciseResultValue(ex,idx);
+      if(typeof ex!=='object'||!value)return {valid:true,value};
+      if(ex.metric==='time'){
+        const parts=value.split(':').map(Number);
+        return {valid:parts.length===2&&Number.isInteger(parts[0])&&parts[0]>=0&&Number.isInteger(parts[1])&&parts[1]>=0&&parts[1]<=59,value};
+      }
+      if(ex.metric==='count'){
+        const n=Number(value); return {valid:Number.isFinite(n)&&n>=0,value};
+      }
+      if(ex.metric==='percent'){
+        const n=Number(value); return {valid:Number.isFinite(n)&&n>=0&&n<=100,value};
+      }
+      if(ex.metric==='rating'){
+        const n=Number(value); return {valid:Number.isFinite(n)&&n>=1&&n<=10,value};
+      }
+      return {valid:true,value};
+    }
+
     function buildExerciseLogRows(items) {
       const logContainer = document.getElementById('trainingExerciseLogRows');
       if (!logContainer) return;
 
       const metricInputHtml = (ex, idx) => {
         if (typeof ex !== 'object' || ex.metric === 'text') {
+          const instruction = ex?.resultHint || ex?.unit || ex?.hint || '';
           return `<div class="field" style="margin:0;grid-column:span 2;">
-            <label style="font-size:11px;">Notatka do ćwiczenia</label>
-            <textarea id="exResult${idx}" placeholder="${ex.hint || 'Opisz jak poszło...'}" style="min-height:52px;resize:vertical;font-size:12px;padding:7px 10px;"></textarea>
+            <label style="font-size:11px;">Wynik — Tekst</label>
+            <textarea id="exResult${idx}" placeholder="${escapeAttr(instruction || 'Wpisz tekst')}" style="min-height:52px;resize:vertical;font-size:12px;padding:7px 10px;"></textarea>
+            ${instruction ? `<div class="hint" style="margin-top:5px;">${escapeHtml(instruction)}</div>` : ''}
           </div>`;
         }
         const metric = ex.metric;
-        const unit = ex.unit;
-        const hint = ex.hint || '';
-        let inputType = 'number';
-        let inputStep = '1';
-        if (metric === 'time_sec' || metric === 'time_min') { inputType = 'number'; inputStep = '0.1'; }
-        if (metric === 'percent') { inputType = 'number'; inputStep = '1'; }
-
-        const unitLabel = metric === 'time_sec' ? 'sekund' : metric === 'time_min' ? 'minut' : metric === 'score' ? 'pkt' : metric === 'percent' ? '%' : metric === 'count' ? '' : '';
-        const labelText = unit || unitLabel;
-
+        const instruction = ex.resultHint || ex.unit || ex.hint || '';
+        if(metric==='time'){
+          return `<div class="field" style="margin:0;grid-column:span 2;">
+            <label style="font-size:11px;">Wynik — Czas</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div><input type="number" id="exResultMin${idx}" min="0" step="1" inputmode="numeric" placeholder="Minuty" style="font-size:12px;padding:7px 10px;" /></div>
+              <div><input type="number" id="exResultSec${idx}" min="0" max="59" step="1" inputmode="numeric" placeholder="Sekundy (0–59)" style="font-size:12px;padding:7px 10px;" /></div>
+            </div>
+            ${instruction ? `<div class="hint" style="margin-top:5px;">${escapeHtml(instruction)}</div>` : ''}
+          </div>`;
+        }
+        const config={
+          count:{label:'Ilość',type:'number',step:'1',min:'0',max:'',placeholder:'Wpisz liczbę'},
+          percent:{label:'Procent',type:'number',step:'1',min:'0',max:'100',placeholder:'0–100'},
+          rating:{label:'Ocena (1–10)',type:'number',step:'1',min:'1',max:'10',placeholder:'1–10'}
+        }[metric]||{label:'Wynik',type:'text',step:'',min:'',max:'',placeholder:'Wpisz wynik'};
         return `<div class="field" style="margin:0;grid-column:span 2;">
-          <label style="font-size:11px;">Wynik <span style="color:var(--text-dim)">(${labelText})</span></label>
-          <input type="${inputType}" step="${inputStep}" id="exResult${idx}" placeholder="${hint}" style="font-size:12px;padding:7px 10px;" />
+          <label style="font-size:11px;">${config.label}</label>
+          <input type="${config.type}" ${config.step?`step="${config.step}"`:''} ${config.min!==''?`min="${config.min}"`:''} ${config.max?`max="${config.max}"`:''} id="exResult${idx}" placeholder="${escapeAttr(instruction||config.placeholder)}" inputmode="${config.type==='number'?'decimal':'text'}" style="font-size:12px;padding:7px 10px;" />
+          ${instruction ? `<div class="hint" style="margin-top:5px;">${escapeHtml(instruction)}</div>` : ''}
         </div>`;
       };
 
       logContainer.innerHTML = items.map((ex, idx) => {
         const exName = typeof ex === 'object' ? ex.name : ex;
         const benchmarks = (typeof ex === 'object' && ex.benchmarks) ? ex.benchmarks : null;
-
         let benchHint = '';
         if (benchmarks) {
           const entries = Object.entries(benchmarks)
@@ -7626,7 +7712,6 @@ function loadTrainingPage() {
             }).join(' · ');
           if (entries) benchHint = `<div style="font-size:10px;color:var(--text-dim);margin-bottom:8px;">${entries}</div>`;
         }
-
         return `
         <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:16px;">
           <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;">
