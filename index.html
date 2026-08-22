@@ -6889,11 +6889,47 @@
     }
     function getAllTrainingExercises(){
       const out=[], seen=new Set();
+      // Edycja ćwiczenia wbudowanego jest zapisywana w training_exercises pod jego
+      // stałym identyfikatorem builtin:... . Taki rekord musi zastąpić oryginał,
+      // a nie zostać dodany jako drugie ćwiczenie. Dzięki temu zmienione ćwiczenie
+      // nadal jest widoczne na liście „Zapisane ćwiczenia”, nawet jeśli admin
+      // zmienił kategorię, poziom lub długość.
+      const builtinOverrides=new Map();
+      customTrainingExercises.forEach(ex=>{
+        const id=String(ex?.id||'');
+        if(id.startsWith('builtin:')) builtinOverrides.set(id,ex);
+      });
+
       TRAINING_CATEGORY_KEYS.forEach(cat=>{['easy','medium','advanced','hard','pro'].forEach(diff=>['quick','medium','long'].forEach(dur=>{
         const arr=TRAINING_EXERCISES[cat]?.[diff]?.[dur]||[];
-        arr.forEach((ex,idx)=>{if(!ex?.name)return; const id=ex.custom?String(ex.id):`builtin:${cat}:${diff}:${dur}:${idx}`; if(disabledTrainingExerciseIds.has(id))return; if(!seen.has(id)){seen.add(id);const rb=ex.benchmarks||{};const benchmarks=rb.ideal!==undefined?rb:{ideal:Number(rb.pro),veryGood:Number(rb.good),average:Number(rb.ok),bad:Number(rb.bad)};const direction=ex.direction||(Number(benchmarks.ideal)<=Number(benchmarks.bad)?'lower':'higher');out.push({...ex,id,category:cat,difficulty:diff==='advanced'?'hard':diff,duration:dur,benchmarks,pro:benchmarks.ideal,good:benchmarks.veryGood,ok:benchmarks.average,bad:benchmarks.bad,direction,unit:ex.unit||'',hint:ex.hint||''});}});
+        arr.forEach((ex,idx)=>{
+          if(!ex?.name)return;
+          const id=ex.custom?String(ex.id):`builtin:${cat}:${diff}:${dur}:${idx}`;
+          if(disabledTrainingExerciseIds.has(id))return;
+          if(seen.has(id))return;
+          const override=builtinOverrides.get(id);
+          const source=override||ex;
+          const sourceCategory=source.category||cat;
+          const sourceDifficulty=source.difficulty|| (diff==='advanced'?'hard':diff);
+          const sourceDuration=source.duration||dur;
+          const rb=source.benchmarks||{};
+          const benchmarks=rb.ideal!==undefined?rb:{ideal:Number(rb.pro),veryGood:Number(rb.good),average:Number(rb.ok),bad:Number(rb.bad)};
+          const direction=source.direction||(Number(benchmarks.ideal)<=Number(benchmarks.bad)?'lower':'higher');
+          seen.add(id);
+          out.push({...source,id,category:sourceCategory,difficulty:sourceDifficulty,duration:sourceDuration,benchmarks,pro:benchmarks.ideal,good:benchmarks.veryGood,ok:benchmarks.average,bad:benchmarks.bad,direction,unit:source.unit||'',hint:source.hint||''});
+        });
       }));});
-      customTrainingExercises.forEach(ex=>{if(!disabledTrainingExerciseIds.has(String(ex.id))&&!seen.has(String(ex.id)))out.push(ex);}); return out;
+
+      // Zwykłe ćwiczenia dodane przez admina nie mają identyfikatora builtin:...,
+      // więc dodajemy je na końcu bez duplikowania rekordów już znalezionych.
+      customTrainingExercises.forEach(ex=>{
+        const id=String(ex?.id||'');
+        if(!id||id.startsWith('builtin:'))return;
+        if(disabledTrainingExerciseIds.has(id)||seen.has(id))return;
+        seen.add(id);
+        out.push(ex);
+      });
+      return out;
     }
     function getUserCustomBlocks(){try{return JSON.parse(localStorage.getItem('fn_custom_training_blocks')||'[]')}catch(_){return[]}}
     async function persistUserTrainingData(){
