@@ -3630,82 +3630,111 @@
 
   <!-- ================= UNLOCK SKILLS MODAL ================= -->
   <div id="unlockSkillsModalOverlay" class="modal-overlay hidden" style="z-index:110;">
-    <div class="modal-card" style="max-width: 680px; max-height: 90vh; overflow-y: auto; width: 100%;">
+    <div class="modal-card" style="max-width: 760px; max-height: 92vh; overflow-y: auto; width: 100%;">
       <button class="modal-close" id="unlockSkillsModalClose" type="button"
         onclick="document.getElementById('unlockSkillsModalOverlay').classList.add('hidden')">✕</button>
-      <h2 class="form-title" style="margin-bottom: 12px;"><span class="ic">🔒</span> Odblokuj Profil Umiejętności
-      </h2>
-      <p class="form-sub" style="margin-bottom: 20px;">Wprowadź swoje wyniki z trybu kreatywnego Fortnite, aby
-        system mógł dokładnie ocenić Twój poziom umiejętności od 1 do 10.</p>
+      <h2 class="form-title" style="margin-bottom: 12px;"><span class="ic">🎯</span> Ocena początkowa profilu umiejętności</h2>
+      <p class="form-sub" style="margin-bottom: 18px;">
+        Wpisz dokładne wyniki testów z mapy <b>MECHANICS TRAINING V5 🎯</b> (2424-4344-7824).
+        System przeliczy je na skale <b>1–100</b>, interpolując wartości pomiędzy benchmarkami.
+        Bardzo niskie / niewiarygodne czasy oznaczone jako „powtórz” nie są uwzględniane jako wynik.
+      </p>
+
+      <div id="unlockSkillsValidationMsg" class="form-msg error" style="display:none;"></div>
 
       <form id="unlockSkillsForm">
-        <!-- STEP 1: BUDOWANIE -->
-        <div style="margin-bottom: 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 20px;">
-          <h3 style="font-family: 'Space Grotesk'; font-size: 15px; color: var(--cyan); margin-bottom: 6px;">🔨 1.
-            Test Budowania (MECHANICS TRAINING V5 🎯)</h3>
-          <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Uruchom kod wyspy:
-            <b>2424-4344-7824</b>. Przejdź sekcję Piece Control Tunneling i zmierz swój czas.
+        <!-- BUDOWANIE -->
+        <div style="margin-bottom:24px;border-bottom:1px solid var(--border-soft);padding-bottom:20px;">
+          <h3 style="font-family:'Space Grotesk';font-size:15px;color:var(--cyan);margin-bottom:6px;">🔨 1. Budowanie</h3>
+          <p style="font-size:12px;color:var(--text-dim);line-height:1.55;margin:0 0 14px;">
+            <b>Piece Control Tunnels:</b> wejdź na <b>MECHANICS TRAINING V5 🎯</b> → <b>COMP</b> → <b>PIECE CONTROL TUNELS</b>.
+            Zrób tunele <b>2, 7 i 11</b>. Dla każdego wpisz czas w sekundach. Wynik poniżej minimalnego sensownego progu wymaga powtórzenia testu.
           </p>
-          <div class="settings-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="settings-grid" style="grid-template-columns:repeat(3,1fr);gap:12px;">
             <div class="field">
-              <label>Czas tunelowania (sekundy)</label>
-              <input type="number" id="verifyBuildTime" placeholder="np. 28" required min="1" />
+              <label>Tunel 2 — sekundy</label>
+              <input type="number" id="verifyBuildTunnel2" placeholder="np. 6" step="0.1" min="3" required />
+              <div class="hint">5 idealnie · 6 bardzo dobrze · 8 przeciętnie · 10 słabo</div>
             </div>
             <div class="field">
-              <label>Płynność Freebuildu (1-5)</label>
-              <select id="verifyBuildFluidity" required>
-                <option value="1">⭐ (Truby, ciągłe gubienie tempa)</option>
-                <option value="2">⭐⭐ (Słaba płynność)</option>
-                <option value="3">⭐⭐⭐ (Średnia płynność)</option>
-                <option value="4">⭐⭐⭐⭐ (Wysoka płynność)</option>
-                <option value="5">⭐⭐⭐⭐⭐ (Idealna płynność bez błędów)</option>
-              </select>
+              <label>Tunel 7 — sekundy</label>
+              <input type="number" id="verifyBuildTunnel7" placeholder="np. 15" step="0.1" min="10" required />
+              <div class="hint">13 idealnie · 15 bardzo dobrze · 18 przeciętnie · 21 słabo</div>
+            </div>
+            <div class="field">
+              <label>Tunel 11 — sekundy</label>
+              <input type="number" id="verifyBuildTunnel11" placeholder="np. 19" step="0.1" min="15" required />
+              <div class="hint">17 idealnie · 19 bardzo dobrze · 23 przeciętnie · 25 słabo</div>
+            </div>
+          </div>
+          <div class="field" style="margin-top:12px;">
+            <label>Triple Edit — maks. poprawnych powtórzeń bez zacięcia</label>
+            <input type="number" id="verifyBuildTripleEdit" placeholder="np. 20" step="1" min="0" required />
+            <div class="hint">30+ idealnie · 20 bardzo dobrze · 15 przeciętnie · 7 słabo · &lt;5 bardzo słabo</div>
+          </div>
+        </div>
+
+        <!-- EDYTOWANIE -->
+        <div style="margin-bottom:24px;border-bottom:1px solid var(--border-soft);padding-bottom:20px;">
+          <h3 style="font-family:'Space Grotesk';font-size:15px;color:var(--cyan);margin-bottom:6px;">📐 2. Edytowanie</h3>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.55;margin-bottom:14px;">
+            <p style="margin:0 0 10px;"><b>Quatr Edit:</b> MECHANICS TRAINING V5 🎯 → <b>EDIT</b> → obróć się w lewo → zrób <b>2. od lewej</b>. Możesz użyć timera na mapie.</p>
+            <p style="margin:0;"><b>Tunele:</b> MECHANICS TRAINING V5 🎯 → <b>EDIT</b> → po wejściu zrób <b>tunel środkowy</b> oraz <b>tunel najbardziej po prawej</b>.</p>
+          </div>
+          <div class="settings-grid" style="grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div class="field">
+              <label>Quatr Edit — sekundy</label>
+              <input type="number" id="verifyEditQuatr" placeholder="np. 9" step="0.1" min="1" required />
+              <div class="hint">7 idealnie · 9 bardzo dobrze · 11 przeciętnie · 13 słabo</div>
+            </div>
+            <div class="field">
+              <label>Tunel środkowy — sekundy</label>
+              <input type="number" id="verifyEditTunnelMiddle" placeholder="np. 10" step="0.1" min="1" required />
+              <div class="hint">8 idealnie · 10 bardzo dobrze · 12 przeciętnie · 14 słabo</div>
+            </div>
+            <div class="field">
+              <label>Tunel najbardziej po prawej — sekundy</label>
+              <input type="number" id="verifyEditTunnelRight" placeholder="np. 26" step="0.1" min="1" required />
+              <div class="hint">21 idealnie · 26 bardzo dobrze · 31 przeciętnie · 36 słabo</div>
             </div>
           </div>
         </div>
 
-        <!-- STEP 2: EDYTOWANIE -->
-        <div style="margin-bottom: 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 20px;">
-          <h3 style="font-family: 'Space Grotesk'; font-size: 15px; color: var(--cyan); margin-bottom: 6px;">📐 2.
-            Test Edytowania (MECHANICS TRAINING V5 🎯)</h3>
-          <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Wykonaj Easy Edit Run oraz Hard
-            Edit Run na mapie weryfikacyjnej.</p>
-          <div class="settings-grid" style="grid-template-columns: 1fr 1fr;">
+        <!-- AIM -->
+        <div style="margin-bottom:10px;padding-bottom:4px;">
+          <h3 style="font-family:'Space Grotesk';font-size:15px;color:var(--cyan);margin-bottom:6px;">🎯 3. AIM</h3>
+          <p style="font-size:12px;color:var(--text-dim);line-height:1.55;margin:0 0 14px;">
+            Wejdź na <b>MECHANICS TRAINING V5 🎯</b> → <b>AIM</b> i wykonaj każde ćwiczenie przez wskazany czas.
+            Program zachowuje osobne wyniki dla <b>bliskiego, średniego i dalekiego dystansu</b> i wykorzysta je później do priorytetyzacji planu.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
             <div class="field">
-              <label>Easy Edit Run (sekundy)</label>
-              <input type="number" id="verifyEditEasy" placeholder="np. 55" required min="1" />
+              <label>Reaction Flick — bliski dystans z pompy — headshoty / 3 min</label>
+              <input type="number" id="verifyAimReactionFlick" placeholder="np. 50" step="1" min="0" required />
+              <div class="hint">70+ idealnie · 50 bardzo dobrze · 30 przeciętnie · 10 słabo · &lt;10 bardzo słabo</div>
             </div>
             <div class="field">
-              <label>Hard Edit Run (sekundy)</label>
-              <input type="number" id="verifyEditHard" placeholder="np. 110" required min="1" />
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 3: AIM -->
-        <div style="margin-bottom: 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 20px;">
-          <h3 style="font-family: 'Space Grotesk'; font-size: 15px; color: var(--cyan); margin-bottom: 6px;">🎯 3.
-            Test Celności (Aim Trainer)</h3>
-          <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Rozegraj rundę na mapie Skaavok
-            Aim Trainer lub Mechanics V5 (np. Shotgun Flick / Horizontal Tracking).</p>
-          <div class="settings-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="field">
-              <label>Tile Frenzy Score (Flicking)</label>
-              <input type="number" id="verifyAimFlick" placeholder="np. 74" required min="1" />
+              <label>Sphere Tracking — średni dystans z MK — punkty / 2 min</label>
+              <input type="number" id="verifyAimSphereTracking" placeholder="np. 15" step="0.1" min="0" required />
+              <div class="hint">20 idealnie · 15 bardzo dobrze · 10 przeciętnie · 5 słabo · &lt;5 bardzo słabo</div>
             </div>
             <div class="field">
-              <label>Tracking Accuracy (Celność %)</label>
-              <input type="number" id="verifyAimTrack" placeholder="np. 58" required min="1" max="100" />
+              <label>Doge Tracking — bliski dystans z pompy/MK z ruchem — punkty / 2 min</label>
+              <input type="number" id="verifyAimDogeTracking" placeholder="np. 22" step="0.1" min="0" required />
+              <div class="hint">29 idealnie · 22 bardzo dobrze · 15 przeciętnie · 8 słabo · &lt;8 bardzo słabo</div>
+            </div>
+            <div class="field">
+              <label>Surge Tags — daleki dystans z MK — punkty / 2 min</label>
+              <input type="number" id="verifyAimSurgeTags" placeholder="np. 30" step="0.1" min="0" required />
+              <div class="hint">40 idealnie · 30 bardzo dobrze · 20 przeciętnie · 10 słabo · &lt;10 bardzo słabo</div>
             </div>
           </div>
         </div>
 
-        <button class="btn-primary" type="submit" id="unlockSkillsSubmitBtn">Zapisz wyniki i Oblicz
-          Statystyki</button>
+        <button class="btn-primary" type="submit" id="unlockSkillsSubmitBtn">Zapisz wyniki i oblicz profil 1–100</button>
       </form>
     </div>
   </div>
-
   <!-- ================= RUN TRAINING MODAL ================= -->
   <div id="runTrainingModalOverlay" class="modal-overlay hidden" style="z-index:110;">
     <div class="modal-card" style="max-width: 740px; max-height: 90vh; overflow-y: auto; width: 100%;">
@@ -6403,13 +6432,114 @@
       }
     };
 
+    // ---------- Skill scoring (1-100) ----------
+    const SKILL_KEYS = ['building', 'editing', 'aim', 'offspawn', 'midgame', 'lategame'];
+
+    function clamp100(value) {
+      return Math.max(1, Math.min(100, Number(value) || 1));
+    }
+
+    // Piecewise linear interpolation between user-provided benchmark points.
+    // A lower number is better for time-based tests; a higher number is better for count/score tests.
+    function interpolateBenchmark(value, points, direction = 'higher') {
+      const v = Number(value);
+      if (!Number.isFinite(v)) return 1;
+      const sorted = [...points].sort((a, b) => a.x - b.x);
+      if (direction === 'higher') sorted.reverse();
+
+      // Exact/plateau behavior at the best benchmark.
+      if (direction === 'higher') {
+        if (v >= points[points.length - 1].x) return clamp100(points[points.length - 1].score);
+      } else {
+        if (v <= points[0].x) return clamp100(points[0].score);
+      }
+
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const a = sorted[i], b = sorted[i + 1];
+        if ((v >= a.x && v <= b.x) || (v <= a.x && v >= b.x)) {
+          const t = (v - a.x) / (b.x - a.x);
+          return clamp100(a.score + t * (b.score - a.score));
+        }
+      }
+
+      // Beyond the worst supplied benchmark, continue the last slope but never below 1.
+      const ordered = [...points].sort((a, b) => a.x - b.x);
+      if (direction === 'higher') {
+        const low = ordered[0], next = ordered[1] || ordered[0];
+        const slope = low.x === next.x ? 0 : (next.score - low.score) / (next.x - low.x);
+        return clamp100(low.score + (v - low.x) * slope);
+      }
+      const high = ordered[ordered.length - 1], prev = ordered[ordered.length - 2] || high;
+      const slope = high.x === prev.x ? 0 : (high.score - prev.score) / (high.x - prev.x);
+      return clamp100(high.score + (v - high.x) * slope);
+    }
+
+    const SCORE_CURVES = {
+      building: {
+        tunnel2:  { direction: 'lower', points: [{x:5,score:100},{x:6,score:90},{x:8,score:60},{x:10,score:35},{x:14,score:15}] },
+        tunnel7:  { direction: 'lower', points: [{x:13,score:100},{x:15,score:90},{x:18,score:60},{x:21,score:35},{x:25,score:15}] },
+        tunnel11: { direction: 'lower', points: [{x:17,score:100},{x:19,score:90},{x:23,score:60},{x:25,score:35},{x:30,score:15}] },
+        triple:   { direction: 'higher', points: [{x:5,score:15},{x:7,score:35},{x:15,score:60},{x:20,score:90},{x:30,score:100}] }
+      },
+      editing: {
+        quatr:   { direction: 'lower', points: [{x:7,score:100},{x:9,score:90},{x:11,score:60},{x:13,score:35},{x:18,score:15}] },
+        middle:  { direction: 'lower', points: [{x:8,score:100},{x:10,score:90},{x:12,score:60},{x:14,score:35},{x:20,score:15}] },
+        right:   { direction: 'lower', points: [{x:21,score:100},{x:26,score:90},{x:31,score:60},{x:36,score:35},{x:45,score:15}] }
+      },
+      aim: {
+        reactionFlick: { direction: 'higher', points: [{x:0,score:1},{x:10,score:35},{x:30,score:60},{x:50,score:90},{x:70,score:100}] },
+        sphere:        { direction: 'higher', points: [{x:0,score:1},{x:5,score:35},{x:10,score:60},{x:15,score:90},{x:20,score:100}] },
+        doge:          { direction: 'higher', points: [{x:0,score:1},{x:8,score:35},{x:15,score:60},{x:22,score:90},{x:29,score:100}] },
+        surge:         { direction: 'higher', points: [{x:0,score:1},{x:10,score:35},{x:20,score:60},{x:30,score:90},{x:40,score:100}] }
+      }
+    };
+
+    function scoreFromCurve(value, curve) {
+      return interpolateBenchmark(value, curve.points, curve.direction);
+    }
+
+    function weightedSkillScore(values) {
+      const usable = values.filter(v => Number.isFinite(v));
+      if (!usable.length) return 50;
+      // 65% weighted arithmetic mean + 35% harmonic mean.
+      // The harmonic component prevents one extremely weak sub-test from being hidden by a strong one.
+      const mean = usable.reduce((a, b) => a + b, 0) / usable.length;
+      const harmonic = usable.length / usable.reduce((sum, v) => sum + (1 / Math.max(1, v)), 0);
+      return clamp100((mean * 0.65) + (harmonic * 0.35));
+    }
+
+    function getOverallSkillRating(skills) {
+      const values = SKILL_KEYS.map(k => Number(skills[k])).filter(Number.isFinite);
+      return values.length ? clamp100(values.reduce((a,b) => a+b, 0) / values.length) : 1;
+    }
+
+    function getSkillPriorityWeight(score) {
+      // Lower skill -> substantially higher training weight.
+      return 1 + ((100 - clamp100(score)) / 25);
+    }
+
+    function calculateAimFocus(aimScores) {
+      const near = weightedSkillScore([aimScores.reactionFlick, aimScores.doge]);
+      const medium = aimScores.sphere;
+      const far = aimScores.surge;
+      const focus = [
+        { key:'near', label:'bliski dystans', score:near },
+        { key:'medium', label:'średni dystans', score:medium },
+        { key:'far', label:'daleki dystans', score:far }
+      ].sort((a,b) => a.score - b.score);
+      const totalNeed = focus.reduce((sum, item) => sum + getSkillPriorityWeight(item.score), 0);
+      return {
+        near, medium, far,
+        weakest: focus[0],
+        focus: focus.map(item => ({...item, weight: getSkillPriorityWeight(item.score) / totalNeed}))
+      };
+    }
+
     function calculateAutoRatings() {
       const logs = JSON.parse(localStorage.getItem('fn_logged_tournaments') || '[]');
-      const results = { lategame: 5, offspawn: 5, midgame: 5, hasLogs: logs.length >= 2 };
+      const results = { lategame: 50, offspawn: 50, midgame: 50, hasLogs: logs.length >= 2 };
 
-      if (logs.length < 2) {
-        return results;
-      }
+      if (logs.length < 2) return results;
 
       let totalGames = 0;
       let offspawnDeaths = 0;
@@ -6420,43 +6550,34 @@
         if (Array.isArray(l.games)) {
           l.games.forEach(g => {
             totalGames++;
-            const p = parseInt(g.placement);
+            const p = parseInt(g.placement, 10);
             if (!isNaN(p)) {
-              if (p >= 70) {
-                offspawnDeaths++;
-              } else if (p > 15 && p < 70) {
-                midgameDeaths++;
-              } else if (p <= 15) {
-                lategameSurvivals++;
-              }
+              if (p >= 70) offspawnDeaths++;
+              else if (p > 15 && p < 70) midgameDeaths++;
+              else if (p <= 15) lategameSurvivals++;
             }
           });
         }
       });
 
       if (totalGames > 0) {
-        // 1. Offspawn rating: Low offspawn deaths is good.
         const offspawnRatio = offspawnDeaths / totalGames;
-        // 0% deaths = 10, 10% = 9, 20% = 8, 30% = 6, 45% = 4, etc.
-        results.offspawn = Math.max(1, Math.min(10, Math.round(10 - (offspawnRatio * 13))));
-
-        // 2. Midgame rating: Low midgame deaths ratio is good.
         const midgameRatio = midgameDeaths / totalGames;
-        results.midgame = Math.max(1, Math.min(10, Math.round(10 - (midgameRatio * 11))));
-
-        // 3. Late game rating: High survival (placement <= 15) is good.
         const lateRatio = lategameSurvivals / totalGames;
-        // 50% late game survival = 10, 40% = 9, 30% = 8, 20% = 6, 10% = 4
-        results.lategame = Math.max(1, Math.min(10, Math.round(lateRatio * 20) || 5));
-      }
 
+        // Preserve the old intent, but use a continuous 1-100 scale.
+        results.offspawn = clamp100(100 - (offspawnRatio * 130));
+        results.midgame = clamp100(100 - (midgameRatio * 110));
+        results.lategame = clamp100(lateRatio * 200 || 50);
+      }
       return results;
     }
 
     function getPriorityLabel(score) {
-      if (score <= 3) return { label: "Krytyczny", class: "danger" };
-      if (score <= 6) return { label: "Wysoki", class: "warning" };
-      if (score <= 8) return { label: "Średni", class: "accent" };
+      const s = clamp100(score);
+      if (s <= 25) return { label: "Krytyczny", class: "danger" };
+      if (s <= 50) return { label: "Wysoki", class: "warning" };
+      if (s <= 75) return { label: "Średni", class: "accent" };
       return { label: "Niski", class: "success" };
     }
 
@@ -6468,91 +6589,115 @@
         building: "🔨 Budowanie",
         editing: "📐 Edytowanie",
         aim: "🎯 AIM",
-        lategame: "🌀 Late game",
         offspawn: "🪂 Offspawn",
-        midgame: "⚔️ Midgame"
+        midgame: "⚔️ Midgame",
+        lategame: "🌀 Endgame"
       };
 
-      container.innerHTML = Object.entries(skills).map(([key, val]) => {
-        const rating = val.toFixed(1);
-        const percent = val * 10;
-        let colorClass = 'cyan';
-        if (val <= 3) colorClass = 'danger';
-        else if (val <= 6) colorClass = 'orange';
+      const order = ['building','editing','aim','offspawn','midgame','lategame'];
+      const overall = getOverallSkillRating(skills);
+      const overallPriority = getPriorityLabel(overall);
 
-        return `
-          <div style="margin-bottom: 4px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; font-size:13.5px; margin-bottom: 6px;">
-              <span style="font-weight:700; color:var(--text);">${labels[key]}</span>
-              <span style="font-weight:800; color:var(--${colorClass}); font-family:'Space Grotesk';">${rating} / 10</span>
-            </div>
-            <div style="width:100%; height:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); border-radius:4px; overflow:hidden;">
-              <div style="width:${percent}%; height:100%; background:var(--grad-main); border-radius:4px;"></div>
-            </div>
+      const overallHtml = `
+        <div style="margin-bottom:18px;padding:16px 18px;border:1px solid var(--border);border-radius:var(--radius-md);background:linear-gradient(90deg,rgba(34,211,238,.06),rgba(168,85,247,.06));">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px;">
+            <span style="font-family:'Space Grotesk';font-size:16px;font-weight:800;color:var(--text);">⭐ Ocena ogólna użytkownika</span>
+            <span style="font-weight:900;color:var(--cyan);font-family:'Space Grotesk';font-size:18px;">${overall.toFixed(0)} / 100</span>
           </div>
-        `;
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+            <span class="tour-tag ${overallPriority.class}" style="font-size:10px;">Poziom: ${overallPriority.label}</span>
+            <span style="font-size:10.5px;color:var(--text-faint);">Średnia z 6 niezależnych kategorii</span>
+          </div>
+        </div>`;
+
+      const rows = order.map(key => {
+        const val = clamp100(skills[key]);
+        const rating = val.toFixed(1);
+        const percent = val;
+        const prio = getPriorityLabel(val);
+        return `
+          <div style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13.5px;margin-bottom:6px;">
+              <span style="font-weight:700;color:var(--text);">${labels[key]}</span>
+              <span style="display:flex;align-items:center;gap:8px;font-weight:800;color:var(--text);font-family:'Space Grotesk';">
+                <span class="tour-tag ${prio.class}" style="font-size:9px;padding:2px 6px;">${prio.label}</span>
+                <span>${rating} / 100</span>
+              </span>
+            </div>
+            <div style="width:100%;height:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border-soft);border-radius:4px;overflow:hidden;">
+              <div style="width:${percent}%;height:100%;background:var(--grad-main);border-radius:4px;"></div>
+            </div>
+          </div>`;
       }).join('');
+
+      let aimExtra = '';
+      const rawFocus = localStorage.getItem('fn_aim_focus');
+      if (rawFocus) {
+        try {
+          const focus = JSON.parse(rawFocus);
+          aimExtra = `<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.16);font-size:11px;color:var(--text-dim);">🎯 <b>Priorytet AIM:</b> ${escapeHtml(focus.weakest.label)} (${Number(focus.weakest.score).toFixed(0)}/100). Program zwiększy udział ćwiczeń z tego dystansu.</div>`;
+        } catch (_) {}
+      }
+
+      container.innerHTML = overallHtml + rows + aimExtra;
     }
 
     function renderTrainingPlanBlocks(skills) {
       const container = document.getElementById('trainingBlocksContainer');
       if (!container) return;
 
-      // Group skills for simple keys or combination blocks
       const blockKeys = ["building", "editing", "aim", "offspawn", "midgame", "endgame", "mechanics", "game"];
-
       const names = {
-        building: "🔨 Budowanie",
-        editing: "📐 Edytowanie",
-        aim: "🎯 AIM",
-        offspawn: "🪂 Offspawn",
-        midgame: "⚔️ Midgame",
-        endgame: "🌀 Endgame (Late game)",
-        mechanics: "⚙️ Mechanics (Budowanie + Edycja)",
+        building: "🔨 Budowanie", editing: "📐 Edytowanie", aim: "🎯 AIM", offspawn: "🪂 Offspawn",
+        midgame: "⚔️ Midgame", endgame: "🌀 Endgame (Late game)", mechanics: "⚙️ Mechanics (Budowanie + Edycja)",
         game: "🎮 Game (Gra Całościowa)"
       };
-
       const descriptions = {
-        building: "Doskonalenie piece control, płynności freebuildu oraz obudowywania przeciwnika na mapie V5.",
-        editing: "Poprawa szybkości edycji pojedynczych/seryjnych oraz błyskawicznego resetowania struktur.",
-        aim: "Trening celności: shotgun flicking oraz horizontal/vertical tracking na aim trainerze.",
-        offspawn: "Trening dropów na POI, lootowania, szybkich wczesnych walk i optymalizacji zrzutu.",
-        midgame: "Rotacja w 2-4 strefie, base-up w centrum, unikanie walk i obijanie rywali dla Surge.",
-        endgame: "Rotacja w ruchomych strefach (moving zones), tarping, waterfalling oraz szukanie odświeżeń.",
-        mechanics: "Złożony trening mechaniczny łączący piece control ze strzałami i szybkimi resetami.",
-        game: "Pełny symulator meczowy łączący początek, środek i ruchome strefy pod pełną presją."
+        building: "Doskonalenie piece control, triple editów i płynności budowania na mapie V5.",
+        editing: "Poprawa szybkości Quatr Edit oraz tuneli edycyjnych.",
+        aim: "Trening celowania z podziałem na bliski, średni i daleki dystans.",
+        offspawn: "Trening dropów na POI, lootowania i szybkich wczesnych walk.",
+        midgame: "Rotacja, surge, pozycjonowanie i zarządzanie materiałami.",
+        endgame: "Rotacja w ruchomych strefach, tarping, waterfalling i refreshy.",
+        mechanics: "Złożony trening mechaniczny łączący budowanie i edycję.",
+        game: "Pełny symulator meczowy łączący offspawn, midgame i endgame."
       };
 
-      // Determine score for combinations
       const getScore = (key) => {
         if (key === 'endgame') return skills.lategame;
-        if (key === 'mechanics') return (skills.building + skills.editing) / 2;
-        if (key === 'game') return (skills.offspawn + skills.midgame + skills.lategame) / 3;
-        return skills[key] || 5;
+        if (key === 'mechanics') return weightedSkillScore([skills.building, skills.editing]);
+        if (key === 'game') return weightedSkillScore([skills.offspawn, skills.midgame, skills.lategame]);
+        return skills[key] || 50;
       };
 
-      // Sort blocks by priority: lower score = higher priority
+      let aimFocus = null;
+      try { aimFocus = JSON.parse(localStorage.getItem('fn_aim_focus') || 'null'); } catch (_) {}
+
       const sortedBlocks = blockKeys.map(k => {
-        const score = getScore(k);
+        const score = clamp100(getScore(k));
         const prio = getPriorityLabel(score);
-        return { key: k, score, prio };
-      }).sort((a, b) => a.score - b.score);
+        return { key:k, score, prio };
+      }).sort((a,b) => a.score - b.score);
 
       container.innerHTML = sortedBlocks.map(block => {
         const scoreVal = block.score.toFixed(1);
+        let desc = descriptions[block.key];
+        if (block.key === 'aim' && aimFocus?.weakest) {
+          const allocation = (aimFocus.focus || []).map(x => `${x.label}: ${Math.round(x.weight * 100)}%`).join(' · ');
+          desc += ` <b>Priorytet:</b> ${escapeHtml(aimFocus.weakest.label)}. Rozkład zaleceń: ${escapeHtml(allocation)}.`;
+        }
         return `
-          <div class="matches-card" style="padding: 22px; margin: 0; display:flex; flex-direction:column; justify-content:space-between; position:relative; border-radius: var(--radius-md); border: 1.5px solid ${block.prio.label === 'Krytyczny' ? 'rgba(239, 68, 68, 0.25)' : 'var(--border-soft)'};">
+          <div class="matches-card" style="padding:22px;margin:0;display:flex;flex-direction:column;justify-content:space-between;position:relative;border-radius:var(--radius-md);border:1.5px solid ${block.prio.label === 'Krytyczny' ? 'rgba(239,68,68,.25)' : 'var(--border-soft)'};">
             <div>
-              <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
-                <span class="tour-tag ${block.prio.class}" style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding: 4px 8px;">${block.prio.label}</span>
-                <span style="font-size:12px; color:var(--text-dim); font-weight:700;">Ocena: ${scoreVal}/10</span>
+              <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;">
+                <span class="tour-tag ${block.prio.class}" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 8px;">${block.prio.label}</span>
+                <span style="font-size:12px;color:var(--text-dim);font-weight:700;">Ocena: ${scoreVal}/100</span>
               </div>
-              <h3 style="font-family:'Space Grotesk'; font-size:16px; font-weight:700; margin:0 0 8px 0; color:var(--text);">${names[block.key]}</h3>
-              <p style="font-size:12.5px; color:var(--text-dim); line-height:1.4; margin:0 0 16px 0;">${descriptions[block.key]}</p>
+              <h3 style="font-family:'Space Grotesk';font-size:16px;font-weight:700;margin:0 0 8px;color:var(--text);">${names[block.key]}</h3>
+              <p style="font-size:12.5px;color:var(--text-dim);line-height:1.5;margin:0 0 16px;">${desc}</p>
             </div>
-            <button type="button" class="btn-primary" onclick="openTrainingSession('${block.key}')" style="width:100%; padding:8px 0; font-size:12px; font-weight:700;">Rozpocznij Trening</button>
-          </div>
-        `;
+            <button type="button" class="btn-primary" onclick="openTrainingSession('${block.key}')" style="width:100%;padding:8px 0;font-size:12px;font-weight:700;">Rozpocznij Trening</button>
+          </div>`;
       }).join('');
     }
 
@@ -6625,8 +6770,15 @@
         }
       }
 
-      // Check training state (unlocked vs locked)
-      const storedSkills = localStorage.getItem('fn_user_skills');
+      // Check training state (unlocked vs locked). Old 1-10 profiles must be re-tested.
+      let storedSkills = localStorage.getItem('fn_user_skills');
+      let verificationData = null;
+      try { verificationData = JSON.parse(localStorage.getItem('fn_initial_verification_data') || 'null'); } catch (_) { verificationData = null; }
+      if (storedSkills && (!verificationData || verificationData.version !== 2)) {
+        localStorage.removeItem('fn_user_skills');
+        localStorage.removeItem('fn_aim_focus');
+        storedSkills = null;
+      }
       const skillsLock = document.getElementById('skillsLockOverlay');
       const planLock = document.getElementById('planLockOverlay');
       const trainingBlocks = document.getElementById('trainingBlocksContainer');
@@ -6647,7 +6799,7 @@
         if (planLock) planLock.style.display = 'none';
         if (trainingBlocks) trainingBlocks.style.display = 'grid';
 
-        const parsedSkills = JSON.parse(storedSkills);
+        let parsedSkills = JSON.parse(storedSkills);
         // Refresh auto calculations (lategame, offspawn, midgame) if we have new logs
         const auto = calculateAutoRatings();
         if (auto.hasLogs) {
@@ -6666,7 +6818,7 @@
         if (trainingBlocks) trainingBlocks.style.display = 'none';
 
         // Render empty grid placeholders
-        const emptySkills = { building: 0, editing: 0, aim: 0, lategame: 0, offspawn: 0, midgame: 0 };
+        const emptySkills = { building: 0, editing: 0, aim: 0, offspawn: 0, midgame: 0, lategame: 0 };
         renderSkillsGrid(emptySkills);
       }
     }
@@ -6709,57 +6861,83 @@
         });
       }
 
-      // Form submission for unlocking
+      // Form submission for unlocking / re-calculating the initial profile.
       const unlockForm = document.getElementById('unlockSkillsForm');
       if (unlockForm) {
         unlockForm.addEventListener('submit', (e) => {
           e.preventDefault();
+          const validation = document.getElementById('unlockSkillsValidationMsg');
+          if (validation) { validation.style.display = 'none'; validation.textContent = ''; }
 
-          // Calculate manual skills based on creative inputs
-          const buildTime = parseFloat(document.getElementById('verifyBuildTime').value);
-          const buildFluidity = parseInt(document.getElementById('verifyBuildFluidity').value);
-          const editEasy = parseFloat(document.getElementById('verifyEditEasy').value);
-          const editHard = parseFloat(document.getElementById('verifyEditHard').value);
-          const aimFlick = parseFloat(document.getElementById('verifyAimFlick').value);
-          const aimTrack = parseFloat(document.getElementById('verifyAimTrack').value);
+          const values = {
+            buildTunnel2: parseFloat(document.getElementById('verifyBuildTunnel2').value),
+            buildTunnel7: parseFloat(document.getElementById('verifyBuildTunnel7').value),
+            buildTunnel11: parseFloat(document.getElementById('verifyBuildTunnel11').value),
+            buildTripleEdit: parseFloat(document.getElementById('verifyBuildTripleEdit').value),
+            editQuatr: parseFloat(document.getElementById('verifyEditQuatr').value),
+            editTunnelMiddle: parseFloat(document.getElementById('verifyEditTunnelMiddle').value),
+            editTunnelRight: parseFloat(document.getElementById('verifyEditTunnelRight').value),
+            aimReactionFlick: parseFloat(document.getElementById('verifyAimReactionFlick').value),
+            aimSphereTracking: parseFloat(document.getElementById('verifyAimSphereTracking').value),
+            aimDogeTracking: parseFloat(document.getElementById('verifyAimDogeTracking').value),
+            aimSurgeTags: parseFloat(document.getElementById('verifyAimSurgeTags').value)
+          };
 
-          // Calculations to score 1-10
-          // Building score: time benchmark 28s = 10, fluidity matters
-          const rawBuild = Math.max(1, Math.min(10, Math.round(15 - (buildTime / 3)) + (buildFluidity - 3)));
+          // Explicit retest conditions from the user's benchmark instructions.
+          const retest = [];
+          if (values.buildTunnel2 < 3) retest.push('Tunel 2: czas poniżej 3 s — powtórz test.');
+          if (values.buildTunnel7 < 10) retest.push('Tunel 7: czas poniżej 10 s — powtórz test.');
+          if (values.buildTunnel11 < 15) retest.push('Tunel 11: czas poniżej 15 s — powtórz test.');
+          if (retest.length) {
+            if (validation) { validation.textContent = '⚠️ Wyniki wymagają powtórzenia:\n' + retest.join('\n'); validation.style.whiteSpace = 'pre-line'; validation.style.display = 'block'; }
+            return;
+          }
 
-          // Editing score: easy (<55s is 10), hard (<110s is 10)
-          const scoreEasy = Math.max(1, Math.min(10, Math.round(13 - (editEasy / 6))));
-          const scoreHard = Math.max(1, Math.min(10, Math.round(14 - (editHard / 11))));
-          const rawEdit = Math.round((scoreEasy + scoreHard) / 2);
+          const buildScores = [
+            scoreFromCurve(values.buildTunnel2, SCORE_CURVES.building.tunnel2),
+            scoreFromCurve(values.buildTunnel7, SCORE_CURVES.building.tunnel7),
+            scoreFromCurve(values.buildTunnel11, SCORE_CURVES.building.tunnel11),
+            scoreFromCurve(values.buildTripleEdit, SCORE_CURVES.building.triple)
+          ];
+          const editScores = [
+            scoreFromCurve(values.editQuatr, SCORE_CURVES.editing.quatr),
+            scoreFromCurve(values.editTunnelMiddle, SCORE_CURVES.editing.middle),
+            scoreFromCurve(values.editTunnelRight, SCORE_CURVES.editing.right)
+          ];
+          const aimScores = {
+            reactionFlick: scoreFromCurve(values.aimReactionFlick, SCORE_CURVES.aim.reactionFlick),
+            sphere: scoreFromCurve(values.aimSphereTracking, SCORE_CURVES.aim.sphere),
+            doge: scoreFromCurve(values.aimDogeTracking, SCORE_CURVES.aim.doge),
+            surge: scoreFromCurve(values.aimSurgeTags, SCORE_CURVES.aim.surge)
+          };
 
-          // Aim score: Tile Frenzy (75+ is 10), accuracy (60%+ is 10)
-          const scoreFlick = Math.max(1, Math.min(10, Math.round(aimFlick / 7.5)));
-          const scoreTrack = Math.max(1, Math.min(10, Math.round(aimTrack / 6)));
-          const rawAim = Math.round((scoreFlick + scoreTrack) / 2);
-
-          // Auto ratings from tournaments (fallbacks if < 2 logs)
+          const building = weightedSkillScore(buildScores);
+          const editing = weightedSkillScore(editScores);
+          const aim = weightedSkillScore(Object.values(aimScores));
+          const aimFocus = calculateAimFocus(aimScores);
           const auto = calculateAutoRatings();
 
           const initialSkills = {
-            building: Math.max(1, Math.min(10, rawBuild)),
-            editing: Math.max(1, Math.min(10, rawEdit)),
-            aim: Math.max(1, Math.min(10, rawAim)),
-            lategame: auto.lategame,
-            offspawn: auto.offspawn,
-            midgame: auto.midgame
+            building: clamp100(building),
+            editing: clamp100(editing),
+            aim: clamp100(aim),
+            offspawn: clamp100(auto.offspawn),
+            midgame: clamp100(auto.midgame),
+            lategame: clamp100(auto.lategame)
           };
 
-          // Zachowaj dane źródłowe testów, aby można je było później ponownie edytować.
           const initialVerificationData = {
-            buildTime,
-            buildFluidity,
-            editEasy,
-            editHard,
-            aimFlick,
-            aimTrack
+            version: 2,
+            enteredAt: new Date().toISOString(),
+            ...values,
+            subScores: { building: buildScores, editing: editScores, aim: aimScores },
+            categoryScores: initialSkills,
+            overall: getOverallSkillRating(initialSkills)
           };
+
           localStorage.setItem('fn_initial_verification_data', JSON.stringify(initialVerificationData));
           localStorage.setItem('fn_user_skills', JSON.stringify(initialSkills));
+          localStorage.setItem('fn_aim_focus', JSON.stringify(aimFocus));
           unlockOverlay.classList.add('hidden');
           loadTrainingPage();
         });
@@ -6769,14 +6947,16 @@
       window.openInitialSkillsEditor = function () {
         const saved = JSON.parse(localStorage.getItem('fn_initial_verification_data') || 'null');
         const form = document.getElementById('unlockSkillsForm');
-
+        const fieldMap = {
+          verifyBuildTunnel2: 'buildTunnel2', verifyBuildTunnel7: 'buildTunnel7', verifyBuildTunnel11: 'buildTunnel11', verifyBuildTripleEdit: 'buildTripleEdit',
+          verifyEditQuatr: 'editQuatr', verifyEditTunnelMiddle: 'editTunnelMiddle', verifyEditTunnelRight: 'editTunnelRight',
+          verifyAimReactionFlick: 'aimReactionFlick', verifyAimSphereTracking: 'aimSphereTracking', verifyAimDogeTracking: 'aimDogeTracking', verifyAimSurgeTags: 'aimSurgeTags'
+        };
         if (saved) {
-          document.getElementById('verifyBuildTime').value = saved.buildTime ?? '';
-          document.getElementById('verifyBuildFluidity').value = saved.buildFluidity ?? '3';
-          document.getElementById('verifyEditEasy').value = saved.editEasy ?? '';
-          document.getElementById('verifyEditHard').value = saved.editHard ?? '';
-          document.getElementById('verifyAimFlick').value = saved.aimFlick ?? '';
-          document.getElementById('verifyAimTrack').value = saved.aimTrack ?? '';
+          Object.entries(fieldMap).forEach(([id,key]) => {
+            const el = document.getElementById(id);
+            if (el) el.value = saved[key] ?? '';
+          });
         } else if (form) {
           form.reset();
         }
@@ -6784,11 +6964,9 @@
         const title = document.querySelector('#unlockSkillsModalOverlay .form-title');
         const subtitle = document.querySelector('#unlockSkillsModalOverlay .form-sub');
         const submit = document.getElementById('unlockSkillsSubmitBtn');
-
         if (title) title.innerHTML = '<span class="ic">✏️</span> Edytuj dane początkowe';
-        if (subtitle) subtitle.textContent = 'Możesz ponownie wpisać lub poprawić wyniki testów. Po zapisaniu profil umiejętności i plan treningowy zostaną przeliczone.';
-        if (submit) submit.textContent = 'Zapisz zmiany i przelicz statystyki';
-
+        if (subtitle) subtitle.textContent = 'Możesz ponownie wpisać lub poprawić wyniki testów. Po zapisaniu cały profil 1–100 i priorytety AIM zostaną przeliczone od początku.';
+        if (submit) submit.textContent = 'Zapisz zmiany i przelicz profil 1–100';
         if (unlockOverlay) unlockOverlay.classList.remove('hidden');
       };
 
@@ -6887,14 +7065,17 @@
             else if (selectedTrainingKey === 'mechanics') { affected.push('building'); affected.push('editing'); }
             else if (selectedTrainingKey === 'game') { affected.push('offspawn'); affected.push('midgame'); affected.push('lategame'); }
 
-            // Gain is proportional to rating AND completion rate (encourages completing all exercises)
-            const gain = (0.08 + (rating / 55)) * (0.4 + 0.6 * completionRate);
+            // Adaptive Skill Improvement on the new 1-100 scale.
+            // Sessions move the profile gradually; completion and session quality affect the gain.
+            const sessionQuality = Math.max(1, Math.min(10, rating));
+            const gain = ((0.35 + sessionQuality * 0.22) * (0.4 + 0.6 * completionRate));
             affected.forEach(s => {
               if (skills[s] !== undefined) {
-                skills[s] = Math.min(10, parseFloat((skills[s] + gain).toFixed(2)));
+                skills[s] = clamp100(parseFloat((skills[s] + gain).toFixed(2)));
               }
             });
             localStorage.setItem('fn_user_skills', JSON.stringify(skills));
+            localStorage.setItem('fn_overall_skill_rating', String(getOverallSkillRating(skills)));
           }
 
           if (runOverlay) runOverlay.classList.add('hidden');
@@ -6917,15 +7098,15 @@
 
       document.getElementById('trainingSessionTitle').textContent = `Trening: ${data.name}`;
 
-      // Pre-select difficulty based on current skill level
+      // Pre-select difficulty based on current 1-100 skill level.
       const storedSkills = localStorage.getItem('fn_user_skills');
-      let score = 5;
+      let score = 50;
       if (storedSkills) {
         const skills = JSON.parse(storedSkills);
         if (key === 'endgame') score = skills.lategame;
-        else if (key === 'mechanics') score = (skills.building + skills.editing) / 2;
-        else if (key === 'game') score = (skills.offspawn + skills.midgame + skills.lategame) / 3;
-        else score = skills[key] || 5;
+        else if (key === 'mechanics') score = weightedSkillScore([skills.building, skills.editing]);
+        else if (key === 'game') score = weightedSkillScore([skills.offspawn, skills.midgame, skills.lategame]);
+        else score = skills[key] || 50;
       }
 
       const prio = getPriorityLabel(score);
@@ -6937,9 +7118,9 @@
 
       // Auto-select difficulty tabs based on rating
       let diff = 'medium';
-      if (score <= 3) diff = 'easy';
-      else if (score <= 6) diff = 'medium';
-      else if (score <= 8) diff = 'advanced';
+      if (score <= 25) diff = 'easy';
+      else if (score <= 50) diff = 'medium';
+      else if (score <= 75) diff = 'advanced';
       else diff = 'pro';
 
       currentSelectedDifficulty = diff;
@@ -6973,9 +7154,26 @@
       const data = TRAINING_EXERCISES[selectedTrainingKey];
       if (!data) return;
 
-      const items = data[currentSelectedDifficulty]?.[currentSelectedDuration] || [];
+      let items = [...(data[currentSelectedDifficulty]?.[currentSelectedDuration] || [])];
       const mapList = data.maps || [];
       const catColor = data.color || 'var(--cyan)';
+
+      // For AIM, prioritize exercises matching the weakest distance from the initial assessment.
+      let aimFocus = null;
+      if (selectedTrainingKey === 'aim') {
+        try { aimFocus = JSON.parse(localStorage.getItem('fn_aim_focus') || 'null'); } catch (_) { aimFocus = null; }
+        if (aimFocus?.focus?.length) {
+          const distanceScore = (ex) => {
+            const text = `${typeof ex === 'object' ? ex.name : ''} ${typeof ex === 'object' ? ex.desc : ''}`.toLowerCase();
+            let score = 0;
+            if (/shotgun|flick|microflick|reaction|popcorn|close|bliski|pompy|pompa/.test(text)) score += aimFocus.near < 50 ? 5 : 2;
+            if (/sphere|tracking|bounce|bot|dynamic|śr|średni|medium/.test(text)) score += aimFocus.medium < 50 ? 5 : 2;
+            if (/surge|ar |ar$|100m|150m|dalek|far|long|distance|dystans/.test(text)) score += aimFocus.far < 50 ? 5 : 2;
+            return score;
+          };
+          items.sort((a,b) => distanceScore(b) - distanceScore(a));
+        }
+      }
 
       let html = '';
       if (mapList.length > 0) {
