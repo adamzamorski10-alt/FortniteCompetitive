@@ -3510,10 +3510,45 @@
                   <div class="admin-card-icon">🏋️</div>
                   <div>
                     <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--text);margin:0 0 4px 0;">Baza Ćwiczeń Treningowych</h3>
-                    <p style="font-size:13px;color:var(--text-dim);margin:0;">Podgląd wszystkich ćwiczeń pogrupowanych według kategorii i poziomu trudności.</p>
+                    <p style="font-size:13px;color:var(--text-dim);margin:0;">Dodawaj, edytuj, usuwaj i wyszukuj ćwiczenia dla sześciu kategorii treningowych.</p>
                   </div>
                 </div>
-                <div id="adminTrainingCategoryList" style="display:flex;flex-direction:column;gap:20px;"></div>
+                <div class="form-msg" id="adminTrainingMsg"></div>
+                <div class="admin-section-label" style="margin-top:0;">DODAJ / EDYTUJ ĆWICZENIE</div>
+                <form id="adminTrainingExerciseForm">
+                  <input type="hidden" id="adminTrainingEditId" value="" />
+                  <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="field"><label for="adminTrainingCategory">Co ćwiczy</label><select id="adminTrainingCategory" required><option value="">Wybierz kategorię</option><option value="building">🔨 Budowanie</option><option value="editing">📐 Edytowanie</option><option value="aim">🎯 AIM</option><option value="offspawn">🪂 Offspawn</option><option value="midgame">⚔️ Midgame</option><option value="endgame">🌀 Endgame</option></select></div>
+                    <div class="field"><label for="adminTrainingDifficulty">Poziom trudności</label><select id="adminTrainingDifficulty" required><option value="easy">Łatwy</option><option value="medium" selected>Średni</option><option value="hard">Trudny</option></select></div>
+                  </div>
+                  <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="field"><label for="adminTrainingDuration">Długość ćwiczenia</label><select id="adminTrainingDuration" required><option value="quick">Szybki</option><option value="medium" selected>Średni</option><option value="long">Długi</option></select></div>
+                    <div class="field"><label for="adminTrainingMetric">Rodzaj wyniku</label><select id="adminTrainingMetric" required><option value="time_sec">Czas — sekundy</option><option value="time_min">Czas — minuty</option><option value="count">Ilość</option></select></div>
+                  </div>
+                  <div class="field"><label for="adminTrainingName">Nazwa ćwiczenia</label><input type="text" id="adminTrainingName" maxlength="120" placeholder="np. Piece Control Tunnel #2 — 5 przejść" required autocomplete="off" /></div>
+                  <div class="field"><label for="adminTrainingDescription">Opis / instrukcja</label><textarea id="adminTrainingDescription" style="min-height:90px;resize:vertical;font-family:inherit;" maxlength="1000" placeholder="Dokładnie opisz, co gracz ma zrobić, na jakiej mapie i jak zmierzyć wynik." required></textarea></div>
+                  <div id="adminTrainingCountDirectionWrap" class="field" style="display:none;"><label for="adminTrainingCountDirection">Kierunek wyniku dla ilości</label><select id="adminTrainingCountDirection"><option value="higher">Więcej = lepiej</option><option value="lower">Mniej = lepiej</option></select><div class="hint">Przykład „trafienia” = więcej lepiej; „błędy” = mniej lepiej.</div></div>
+                  <div class="admin-section-label">PROGI OCENY</div>
+                  <div style="display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:10px;">
+                    <div class="field"><label for="adminTrainingIdeal">Idealny</label><input type="number" id="adminTrainingIdeal" min="0" step="0.1" required /></div>
+                    <div class="field"><label for="adminTrainingVeryGood">Bardzo dobry</label><input type="number" id="adminTrainingVeryGood" min="0" step="0.1" required /></div>
+                    <div class="field"><label for="adminTrainingAverage">Przeciętny</label><input type="number" id="adminTrainingAverage" min="0" step="0.1" required /></div>
+                    <div class="field"><label for="adminTrainingBad">Słaby</label><input type="number" id="adminTrainingBad" min="0" step="0.1" required /></div>
+                  </div>
+                  <div class="hint" style="margin-top:-6px;margin-bottom:12px;">Wynik gorszy niż próg „Słaby” jest „Bardzo słaby”. Wyniki pomiędzy progami są liczone płynnie.</div>
+                  <div id="adminTrainingAimOptions" class="admin-collapsible-card" style="display:none;margin:14px 0;">
+                    <div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);"><h4 style="margin:0 0 4px;font-family:'Space Grotesk';">🎯 Parametry AIM</h4><div style="font-size:11.5px;color:var(--text-dim);">Możesz zaznaczyć więcej niż jeden dystans i więcej niż jedną broń.</div></div>
+                    <div style="padding:14px 16px;">
+                      <div class="field"><label>Dystans</label><div id="adminTrainingDistances" style="display:flex;gap:8px;flex-wrap:wrap;"><label class="pill-checkbox"><input type="checkbox" value="near"> Bliski</label><label class="pill-checkbox"><input type="checkbox" value="medium"> Średni</label><label class="pill-checkbox"><input type="checkbox" value="far"> Daleki</label></div></div>
+                      <div class="field" style="margin-bottom:0;"><label>Broń</label><div id="adminTrainingWeapons" style="display:flex;gap:8px;flex-wrap:wrap;"><label class="pill-checkbox"><input type="checkbox" value="pump"> Pompa</label><label class="pill-checkbox"><input type="checkbox" value="mk"> MK</label><label class="pill-checkbox"><input type="checkbox" value="smg"> SMG</label></div></div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;"><button class="btn-primary" type="submit" id="saveTrainingExerciseBtn" style="width:auto;margin-top:0;padding:11px 20px;">Dodaj ćwiczenie</button><button class="btn-ghost" type="button" id="cancelTrainingEditBtn" style="display:none;">Anuluj edycję</button></div>
+                </form>
+                <div class="admin-section-label">WYSZUKIWANIE ĆWICZEŃ</div>
+                <div class="search-input-wrap" style="margin-bottom:18px;"><span class="search-ic">🔍</span><input type="text" id="adminTrainingSearchInput" placeholder="Szukaj po nazwie, opisie, kategorii, dystansie lub broni…" autocomplete="off" /></div>
+                <div class="admin-tour-head"><div><h3>ZAPISANE ĆWICZENIA</h3><span class="admin-tour-count" id="adminTrainingCount">0</span></div></div>
+                <div id="adminTrainingCategoryList" style="display:flex;flex-direction:column;gap:14px;"></div>
               </div>
             </div>
           </div>
@@ -3767,7 +3802,7 @@
             <button type="button" class="tab-btn active" data-diff="medium"
               style="flex:1; padding: 6px 0; font-size: 9.5px; border-radius:4px;">Średni</button>
             <button type="button" class="tab-btn" data-diff="advanced"
-              style="flex:1; padding: 6px 0; font-size: 9.5px; border-radius:4px;">Zaawansowany</button>
+              style="flex:1; padding: 6px 0; font-size: 9.5px; border-radius:4px;">Trudny</button>
             <button type="button" class="tab-btn" data-diff="pro"
               style="flex:1; padding: 6px 0; font-size: 9.5px; border-radius:4px;">PRO</button>
           </div>
@@ -4221,7 +4256,7 @@
         loadAdminDeathsList();
         loadAdminFailuresList();
       }
-      if (tab === 'training') loadAdminTrainingList();
+      if (tab === 'training') { bindAdminTrainingUI(); loadAdminTrainingList(); }
     }));
     adminPanelUsers.classList.add('active');
 
@@ -4906,7 +4941,7 @@
     adminNavLink.addEventListener('click', () => {
       const activeAdminTab = document.querySelector('.admin-tab.active');
       if (activeAdminTab && activeAdminTab.dataset.adminTab === 'tournaments') loadAdminTournamentList();
-      if (activeAdminTab && activeAdminTab.dataset.adminTab === 'training') loadAdminTrainingList();
+      if (activeAdminTab && activeAdminTab.dataset.adminTab === 'training') { bindAdminTrainingUI(); loadAdminTrainingList(); }
       else loadUsersList();
     });
 
@@ -6312,125 +6347,32 @@
           ]
         }
       },
-      mechanics: {
-        name: "Mechanics",
-        icon: "⚡",
-        color: "#f0c040",
-        description: "Trening łączony: budowanie + edycja. Symulacje 1v1, piece control, box fights i koordynacja rąk.",
-        maps: ["MECHANICS TRAINING V5 🎯 (2424-4344-7824)"],
-        easy: {
-          quick: [
-            { name: "Triple-edity + boksowanie botów — 10 min", desc: "Łączna liczba poprawnych triple-edit → strzał sekwencji.", metric: "count", unit: "poprawnych sekwencji w 10 min", hint: "np. 40", benchmarks: { pro: 90, good: 65, ok: 40, bad: 15 } }
-          ],
-          medium: [
-            { name: "Piece Control + edit ściany na botach — 15 min", desc: "Ile razy poprawnie wykonałeś pełną sekwencję PC → edit → strzał.", metric: "count", unit: "pełnych sekwencji", hint: "np. 25", benchmarks: { pro: 60, good: 40, ok: 25, bad: 10 } },
-            { name: "Parkour budowlany — 2 trasy", desc: "Łączny czas ukończenia 2 tras parkour budowlanego.", metric: "time_sec", unit: "sek (łącznie)", hint: "np. 90", benchmarks: { pro: 45, good: 70, ok: 95, bad: 140 } }
-          ],
-          long: [
-            { name: "Kombinowane ćwiczenia — 25 min", desc: "25 min mixu Piece Control + edycja.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "5 tras Piece Control — łączny czas", desc: "Czas ukończenia 5 tras PC.", metric: "time_min", unit: "min", hint: "np. 8", benchmarks: { pro: 4, good: 7, ok: 10, bad: 16 } },
-            { name: "Box replacing test — 5 min", desc: "Ile razy w 5 min poprawnie zastąpiłeś boks bokxem (box replace).", metric: "count", unit: "poprawnych box replace'ów", hint: "np. 30", benchmarks: { pro: 70, good: 50, ok: 30, bad: 10 } }
-          ]
-        },
-        medium: {
-          quick: [
-            { name: "Dynamiczne PC z ruchomymi botami — 10 min", desc: "Piece Control na ruchomych botach. Ile trafień do bota.", metric: "count", unit: "trafień do bota w 10 min", hint: "np. 22", benchmarks: { pro: 50, good: 35, ok: 22, bad: 8 } }
-          ],
-          medium: [
-            { name: "Freebuild + double edit + strzał do tarczy — 20 min", desc: "Kombinacja wszystkich mechanik. Ilość błędów.", metric: "count", unit: "błędów łącznie", hint: "np. 12", benchmarks: { pro: 0, good: 5, ok: 12, bad: 25 } },
-            { name: "Mechanics Challenge #2 — czas", desc: "Czas ukończenia trasy Mechanics Challenge #2.", metric: "time_sec", unit: "sek", hint: "np. 95", benchmarks: { pro: 55, good: 80, ok: 100, bad: 140 } }
-          ],
-          long: [
-            { name: "Zaawansowany trening mechaniczny — 30 min", desc: "30 min kompleksowych mechanik.", metric: "text", unit: "", hint: "Notatka" },
-            { name: "10 botów w sekwencji side jump shot", desc: "Czas pokonania 10 botów z side-jump shotgunowaniem.", metric: "time_sec", unit: "sek", hint: "np. 120", benchmarks: { pro: 60, good: 90, ok: 130, bad: 200 } },
-            { name: "3 trasy PC Tunneling bez chybionego", desc: "Liczba chybień przez 3 trasy.", metric: "count", unit: "chybień łącznie", hint: "np. 4", benchmarks: { pro: 0, good: 2, ok: 5, bad: 10 } }
-          ]
-        },
-        advanced: {
-          quick: [
-            { name: "Side-jumps i Phase-tricks — 12 min", desc: "Ile poprawnych phase-tricków (wejście do boksu przez edycję) wykonałeś.", metric: "count", unit: "poprawnych phase tricks", hint: "np. 25", benchmarks: { pro: 60, good: 40, ok: 25, bad: 8 } }
-          ],
-          medium: [
-            { name: "Clipped scenarios — 20 min zaawansowane", desc: "Czas ukończenia trasy Piece Control na czas.", metric: "time_sec", unit: "sek (najlepszy wynik)", hint: "np. 175", benchmarks: { pro: 130, good: 170, ok: 220, bad: 300 } }
-          ],
-          long: [
-            { name: "35 min intensywnych mechanik", desc: "Ilość błędów przez całą sesję (subiektywna ocena).", metric: "count", unit: "błędów subiektywnie", hint: "np. 8", benchmarks: { pro: 0, good: 3, ok: 8, bad: 18 } },
-            { name: "30 killów zza prawego kąta (right-hand peek)", desc: "Czas potrzebny do 30 killów right-hand peek.", metric: "time_min", unit: "min", hint: "np. 12", benchmarks: { pro: 6, good: 9, ok: 13, bad: 20 } },
-            { name: "2 nowe zaawansowane retakes — nauczono", desc: "Zanotuj nazwy/opis 2 nowych retakes których się nauczyłeś.", metric: "text", unit: "", hint: "np. 'Waterfall + instant retake, Cone flip into box'" }
-          ]
-        },
-        pro: {
-          quick: [
-            { name: "High APM kombinacje — 12 min", desc: "Maksymalna liczba poprawnych kombinacji mechanik w 12 min.", metric: "count", unit: "kombinacji/min (avg)", hint: "np. 8", benchmarks: { pro: 14, good: 10, ok: 7, bad: 3 } }
-          ],
-          medium: [
-            { name: "Trening 1.35x tempo — 25 min", desc: "Liczba błędów w sesji na przyspieszonym tempie.", metric: "count", unit: "błędów w sesji", hint: "np. 5", benchmarks: { pro: 0, good: 2, ok: 5, bad: 12 } },
-            { name: "20 in-air placement — czas i błędy", desc: "Czas wykonania 20 budowli w powietrzu.", metric: "time_sec", unit: "sek", hint: "np. 95", benchmarks: { pro: 55, good: 80, ok: 100, bad: 140 } }
-          ],
-          long: [
-            { name: "Cały moduł Mechanics Challenge PRO — celność 95%", desc: "% celności podczas całego modułu.",  metric: "percent", unit: "% celności", hint: "np. 88", benchmarks: { pro: 98, good: 92, ok: 85, bad: 70 } },
-            { name: "Autorska sekwencja startowa 1v1 — opisz", desc: "Zanotuj własną sekwencję startową którą opracowałeś.", metric: "text", unit: "", hint: "np. 'Floor + ramp + wall + instant floor edit + strafe right + flick'" }
-          ]
-        }
-      },
-      game: {
-        name: "Game (Pełna Gra)",
-        icon: "🏆",
-        color: "var(--text)",
-        description: "Symulator pełnych meczów. Łączy offspawn, midgame i endgame w jeden spójny trening.",
-        maps: ["Gry rankingowe Fortnite (Ranked)", "Turnieje próbne (Scrims)"],
-        easy: {
-          quick: [
-            { name: "1 pełna gra rankingowa — zapisz wynik", desc: "Twój placement w tym meczu.", metric: "count", unit: "placement (np. 42)", hint: "np. 42", benchmarks: { pro: 1, good: 5, ok: 15, bad: 40 } }
-          ],
-          medium: [
-            { name: "3 pełne gry rankingowe — avg placement", desc: "Twój średni placement z 3 gier.", metric: "score", unit: "avg placement", hint: "np. 25", benchmarks: { pro: 5, good: 12, ok: 22, bad: 45 } }
-          ],
-          long: [
-            { name: "5 pełnych gier — Top 15 w min 3/5", desc: "Liczba gier gdzie trafiłeś do Top 15.", metric: "count", unit: "Top 15 / 5 gier", hint: "np. 2", benchmarks: { pro: 5, good: 4, ok: 3, bad: 1 } }
-          ]
-        },
-        medium: {
-          quick: [
-            { name: "2 mecze — min 2 eliminacje przed 5 strefą", desc: "Łączna liczba eliminacji przed 5 strefą.", metric: "count", unit: "killów łącznie (2 gry)", hint: "np. 3", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } }
-          ],
-          medium: [
-            { name: "4 mecze rankingowe — avg placement", desc: "Twój średni placement z 4 gier.", metric: "score", unit: "avg placement", hint: "np. 18", benchmarks: { pro: 5, good: 10, ok: 18, bad: 30 } },
-            { name: "5 eliminacji łącznie z 4 gier", desc: "Łączna liczba killów przez 4 mecze.", metric: "count", unit: "killów łącznie", hint: "np. 4", benchmarks: { pro: 12, good: 7, ok: 4, bad: 1 } }
-          ],
-          long: [
-            { name: "6 meczów — Top 10 w min 3 grach", desc: "Liczba gier z Top 10 z 6 meczów.", metric: "count", unit: "Top 10 / 6 gier", hint: "np. 2", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } },
-            { name: "Analiza leków i matsów w końcówkach", desc: "Ile razy wchodząc w 6 strefę miałeś pełne leki i 1000+ matsów.", metric: "count", unit: "razy / 6 gier", hint: "np. 2", benchmarks: { pro: 6, good: 4, ok: 2, bad: 0 } }
-          ]
-        },
-        advanced: {
-          quick: [
-            { name: "3 agresywne mid-game gry rankingowe", desc: "Łączna liczba killów przez 3 agresywne gry.", metric: "count", unit: "killów łącznie", hint: "np. 5", benchmarks: { pro: 12, good: 8, ok: 5, bad: 1 } }
-          ],
-          medium: [
-            { name: "5 gier — avg 3 kille/mecz", desc: "Śr. liczba eliminacji na grę z 5 meczów.", metric: "score", unit: "avg killów/mecz", hint: "np. 2.5", benchmarks: { pro: 5, good: 3.5, ok: 2, bad: 0.5 } },
-            { name: "Top 5 w co najmniej 2/5 grach", desc: "Liczba gier z Top 5 z 5 meczów.", metric: "count", unit: "Top 5 / 5 gier", hint: "np. 1", benchmarks: { pro: 4, good: 3, ok: 2, bad: 0 } }
-          ],
-          long: [
-            { name: "8 gier — avg placement Top 8", desc: "Średni placement z 8 gier.",  metric: "score", unit: "avg placement", hint: "np. 9", benchmarks: { pro: 4, good: 7, ok: 10, bad: 20 } },
-            { name: "VOD analiza błędów komunikacji i pozycjonowania", desc: "Opisz główne błędy z 2 obejrzanych VODów.", metric: "text", unit: "", hint: "np. 'Zły kąt podczas walki, nie komunikowałem pozycji'" }
-          ]
-        },
-        pro: {
-          quick: [
-            { name: "3 mecze turniejowe — Top 5", desc: "Liczba gier z Top 5 z 3 meczów.", metric: "count", unit: "Top 5 / 3 gier", hint: "np. 1", benchmarks: { pro: 3, good: 2, ok: 1, bad: 0 } }
-          ],
-          medium: [
-            { name: "6 gier turniejowych — 1 Victory Royale", desc: "Liczba VR z 6 gier.", metric: "count", unit: "Victory Royale / 6 gier", hint: "np. 0", benchmarks: { pro: 3, good: 2, ok: 1, bad: 0 } },
-            { name: "Avg K/D powyżej 3.0 przez 6 gier", desc: "Twój K/D z tych 6 gier.", metric: "score", unit: "K/D", hint: "np. 2.5", benchmarks: { pro: 4, good: 3.2, ok: 2, bad: 0.8 } }
-          ],
-          long: [
-            { name: "10 meczów turniejowych — 2 VR + kille", desc: "Liczba wygranych z eliminacjami w końcówce.", metric: "count", unit: "VR z killami / 10 gier", hint: "np. 1", benchmarks: { pro: 4, good: 2, ok: 1, bad: 0 } },
-            { name: "Analiza rotacji w ruchomych strefach", desc: "Opisz efektywność rotacji z ostatnich meczów.", metric: "text", unit: "", hint: "np. 'W 3 z 5 meczów miałem złe pozycjonowanie w 8 strefie'" }
-          ]
-        }
-      }
-    };
+
+};
+
+    // ---------- Custom training exercises (Admin / Moderator) ----------
+    const TRAINING_CATEGORY_KEYS=['building','editing','aim','offspawn','midgame','endgame'];
+    const TRAINING_DIFFICULTY_MAP={easy:'easy',medium:'medium',hard:'advanced'};
+    const TRAINING_DIFFICULTY_LABELS={easy:'Łatwy',medium:'Średni',hard:'Trudny'};
+    const TRAINING_DURATION_LABELS={quick:'Szybki',medium:'Średni',long:'Długi'};
+    const TRAINING_CATEGORY_LABELS={building:'Budowanie',editing:'Edytowanie',aim:'AIM',offspawn:'Offspawn',midgame:'Midgame',endgame:'Endgame'};
+    const AIM_DISTANCE_LABELS={near:'Bliski',medium:'Średni',far:'Daleki'};
+    const AIM_WEAPON_LABELS={pump:'Pompa',mk:'MK',smg:'SMG'};
+    let customTrainingExercises=[];
+    let adminTrainingExercisesCache=[];
+    let customTrainingCatalogLoaded=false;
+    function normalizeTrainingExercise(raw){if(!raw||!TRAINING_CATEGORY_KEYS.includes(raw.category))return null;const difficulty=['easy','medium','hard'].includes(raw.difficulty)?raw.difficulty:'medium';const duration=['quick','medium','long'].includes(raw.duration)?raw.duration:'medium';const metric=['time_sec','time_min','count'].includes(raw.metric)?raw.metric:'count';const direction=raw.direction==='lower'?'lower':'higher';const b=raw.benchmarks||{};const ideal=Number(b.ideal),veryGood=Number(b.veryGood),average=Number(b.average),bad=Number(b.bad);if(![ideal,veryGood,average,bad].every(Number.isFinite))return null;return{id:String(raw.id||''),category:raw.category,difficulty,duration,metric,direction,name:String(raw.name||'').trim(),desc:String(raw.description||raw.desc||'').trim(),unit:metric==='time_sec'?'sekund':metric==='time_min'?'minut':'liczba',hint:metric==='time_sec'?'Wpisz czas w sekundach':metric==='time_min'?'Wpisz czas w minutach':'Wpisz ilość',benchmarks:{ideal,veryGood,average,bad},pro:ideal,good:veryGood,ok:average,bad,aimDistances:Array.isArray(raw.aimDistances)?raw.aimDistances.filter(x=>['near','medium','far'].includes(x)):[],aimWeapons:Array.isArray(raw.aimWeapons)?raw.aimWeapons.filter(x=>['pump','mk','smg'].includes(x)):[],custom:true,createdAt:raw.createdAt||'',updatedAt:raw.updatedAt||'',createdBy:raw.createdBy||''};}
+    function removeLoadedCustomTrainingExercises(){TRAINING_CATEGORY_KEYS.forEach(category=>{const cat=TRAINING_EXERCISES[category];if(!cat)return;['easy','medium','advanced'].forEach(diff=>['quick','medium','long'].forEach(dur=>{if(Array.isArray(cat[diff]?.[dur]))cat[diff][dur]=cat[diff][dur].filter(ex=>!ex?.custom);}))});}
+    async function getCustomTrainingExercisesFromDb(){let list=[];try{const snap=await withTimeout(getDocs(collection(db,'training_exercises')),12000);snap.forEach(d=>list.push({id:d.id,...d.data()}));}catch(err){console.warn('Nie udało się pobrać ćwiczeń z Firestore:',err);}const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]');const map={};list.forEach(x=>map[x.id]=x);local.forEach(x=>{if(!map[x.id])map[x.id]=x;});return Object.values(map).map(normalizeTrainingExercise).filter(Boolean).filter(x=>x.name);}
+    async function loadCustomTrainingExercises(){const list=await getCustomTrainingExercisesFromDb();customTrainingExercises=list;adminTrainingExercisesCache=[...list];removeLoadedCustomTrainingExercises();list.forEach(ex=>{const cat=TRAINING_EXERCISES[ex.category],diff=TRAINING_DIFFICULTY_MAP[ex.difficulty];if(cat?.[diff]?.[ex.duration])cat[diff][ex.duration].push(ex);});return list;}
+    function getTrainingExerciseSearchText(ex){return[ex.name,ex.desc,TRAINING_CATEGORY_LABELS[ex.category],TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],...(ex.aimDistances||[]).map(x=>AIM_DISTANCE_LABELS[x]),...(ex.aimWeapons||[]).map(x=>AIM_WEAPON_LABELS[x])].join(' ').toLowerCase();}
+    function resetAdminTrainingExerciseForm(){const form=document.getElementById('adminTrainingExerciseForm');if(form)form.reset();document.getElementById('adminTrainingEditId').value='';document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj ćwiczenie';document.getElementById('cancelTrainingEditBtn').style.display='none';document.getElementById('adminTrainingDifficulty').value='medium';document.getElementById('adminTrainingDuration').value='medium';document.getElementById('adminTrainingMetric').value='time_sec';document.getElementById('adminTrainingCountDirectionWrap').style.display='none';document.getElementById('adminTrainingAimOptions').style.display='none';document.querySelectorAll('#adminTrainingDistances input,#adminTrainingWeapons input').forEach(i=>i.checked=false);}
+    function fillAdminTrainingExerciseForm(ex){document.getElementById('adminTrainingEditId').value=ex.id;document.getElementById('adminTrainingCategory').value=ex.category;document.getElementById('adminTrainingDifficulty').value=ex.difficulty;document.getElementById('adminTrainingDuration').value=ex.duration;document.getElementById('adminTrainingMetric').value=ex.metric;document.getElementById('adminTrainingName').value=ex.name;document.getElementById('adminTrainingDescription').value=ex.desc;document.getElementById('adminTrainingIdeal').value=ex.benchmarks.ideal;document.getElementById('adminTrainingVeryGood').value=ex.benchmarks.veryGood;document.getElementById('adminTrainingAverage').value=ex.benchmarks.average;document.getElementById('adminTrainingBad').value=ex.benchmarks.bad;document.getElementById('adminTrainingCountDirection').value=ex.direction;document.getElementById('adminTrainingCountDirectionWrap').style.display=ex.metric==='count'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=ex.category==='aim'?'block':'none';document.querySelectorAll('#adminTrainingDistances input').forEach(i=>i.checked=ex.aimDistances.includes(i.value));document.querySelectorAll('#adminTrainingWeapons input').forEach(i=>i.checked=ex.aimWeapons.includes(i.value));document.getElementById('saveTrainingExerciseBtn').textContent='Zapisz zmiany';document.getElementById('cancelTrainingEditBtn').style.display='inline-flex';}
+    function renderAdminTrainingList(filterText=''){const container=document.getElementById('adminTrainingCategoryList'),count=document.getElementById('adminTrainingCount');if(!container)return;const q=String(filterText||'').trim().toLowerCase(),list=adminTrainingExercisesCache.filter(ex=>!q||getTrainingExerciseSearchText(ex).includes(q));if(count)count.textContent=String(list.length);if(!list.length){container.innerHTML='<div class="tour-empty"><strong>Brak ćwiczeń</strong>Nie znaleziono ćwiczeń pasujących do wyszukiwania.</div>';return;}const groups={};list.forEach(ex=>(groups[ex.category]??=[]).push(ex));container.innerHTML=Object.keys(groups).map(category=>{const items=groups[category].sort((a,b)=>a.name.localeCompare(b.name,'pl'));return`<div class="admin-collapsible-card"><div style="padding:14px 16px;border-bottom:1px solid var(--border-soft);"><h4 style="margin:0;font-family:'Space Grotesk';">${TRAINING_CATEGORY_LABELS[category]} <span class="admin-tour-count">${items.length}</span></h4></div><div style="padding:10px 14px;">${items.map(ex=>{const tags=[TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],ex.metric==='time_sec'?'Czas • sek.':ex.metric==='time_min'?'Czas • min.':`Ilość • ${ex.direction==='lower'?'mniej lepiej':'więcej lepiej'}`];if(category==='aim'){if(ex.aimDistances.length)tags.push(ex.aimDistances.map(d=>AIM_DISTANCE_LABELS[d]).join(' + '));if(ex.aimWeapons.length)tags.push(ex.aimWeapons.map(w=>AIM_WEAPON_LABELS[w]).join(' + '));}return`<div style="padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:12px;align-items:flex-start;"><div style="flex:1;min-width:0;"><div style="font-weight:700;color:var(--text);font-size:13px;">${escapeHtml(ex.name)}</div><div style="font-size:11.5px;color:var(--text-dim);margin-top:3px;line-height:1.45;">${escapeHtml(ex.desc)}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;">${tags.map(t=>`<span class="tour-tag accent" style="font-size:9px;">${escapeHtml(t)}</span>`).join('')}</div><div style="font-size:10.5px;color:var(--text-faint);margin-top:6px;">Idealny ${ex.benchmarks.ideal} · Bardzo dobry ${ex.benchmarks.veryGood} · Przeciętny ${ex.benchmarks.average} · Słaby ${ex.benchmarks.bad}</div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="editTrainingExercise('${ex.id}')">✏️ Edytuj</button><button class="btn-danger-outline" type="button" style="width:auto;padding:7px 10px;font-size:10.5px;" onclick="deleteTrainingExercise('${ex.id}')">Usuń</button></div></div>`}).join('')}</div></div>`;}).join('');}
+    async function loadAdminTrainingList(){const container=document.getElementById('adminTrainingCategoryList');if(container)container.innerHTML='<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie ćwiczeń…</div>';try{await loadCustomTrainingExercises();renderAdminTrainingList(document.getElementById('adminTrainingSearchInput')?.value||'');}catch(err){if(container)container.innerHTML=`<div class="users-empty is-error"><span class="ue-ic">⚠️</span><div><div class="ue-title">Nie udało się wczytać ćwiczeń</div>${escapeHtml(err.message||'Błąd Firestore')}</div></div>`;}}
+    window.editTrainingExercise=id=>{const ex=adminTrainingExercisesCache.find(x=>x.id===id);if(ex)fillAdminTrainingExerciseForm(ex);};
+    window.deleteTrainingExercise=async id=>{const ex=adminTrainingExercisesCache.find(x=>x.id===id);if(!ex||!confirm(`Usunąć ćwiczenie „${ex.name}”?`))return;let fsError=null;try{await deleteDoc(doc(db,'training_exercises',id));}catch(err){fsError=err;}const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>x.id!==id);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));if(fsError){alert('Ćwiczenie usunięto z lokalnego cache, ale Firestore odrzucił usunięcie. Sprawdź reguły kolekcji training_exercises.');}await loadAdminTrainingList();await loadTrainingPage();};
+    function bindAdminTrainingUI(){const form=document.getElementById('adminTrainingExerciseForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';const metric=document.getElementById('adminTrainingMetric'),category=document.getElementById('adminTrainingCategory');const sync=()=>{document.getElementById('adminTrainingCountDirectionWrap').style.display=metric.value==='count'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=category.value==='aim'?'block':'none';};metric.addEventListener('change',sync);category.addEventListener('change',sync);document.getElementById('adminTrainingSearchInput')?.addEventListener('input',e=>renderAdminTrainingList(e.target.value));document.getElementById('cancelTrainingEditBtn')?.addEventListener('click',resetAdminTrainingExerciseForm);form.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('adminTrainingMsg');msg.className='form-msg';if(!auth.currentUser||(!isCurrentUserAdmin&&!isCurrentUserModerator)){msg.textContent='Brak uprawnień.';msg.className='form-msg show error';return;}const id=document.getElementById('adminTrainingEditId').value||('training_'+Date.now());const cat=category.value,metricVal=metric.value;const data={id,category:cat,difficulty:document.getElementById('adminTrainingDifficulty').value,duration:document.getElementById('adminTrainingDuration').value,metric:metricVal,name:document.getElementById('adminTrainingName').value.trim(),description:document.getElementById('adminTrainingDescription').value.trim(),direction:metricVal==='count'?document.getElementById('adminTrainingCountDirection').value:'lower',benchmarks:{ideal:Number(document.getElementById('adminTrainingIdeal').value),veryGood:Number(document.getElementById('adminTrainingVeryGood').value),average:Number(document.getElementById('adminTrainingAverage').value),bad:Number(document.getElementById('adminTrainingBad').value)},aimDistances:cat==='aim'?[...document.querySelectorAll('#adminTrainingDistances input:checked')].map(i=>i.value):[],aimWeapons:cat==='aim'?[...document.querySelectorAll('#adminTrainingWeapons input:checked')].map(i=>i.value):[],createdAt:adminTrainingExercisesCache.find(x=>x.id===id)?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),createdBy:adminTrainingExercisesCache.find(x=>x.id===id)?.createdBy||auth.currentUser.uid};if(!data.name||!data.description){msg.textContent='Nazwa i opis są wymagane.';msg.className='form-msg show error';return;}const order=data.direction==='lower'?[data.benchmarks.ideal,data.benchmarks.veryGood,data.benchmarks.average,data.benchmarks.bad]:[data.benchmarks.bad,data.benchmarks.average,data.benchmarks.veryGood,data.benchmarks.ideal];if(!order.every(Number.isFinite)||!(order[0]<=order[1]&&order[1]<=order[2]&&order[2]<=order[3])){msg.textContent='Progi są niespójne. Ułóż je od najlepszego do najsłabszego wyniku.';msg.className='form-msg show error';return;}const btn=document.getElementById('saveTrainingExerciseBtn');btn.disabled=true;btn.textContent='Zapisywanie…';try{await setDoc(doc(db,'training_exercises',id),data,{merge:true});const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>x.id!==id);local.unshift(data);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));msg.textContent=id.startsWith('training_')?'Ćwiczenie dodane.':'Ćwiczenie zaktualizowane.';msg.className='form-msg show ok';resetAdminTrainingExerciseForm();await loadAdminTrainingList();await loadTrainingPage();}catch(err){const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>x.id!==id);local.unshift(data);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));msg.textContent='Firestore odrzucił zapis. Zapisano lokalnie tylko w tej przeglądarce; reguły Firestore muszą dopuścić kolekcję training_exercises dla Admina/Moderatora.';msg.className='form-msg show error';}finally{btn.disabled=false;btn.textContent='Dodaj ćwiczenie';}});sync();}
 
     // ---------- Skill scoring (1-100) ----------
     const SKILL_KEYS = ['building', 'editing', 'aim', 'offspawn', 'midgame', 'lategame'];
@@ -6643,67 +6585,21 @@
     }
 
     function renderTrainingPlanBlocks(skills) {
-      const container = document.getElementById('trainingBlocksContainer');
-      if (!container) return;
-
-      const blockKeys = ["building", "editing", "aim", "offspawn", "midgame", "endgame", "mechanics", "game"];
-      const names = {
-        building: "🔨 Budowanie", editing: "📐 Edytowanie", aim: "🎯 AIM", offspawn: "🪂 Offspawn",
-        midgame: "⚔️ Midgame", endgame: "🌀 Endgame (Late game)", mechanics: "⚙️ Mechanics (Budowanie + Edycja)",
-        game: "🎮 Game (Gra Całościowa)"
-      };
-      const descriptions = {
-        building: "Doskonalenie piece control, triple editów i płynności budowania na mapie V5.",
-        editing: "Poprawa szybkości Quatr Edit oraz tuneli edycyjnych.",
-        aim: "Trening celowania z podziałem na bliski, średni i daleki dystans.",
-        offspawn: "Trening dropów na POI, lootowania i szybkich wczesnych walk.",
-        midgame: "Rotacja, surge, pozycjonowanie i zarządzanie materiałami.",
-        endgame: "Rotacja w ruchomych strefach, tarping, waterfalling i refreshy.",
-        mechanics: "Złożony trening mechaniczny łączący budowanie i edycję.",
-        game: "Pełny symulator meczowy łączący offspawn, midgame i endgame."
-      };
-
-      const getScore = (key) => {
-        if (key === 'endgame') return skills.lategame;
-        if (key === 'mechanics') return weightedSkillScore([skills.building, skills.editing]);
-        if (key === 'game') return weightedSkillScore([skills.offspawn, skills.midgame, skills.lategame]);
-        return skills[key] || 50;
-      };
-
-      let aimFocus = null;
-      try { aimFocus = JSON.parse(localStorage.getItem('fn_aim_focus') || 'null'); } catch (_) {}
-
-      const sortedBlocks = blockKeys.map(k => {
-        const score = clamp100(getScore(k));
-        const prio = getPriorityLabel(score);
-        return { key:k, score, prio };
-      }).sort((a,b) => a.score - b.score);
-
-      container.innerHTML = sortedBlocks.map(block => {
-        const scoreVal = block.score.toFixed(1);
-        let desc = descriptions[block.key];
-        if (block.key === 'aim' && aimFocus?.weakest) {
-          const allocation = (aimFocus.focus || []).map(x => `${x.label}: ${Math.round(x.weight * 100)}%`).join(' · ');
-          desc += ` <b>Priorytet:</b> ${escapeHtml(aimFocus.weakest.label)}. Rozkład zaleceń: ${escapeHtml(allocation)}.`;
-        }
-        return `
-          <div class="matches-card" style="padding:22px;margin:0;display:flex;flex-direction:column;justify-content:space-between;position:relative;border-radius:var(--radius-md);border:1.5px solid ${block.prio.label === 'Krytyczny' ? 'rgba(239,68,68,.25)' : 'var(--border-soft)'};">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;">
-                <span class="tour-tag ${block.prio.class}" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 8px;">${block.prio.label}</span>
-                <span style="font-size:12px;color:var(--text-dim);font-weight:700;">Ocena: ${scoreVal}/100</span>
-              </div>
-              <h3 style="font-family:'Space Grotesk';font-size:16px;font-weight:700;margin:0 0 8px;color:var(--text);">${names[block.key]}</h3>
-              <p style="font-size:12.5px;color:var(--text-dim);line-height:1.5;margin:0 0 16px;">${desc}</p>
-            </div>
-            <button type="button" class="btn-primary" onclick="openTrainingSession('${block.key}')" style="width:100%;padding:8px 0;font-size:12px;font-weight:700;">Rozpocznij Trening</button>
-          </div>`;
-      }).join('');
+      const container=document.getElementById('trainingBlocksContainer'); if(!container)return;
+      const keys=['building','editing','aim','offspawn','midgame','endgame'];
+      const names={building:'🔨 Budowanie',editing:'📐 Edytowanie',aim:'🎯 AIM',offspawn:'🪂 Offspawn',midgame:'⚔️ Midgame',endgame:'🌀 Endgame'};
+      const desc={building:'Budowanie, piece control, tunele i płynność.',editing:'Szybkość oraz dokładność seryjnych i pojedynczych edycji.',aim:'Celowanie z uwzględnieniem dystansu i broni.',offspawn:'Lądowanie, loot i pierwsza walka.',midgame:'Rotacje, surge i decyzje w środku gry.',endgame:'Moving zones, tarpy, materiały i refreshy.'};
+      const blocks=keys.map(k=>({key:k,score:k==='endgame'?skills.lategame:(skills[k]||50),prio:getPriorityLabel(k==='endgame'?skills.lategame:(skills[k]||50))})).sort((a,b)=>a.score-b.score);
+      const cnt={};customTrainingExercises.forEach(ex=>cnt[ex.category]=(cnt[ex.category]||0)+1);
+      container.innerHTML=blocks.map(b=>`<div class="matches-card" style="padding:22px;margin:0;display:flex;flex-direction:column;justify-content:space-between;border-radius:var(--radius-md);border:1.5px solid var(--border-soft);"><div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><span class="tour-tag ${b.prio.class}" style="font-size:10px;font-weight:700;">${b.prio.label}</span><span style="font-size:12px;color:var(--text-dim);font-weight:700;">Ocena: ${Math.round(clamp100(b.score))}/100</span></div><h3 style="font-family:'Space Grotesk';font-size:16px;font-weight:700;margin:0 0 8px;color:var(--text);">${names[b.key]}${cnt[b.key]?` <span class="tour-tag accent" style="font-size:9px;">${cnt[b.key]} własnych</span>`:''}</h3><p style="font-size:12.5px;color:var(--text-dim);line-height:1.45;margin:0 0 16px;">${desc[b.key]}</p></div><button type="button" class="btn-primary" onclick="openTrainingSession('${b.key}')" style="width:100%;padding:8px 0;font-size:12px;">Rozpocznij Trening</button></div>`).join('');
     }
 
     function loadTrainingPage() {
       const user = auth.currentUser;
       if (!user) return;
+      if (!customTrainingCatalogLoaded) {
+        loadCustomTrainingExercises().then(() => loadTrainingPage()).catch(() => {});
+      }
 
       const cardNick = document.getElementById('trainingCardNick');
       const cardRole = document.getElementById('trainingCardRole');
@@ -7062,8 +6958,6 @@
             else if (selectedTrainingKey === 'offspawn') affected.push('offspawn');
             else if (selectedTrainingKey === 'midgame') affected.push('midgame');
             else if (selectedTrainingKey === 'endgame') affected.push('lategame');
-            else if (selectedTrainingKey === 'mechanics') { affected.push('building'); affected.push('editing'); }
-            else if (selectedTrainingKey === 'game') { affected.push('offspawn'); affected.push('midgame'); affected.push('lategame'); }
 
             // Adaptive Skill Improvement on the new 1-100 scale.
             // Sessions move the profile gradually; completion and session quality affect the gain.
@@ -7104,8 +6998,6 @@
       if (storedSkills) {
         const skills = JSON.parse(storedSkills);
         if (key === 'endgame') score = skills.lategame;
-        else if (key === 'mechanics') score = weightedSkillScore([skills.building, skills.editing]);
-        else if (key === 'game') score = weightedSkillScore([skills.offspawn, skills.midgame, skills.lategame]);
         else score = skills[key] || 50;
       }
 
@@ -7118,10 +7010,9 @@
 
       // Auto-select difficulty tabs based on rating
       let diff = 'medium';
-      if (score <= 25) diff = 'easy';
-      else if (score <= 50) diff = 'medium';
-      else if (score <= 75) diff = 'advanced';
-      else diff = 'pro';
+      if (score <= 35) diff = 'easy';
+      else if (score <= 70) diff = 'medium';
+      else diff = 'advanced';
 
       currentSelectedDifficulty = diff;
       currentSelectedDuration = 'medium';
@@ -7284,86 +7175,6 @@
     }
 
     // ---------- Admin: Training tab list ----------
-    function loadAdminTrainingList() {
-      const container = document.getElementById('adminTrainingCategoryList');
-      if (!container) return;
-
-      const diffLabels = { easy: '🟢 Łatwy', medium: '🟡 Średni', advanced: '🔴 Zaawansowany', pro: '⭐ PRO' };
-      const durLabels = { quick: '⚡ Szybki', medium: '⏱ Średni', long: '🕐 Długi' };
-      const metricLabels = {
-        time_sec: '⏱ czas (sek)', time_min: '⏱ czas (min)', score: '🏆 wynik', count: '🔢 liczba',
-        percent: '📊 %', rounds: '🔄 rundy', text: '📝 notatka'
-      };
-
-      container.innerHTML = Object.entries(TRAINING_EXERCISES).map(([key, cat]) => {
-        const color = cat.color || 'var(--cyan)';
-
-        const mapsHtml = cat.maps && cat.maps.length > 0
-          ? `<div style="font-size:11.5px;color:var(--text-dim);margin-bottom:16px;padding:8px 12px;background:rgba(245,197,86,0.05);border-radius:6px;border:1px solid var(--orange);">📍 ${cat.maps.join(' · ')}</div>`
-          : '';
-
-        const diffsHtml = ['easy', 'medium', 'advanced', 'pro'].map(diff => {
-          const block = cat[diff];
-          if (!block) return '';
-          return `
-            <div style="margin-bottom:16px;">
-              <div style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:${color};margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-soft);">${diffLabels[diff]}</div>
-              <div style="display:flex;flex-direction:column;gap:8px;">
-                ${['quick', 'medium', 'long'].map(dur => {
-                  const exs = block[dur] || [];
-                  if (!exs.length) return '';
-                  return `
-                    <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-soft);border-radius:8px;padding:12px;">
-                      <div style="font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:10px;">${durLabels[dur]} — ${exs.length} ćwiczeń</div>
-                      ${exs.map((e, i) => {
-                        const name = typeof e === 'object' ? e.name : e;
-                        const desc = typeof e === 'object' && e.desc ? e.desc : '';
-                        const metric = typeof e === 'object' && e.metric ? metricLabels[e.metric] || e.metric : '';
-                        const benchmarks = typeof e === 'object' && e.benchmarks ? e.benchmarks : null;
-                        let benchStr = '';
-                        if (benchmarks) {
-                          benchStr = Object.entries(benchmarks).map(([k,v]) => `${k.toUpperCase()}: ${v}`).join(' | ');
-                        }
-                        return `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03);">
-                          <div style="display:flex;gap:8px;align-items:start;">
-                            <span style="color:${color};font-weight:800;flex-shrink:0;font-size:12px;">${i+1}.</span>
-                            <div style="flex:1;">
-                              <div style="font-size:12.5px;color:var(--text);font-weight:600;">${escapeHtml(name)}</div>
-                              ${desc ? `<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">${escapeHtml(desc)}</div>` : ''}
-                              <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
-                                ${metric ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,0.05);color:var(--text-dim);">${metric}</span>` : ''}
-                                ${benchStr ? `<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,0.05);color:var(--text-dim);">${escapeHtml(benchStr)}</span>` : ''}
-                              </div>
-                            </div>
-                          </div>
-                        </div>`;
-                      }).join('')}
-                    </div>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        return `
-          <div style="background:rgba(255,255,255,0.015);border:1.5px solid var(--border-soft);border-radius:var(--radius-lg);overflow:hidden;">
-            <div style="padding:16px 20px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.02);">
-              <div style="font-size:22px;">${cat.icon || '🏋️'}</div>
-              <div>
-                <div style="font-family:'Space Grotesk';font-size:16px;font-weight:700;color:var(--text);">${cat.name}</div>
-                <div style="font-size:12px;color:var(--text-dim);margin-top:3px;">${cat.description || ''}</div>
-              </div>
-            </div>
-            <div style="padding:16px 20px;">
-              ${mapsHtml}
-              ${diffsHtml}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
     // ---------- Enter app (shared by login / register / google / nick onboarding) ----------
     async function enterApp(user) {
       authScreen.classList.add('hidden');
@@ -7407,6 +7218,7 @@
       loadTournaments();
       setupMatchesPage();
       loadMatchesPage();
+      loadCustomTrainingExercises().catch(() => {});
     }
 
     // ---------- Auth state ----------
