@@ -6980,6 +6980,10 @@ function loadTrainingPage() {
 
     // Modal triggers and save routines
     setTimeout(() => {
+      // Bind training modals/plan controls immediately, not only after opening the Plan tab.
+      // This is important because the "Stwórz Sam" card lives in Bloki Treningowe.
+      initTrainingPlanUI();
+
       const btnTrainingInfo = document.getElementById('btnTrainingTabInfo');
       const btnTrainingBlocks = document.getElementById('btnTrainingTabBlocks');
       const btnTrainingPlan = document.getElementById('btnTrainingTabPlan');
@@ -6992,7 +6996,7 @@ function loadTrainingPage() {
         [contentTrainingInfo, contentTrainingBlocks, contentTrainingPlan].forEach(c => { if(c) c.style.display='none'; });
         if(which==='info'){btnTrainingInfo?.classList.add('active'); if(contentTrainingInfo) contentTrainingInfo.style.display='block';}
         if(which==='blocks'){btnTrainingBlocks?.classList.add('active'); if(contentTrainingBlocks) contentTrainingBlocks.style.display='block'; loadTrainingPage();}
-        if(which==='plan'){btnTrainingPlan?.classList.add('active'); if(contentTrainingPlan) contentTrainingPlan.style.display='block'; initTrainingPlanUI(); renderTrainingCalendar();}
+        if(which==='plan'){btnTrainingPlan?.classList.add('active'); if(contentTrainingPlan) contentTrainingPlan.style.display='block'; renderTrainingCalendar();}
       };
       btnTrainingInfo?.addEventListener('click',()=>switchTrainingTab('info'));
       btnTrainingBlocks?.addEventListener('click',()=>switchTrainingTab('blocks'));
@@ -7520,7 +7524,25 @@ function loadTrainingPage() {
       document.getElementById('customBlockExerciseSearch')?.addEventListener('input',renderCustomBlockExercisePicker);
       document.getElementById('customBlockDifficultyFilter')?.addEventListener('change',renderCustomBlockExercisePicker);
       document.getElementById('customTrainingBlockForm')?.addEventListener('submit',saveCustomTrainingBlock);
-      document.getElementById('createTrainingPlanForm')?.addEventListener('submit',e=>{e.preventDefault();pendingGeneratedPlan=generatePlan(readPlanSettings());showPlanPreview(pendingGeneratedPlan)});
+      document.getElementById('createTrainingPlanForm')?.addEventListener('submit',e=>{
+        e.preventDefault();
+        try {
+          const settings=readPlanSettings();
+          const generated=generatePlan(settings);
+          if(!generated || !Array.isArray(generated.blocks) || !generated.blocks.length){
+            throw new Error('Nie udało się wygenerować żadnego bloku. Sprawdź wybrane dni i ustawienia.');
+          }
+          pendingGeneratedPlan=generated;
+          const builder=document.getElementById('createPlanBuilder');
+          const preview=document.getElementById('trainingPlanPreview');
+          if(builder) builder.classList.add('hidden');
+          if(preview) preview.classList.remove('hidden');
+          showPlanPreview(pendingGeneratedPlan);
+        } catch(err) {
+          console.error('Błąd generowania planu:',err);
+          alert(err?.message||'Nie udało się wygenerować podglądu planu.');
+        }
+      });
       document.getElementById('backToPlanBuilder')?.addEventListener('click',()=>{document.getElementById('trainingPlanPreview').classList.add('hidden');document.getElementById('createPlanBuilder').classList.remove('hidden')});
       document.getElementById('saveGeneratedPlanBtn')?.addEventListener('click',()=>{if(!pendingGeneratedPlan)return;saveTrainingPlanLocal(pendingGeneratedPlan);document.getElementById('createTrainingPlanModal').classList.add('hidden');pendingGeneratedPlan=null;renderTrainingCalendar()});
       document.getElementById('previewAddBlockBtn')?.addEventListener('click',()=>{if(pendingGeneratedPlan){const b=makeAutoBlock('aim',JSON.parse(localStorage.getItem('fn_user_skills')||'{}'));pendingGeneratedPlan.blocks.push({...b,id:'plan_'+Date.now(),blockId:b.id,weekStart:trainingCalendarWeek.toISOString(),dayIndex:0,date:dateKey(getDayDate(0)),totalCount:b.exerciseIds.length});showPlanPreview(pendingGeneratedPlan)}});
@@ -7557,7 +7579,9 @@ function loadTrainingPage() {
       return{days,blocksPerDay:Number(document.getElementById('planBlocksPerDay').value),useCustom:document.getElementById('planUseCustomBlocks').checked,customIds,dayConfig,focus};
     }
     function showPlanPreview(plan){
-      const wrap=document.getElementById('planPreviewCalendar');if(!wrap)return;
+      const wrap=document.getElementById('planPreviewCalendar');
+      if(!wrap){ console.error('Brak #planPreviewCalendar — nie można wyświetlić podglądu planu.'); return; }
+      if(!plan || !Array.isArray(plan.blocks)){ wrap.innerHTML='<div class=\"users-empty is-error\">Nie udało się przygotować planu.</div>'; return; }
       wrap.innerHTML='<div class="plan-preview-list">'+getPlanDays().map((day,d)=>{const arr=plan.blocks.filter(b=>b.dayIndex===d);return `<div class="preview-day" data-preview-day="${d}" ondragover="event.preventDefault()" ondrop="window.dropPreviewBlock(event,${d})"><div class="preview-day-head">${day} · ${formatDayDate(getDayDate(d))}</div>${arr.map((b,i)=>`<div class="preview-block" draggable="true" data-preview-id="${escapeAttr(b.id)}" ondragstart="event.dataTransfer.setData('text/plain','${escapeAttr(b.id)}')"><span style="width:8px;height:28px;border-radius:3px;background:${escapeAttr(b.color||'#6d5bff')}"></span><div><b style="font-size:11px;">${escapeHtml(b.name)}</b><small style="display:block;color:var(--text-faint);font-size:9px;">${escapeHtml(b.time||'')} · ${escapeHtml(String(b.duration||45))} min</small></div><div class="move-controls"><button type="button" onclick="window.movePreviewBlock('${escapeAttr(b.id)}',-1,${d})">↑</button><button type="button" onclick="window.movePreviewBlock('${escapeAttr(b.id)}',1,${d})">↓</button><button type="button" onclick="window.removePreviewBlock('${escapeAttr(b.id)}')">✕</button></div></div>`).join('')||'<div style="font-size:10px;color:var(--text-faint);padding:6px;">Brak bloków</div>'}</div>`}).join('')+'</div>';
     }
     window.dropPreviewBlock=(e,d)=>{const id=e.dataTransfer.getData('text/plain');const b=pendingGeneratedPlan?.blocks.find(x=>x.id===id);if(b){b.dayIndex=d;b.date=dateKey(getDayDate(d));showPlanPreview(pendingGeneratedPlan)}};
