@@ -2705,7 +2705,7 @@
 <body>
 
   <!-- ================= AUTH SCREEN ================= -->
-  <div id="authScreen">
+  <div id="authScreen" class="hidden">
     <div class="auth-wrap">
       <div class="auth-side">
         <div class="brand">
@@ -3644,7 +3644,7 @@
                   <div class="admin-card-icon">🏋️</div>
                   <div>
                     <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:700;color:var(--text);margin:0 0 4px 0;">Baza Ćwiczeń Treningowych</h3>
-                    <p style="font-size:13px;color:var(--text-dim);margin:0;">Dodawaj, edytuj, usuwaj i wyszukuj ćwiczenia dla sześciu kategorii treningowych.</p>
+                    <p style="font-size:13px;color:var(--text-dim);margin:0;">Dodawaj, edytuj, usuwaj i wyszukuj ćwiczenia dla siedmiu kategorii treningowych.</p>
                   </div>
                 </div>
                 <div class="form-msg" id="adminTrainingMsg"></div>
@@ -3653,7 +3653,7 @@
                   <input type="hidden" id="adminTrainingEditId" value="" />
                   <input type="hidden" id="adminTrainingFormMode" value="create" />
                   <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
-                    <div class="field"><label for="adminTrainingCategory">Co ćwiczy</label><select id="adminTrainingCategory" required><option value="">Wybierz kategorię</option><option value="building">🔨 Budowanie</option><option value="editing">📐 Edytowanie</option><option value="aim">🎯 AIM</option><option value="offspawn">🪂 Offspawn</option><option value="midgame">⚔️ Midgame</option><option value="endgame">🌀 Endgame</option></select></div>
+                    <div class="field"><label for="adminTrainingCategory">Co ćwiczy</label><select id="adminTrainingCategory" required><option value="">Wybierz kategorię</option><option value="building">🔨 Budowanie</option><option value="editing">📐 Edytowanie</option><option value="aim">🎯 AIM</option><option value="offspawn">🪂 Offspawn</option><option value="midgame">⚔️ Midgame</option><option value="endgame">🌀 Endgame</option><option value="fight">🥊 Fight</option></select></div>
                     <div class="field"><label for="adminTrainingDifficulty">Poziom trudności</label><select id="adminTrainingDifficulty" required><option value="easy">Łatwy</option><option value="medium" selected>Średni</option><option value="hard">Trudny</option></select></div>
                   </div>
                   <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
@@ -4427,19 +4427,34 @@
       await signOut(auth);
     });
 
-    // ---------- Page navigation (Home / Ustawienia) ----------
+    // ---------- Page navigation + persistence ----------
+    const LAST_PAGE_STORAGE_KEY = 'fn_last_active_page';
+    const validPageTargets = new Set([...navLinks].map(link => link.dataset.page));
+
+    function canOpenPage(target) {
+      if (!validPageTargets.has(target)) return false;
+      if (target === 'admin' && adminNavLink.classList.contains('hidden')) return false;
+      return true;
+    }
+
+    function openPage(target, { persist = true } = {}) {
+      if (!canOpenPage(target)) target = 'home';
+      const page = document.getElementById('page-' + target);
+      const link = [...navLinks].find(l => l.dataset.page === target);
+      if (!page || !link) target = 'home';
+
+      navLinks.forEach(l => l.classList.toggle('active', l.dataset.page === target));
+      pages.forEach(p => p.classList.toggle('hidden', p.id !== 'page-' + target));
+
+      if (persist) localStorage.setItem(LAST_PAGE_STORAGE_KEY, target);
+      if (target === 'tournaments') loadTournaments();
+      if (target === 'admin') loadAdminNavLinkState();
+      if (target === 'matches') loadMatchesPage();
+      if (target === 'training') loadTrainingPage();
+    }
+
     navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        const target = link.dataset.page;
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        pages.forEach(p => p.classList.add('hidden'));
-        document.getElementById('page-' + target).classList.remove('hidden');
-        if (target === 'tournaments') loadTournaments();
-        if (target === 'admin') loadAdminNavLinkState();
-        if (target === 'matches') loadMatchesPage();
-        if (target === 'training') loadTrainingPage();
-      });
+      link.addEventListener('click', () => openPage(link.dataset.page));
     });
 
     // ---------- Admin tabs ----------
@@ -6561,15 +6576,25 @@
           ]
         }
       },
+      fight: {
+        name: "Fight",
+        icon: "🥊",
+        color: "#ef4444",
+        description: "Trening pojedynków, piece control, boxfightów i podejmowania decyzji podczas bezpośredniej walki.",
+        maps: [],
+        easy: { quick: [], medium: [], long: [] },
+        medium: { quick: [], medium: [], long: [] },
+        advanced: { quick: [], medium: [], long: [] }
+      }
 
 };
 
     // ---------- Custom training exercises (Admin / Moderator) ----------
-    const TRAINING_CATEGORY_KEYS=['building','editing','aim','offspawn','midgame','endgame'];
+    const TRAINING_CATEGORY_KEYS=['building','editing','aim','offspawn','midgame','endgame','fight'];
     const TRAINING_DIFFICULTY_MAP={easy:'easy',medium:'medium',hard:'advanced'};
     const TRAINING_DIFFICULTY_LABELS={easy:'Łatwy',medium:'Średni',hard:'Trudny'};
     const TRAINING_DURATION_LABELS={quick:'Szybki',medium:'Średni',long:'Długi'};
-    const TRAINING_CATEGORY_LABELS={building:'Budowanie',editing:'Edytowanie',aim:'AIM',offspawn:'Offspawn',midgame:'Midgame',endgame:'Endgame'};
+    const TRAINING_CATEGORY_LABELS={building:'Budowanie',editing:'Edytowanie',aim:'AIM',offspawn:'Offspawn',midgame:'Midgame',endgame:'Endgame',fight:'Fight'};
     const AIM_DISTANCE_LABELS={near:'Bliski',medium:'Średni',far:'Daleki'};
     const AIM_WEAPON_LABELS={pump:'Pompa',mk:'MK',smg:'SMG'};
     let customTrainingExercises=[];
@@ -7012,11 +7037,11 @@
 
     function renderTrainingPlanBlocks(skills) {
       const container=document.getElementById('trainingBlocksContainer'); if(!container)return;
-      const keys=['building','editing','aim','offspawn','midgame','endgame'];
-      const names={building:'🔨 Budowanie',editing:'📐 Edytowanie',aim:'🎯 AIM',offspawn:'🪂 Offspawn',midgame:'⚔️ Midgame',endgame:'🌀 Endgame'};
-      const desc={building:'Budowanie, piece control, tunele i płynność.',editing:'Szybkość oraz dokładność seryjnych i pojedynczych edycji.',aim:'Celowanie z uwzględnieniem dystansu i broni.',offspawn:'Lądowanie, loot i pierwsza walka.',midgame:'Rotacje, surge i decyzje w środku gry.',endgame:'Moving zones, tarpy, materiały i refreshy.'};
+      const keys=['building','editing','aim','offspawn','midgame','endgame','fight'];
+      const names={building:'🔨 Budowanie',editing:'📐 Edytowanie',aim:'🎯 AIM',offspawn:'🪂 Offspawn',midgame:'⚔️ Midgame',endgame:'🌀 Endgame',fight:'🥊 Fight'};
+      const desc={building:'Budowanie, piece control, tunele i płynność.',editing:'Szybkość oraz dokładność seryjnych i pojedynczych edycji.',aim:'Celowanie z uwzględnieniem dystansu i broni.',offspawn:'Lądowanie, loot i pierwsza walka.',midgame:'Rotacje, surge i decyzje w środku gry.',endgame:'Moving zones, tarpy, materiały i refreshy.',fight:'Pojedynki, boxfighty, piece control i decyzje podczas bezpośredniej walki.'};
       const blocks=keys.map(k=>({key:k,score:k==='endgame'?skills.lategame:(skills[k]||50),prio:getPriorityLabel(k==='endgame'?skills.lategame:(skills[k]||50))})).sort((a,b)=>a.score-b.score);
-      const builtin=blocks.map(b=>({id:'auto_'+b.key,name:names[b.key],desc:desc[b.key],category:b.key,score:b.score,color:b.key==='aim'?'#22d3ee':b.key==='editing'?'#a855f7':b.key==='building'?'#f5c556':b.key==='offspawn'?'#34d399':b.key==='midgame'?'#fb4570':'#6d5bff',auto:true}));
+      const builtin=blocks.map(b=>({id:'auto_'+b.key,name:names[b.key],desc:desc[b.key],category:b.key,score:b.score,color:b.key==='aim'?'#22d3ee':b.key==='editing'?'#a855f7':b.key==='building'?'#f5c556':b.key==='offspawn'?'#34d399':b.key==='midgame'?'#fb4570':b.key==='fight'?'#ef4444':'#6d5bff',auto:true}));
       let custom=[]; try{custom=JSON.parse(localStorage.getItem('fn_custom_training_blocks')||'[]')}catch(_){}
       const all=[...builtin,...custom];
       container.style.display='grid';
@@ -7120,7 +7145,7 @@
       renderCustomBlockSelected();
     }
     function renderCustomBlockSelected(){const el=document.getElementById('customBlockSelected');if(!el)return;el.innerHTML=[...customBlockSelectedIds].map(id=>{const ex=findTrainingExerciseById(id);return ex?`<span class="selected-exercise-chip">${escapeHtml(ex.name)} <button type="button" data-remove="${escapeAttr(id)}" style="border:0;background:none;color:var(--text-faint);cursor:pointer;">✕</button></span>`:''}).join('');el.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{customBlockSelectedIds.delete(String(b.dataset.remove));renderCustomBlockExercisePicker()});}
-    window.openTrainingBlockFromBlocks=function(id){const custom=getUserCustomBlocks().find(x=>x.id===id);if(custom){openTrainingBlockDetail(custom,false);return;}const rawId=String(id); const key=rawId.startsWith('auto_')?rawId.slice(5).split('_')[0]:rawId;const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');const score=key==='endgame'?skills.lategame:skills[key];openTrainingBlockDetail({id,name:({building:'🔨 Budowanie',editing:'📐 Edytowanie',aim:'🎯 AIM',offspawn:'🪂 Offspawn',midgame:'⚔️ Midgame',endgame:'🌀 Endgame'})[key],category:key,desc:({building:'Budowanie, piece control, tunele i płynność.',editing:'Szybkość oraz dokładność seryjnych i pojedynczych edycji.',aim:'Celowanie z uwzględnieniem dystansu i broni.',offspawn:'Lądowanie, loot i pierwsza walka.',midgame:'Rotacje, surge i decyzje w środku gry.',endgame:'Moving zones, tarpy, materiały i refreshy.'})[key],score:score||50,color:'#6d5bff',auto:true},true);}
+    window.openTrainingBlockFromBlocks=function(id){const custom=getUserCustomBlocks().find(x=>x.id===id);if(custom){openTrainingBlockDetail(custom,false);return;}const rawId=String(id); const key=rawId.startsWith('auto_')?rawId.slice(5).split('_')[0]:rawId;const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');const score=key==='endgame'?skills.lategame:skills[key];openTrainingBlockDetail({id,name:({building:'🔨 Budowanie',editing:'📐 Edytowanie',aim:'🎯 AIM',offspawn:'🪂 Offspawn',midgame:'⚔️ Midgame',endgame:'🌀 Endgame',fight:'🥊 Fight'})[key],category:key,desc:({building:'Budowanie, piece control, tunele i płynność.',editing:'Szybkość oraz dokładność seryjnych i pojedynczych edycji.',aim:'Celowanie z uwzględnieniem dystansu i broni.',offspawn:'Lądowanie, loot i pierwsza walka.',midgame:'Rotacje, surge i decyzje w środku gry.',endgame:'Moving zones, tarpy, materiały i refreshy.',fight:'Pojedynki, boxfighty, piece control i decyzje podczas bezpośredniej walki.'})[key],score:score||50,color:key==='fight'?'#ef4444':'#6d5bff',auto:true},true);}
     async function copyTrainingMapCode(code,button){
       const value=String(code||'').trim();
       if(!value)return;
@@ -7865,11 +7890,11 @@ function loadTrainingPage() {
         function makeAutoBlock(category,skills,settings={}){
       const score=category==='endgame'?Number(skills.lategame||50):Number(skills[category]||50), difficulty=getAdaptiveDifficulty(category,score,settings.difficulty);
       const ex=getAllTrainingExercises().filter(x=>x.category===category).filter(x=>x.difficulty===difficulty||x.difficulty==='medium').slice(0,4);
-      return {id:'auto_'+category+'_'+Date.now(),name:`${TRAINING_CATEGORY_LABELS[category]||category} — ${difficulty==='easy'?'Fundamenty':difficulty==='hard'?'Intensywny':'Rozwój'}`,desc:'Automatycznie dobrany blok na podstawie aktualnej oceny umiejętności.',category,color:({building:'#f5c556',editing:'#a855f7',aim:'#22d3ee',offspawn:'#34d399',midgame:'#fb4570',endgame:'#6d5bff'}[category]||'#6d5bff'),difficulty,duration:settings.duration||45,exerciseIds:ex.map(x=>x.id),auto:true,totalCount:ex.length};
+      return {id:'auto_'+category+'_'+Date.now(),name:`${TRAINING_CATEGORY_LABELS[category]||category} — ${difficulty==='easy'?'Fundamenty':difficulty==='hard'?'Intensywny':'Rozwój'}`,desc:'Automatycznie dobrany blok na podstawie aktualnej oceny umiejętności.',category,color:({building:'#f5c556',editing:'#a855f7',aim:'#22d3ee',offspawn:'#34d399',midgame:'#fb4570',endgame:'#6d5bff',fight:'#ef4444'}[category]||'#6d5bff'),difficulty,duration:settings.duration||45,exerciseIds:ex.map(x=>x.id),auto:true,totalCount:ex.length};
     }
     function generatePlan(settings){
       const skills=JSON.parse(localStorage.getItem('fn_user_skills')||'{}'), focus=settings.focus.length?settings.focus:null;
-      const categories=['building','editing','aim','offspawn','midgame','endgame'];
+      const categories=['building','editing','aim','offspawn','midgame','endgame','fight'];
       const weighted=categories.map(c=>({c,score:c==='endgame'?Number(skills.lategame||50):Number(skills[c]||50),w:1+((100-(c==='endgame'?Number(skills.lategame||50):Number(skills[c]||50)))/25)}));
       weighted.sort((a,b)=>b.w-a.w);
       const custom=getUserCustomBlocks().filter(b=>settings.customIds.includes(b.id));
@@ -8000,6 +8025,10 @@ function loadTrainingPage() {
           : 'Podgląd użytkowników FN Coach (moderator — bez nadawania uprawnień i usuwania kont).';
       }
 
+      // Restore the page the user was on before refresh. This runs only after
+      // the Firebase session and permissions are known, so protected pages are not flashed.
+      const storedPage = localStorage.getItem(LAST_PAGE_STORAGE_KEY) || 'home';
+      openPage(storedPage, { persist: false });
       appScreen.classList.remove('hidden');
       loadSettings(user, userData);
       loadTournaments();
