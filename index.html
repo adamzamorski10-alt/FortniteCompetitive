@@ -3288,6 +3288,9 @@
             <button type="button" class="tab-btn" id="btnTrainingTabPlan"
               style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">📅
               Plan Treningowy</button>
+            <button type="button" class="tab-btn" id="btnTrainingTabSummary"
+              style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">📈
+              Podsumowanie Treningu</button>
           </div>
 
           <!-- TAB CONTENT: INFORMACJE -->
@@ -3405,6 +3408,18 @@
               style="display: none; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
               <!-- dynamic blocks -->
             </div>
+          </div>
+        </div>
+
+        <!-- ================= TRAINING SUMMARY TAB ================= -->
+        <div id="trainingTabContentSummary" class="training-subtab-panel" style="display:none;">
+          <div class="training-plan-page">
+            <div class="training-plan-head" style="margin-bottom:16px;">
+              <div><div class="eyebrow">ANALIZA PROGRESU</div><h2 class="section-title" style="margin:0 0 6px;">📈 Podsumowanie Treningu</h2>
+              <p style="color:var(--text-dim);font-size:13px;margin:0;">Wyniki sesji, progres profilu umiejętności i aktualne priorytety treningowe.</p></div>
+              <div id="trainingSummaryPeriodTabs" style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="tab-btn active" data-period="week">Tydzień</button><button type="button" class="tab-btn" data-period="month">Miesiąc</button><button type="button" class="tab-btn" data-period="all">Wszystko</button></div>
+            </div>
+            <div id="trainingSummaryContent"></div>
           </div>
         </div>
 
@@ -7196,9 +7211,107 @@
       };render();modal.classList.remove('hidden');
     }
 
+
+    // ---------- Training analytics + weekly skill recalculation ----------
+    const TRAINING_SUMMARY_SKILLS = [
+      {key:'building',label:'🔨 Budowanie',category:'building'}, {key:'editing',label:'📐 Edytowanie',category:'editing'},
+      {key:'aim',label:'🎯 AIM',category:'aim'}, {key:'offspawn',label:'🪂 Offspawn',category:'offspawn'},
+      {key:'midgame',label:'⚔️ Midgame',category:'midgame'}, {key:'lategame',label:'🌀 Endgame',category:'endgame'}
+    ];
+    let trainingSummaryPeriod='week';
+    function getTrainingSkillKey(category){ return category==='endgame'?'lategame':category; }
+    function readTrainingLogs(){ try{return JSON.parse(localStorage.getItem('fn_training_logs')||'[]').filter(x=>x&&x.date);}catch(_){return [];} }
+    function getTrainingSnapshots(){ try{return JSON.parse(localStorage.getItem('fn_training_skill_snapshots')||'[]');}catch(_){return [];} }
+    function saveTrainingSnapshots(v){ localStorage.setItem('fn_training_skill_snapshots',JSON.stringify(v.slice(-104))); }
+    function parseResultNumber(ex,value){
+      if(ex?.metric==='time' && typeof value==='string' && value.includes(':')){const [m,sec]=value.split(':').map(Number);return Number.isFinite(m)&&Number.isFinite(sec)?m*60+sec:NaN;}
+      return Number(value);
+    }
+    function exercisePerformanceScore(ex,value){
+      if(!ex || ex.metric==='text' || value==='' || value===null || value===undefined) return null;
+      let v=parseResultNumber(ex,value); if(!Number.isFinite(v)) return null;
+      if(ex.metric==='rating') return clamp100(v*10);
+      if(ex.metric==='percent' && !ex.benchmarks) return clamp100(v);
+      const b=ex.benchmarks||{};
+      let points=[];
+      if(['ideal','veryGood','average','bad'].every(k=>Number.isFinite(Number(b[k])))) points=[{x:Number(b.bad),score:25},{x:Number(b.average),score:50},{x:Number(b.veryGood),score:80},{x:Number(b.ideal),score:100}];
+      else if(['pro','good','ok','bad'].every(k=>Number.isFinite(Number(b[k])))) points=[{x:Number(b.bad),score:25},{x:Number(b.ok),score:55},{x:Number(b.good),score:80},{x:Number(b.pro),score:100}];
+      if(!points.length){ if(ex.metric==='percent')return clamp100(v); return null; }
+      const direction=ex.direction || ((points[3].x<points[0].x)?'lower':'higher');
+      return scoreFromCurve(v,{direction,points});
+    }
+    function calculateWeeklyTrainingEvidence(logs, category){
+      const relevant=logs.filter(l=>(l.type||l.category)===category);
+      const values=[];
+      relevant.forEach(l=>{
+        const completion=Math.max(0,Math.min(1,Number(l.completionRate||0)/100));
+        const sessionRating=clamp100(Number(l.rating||5)*10);
+        const details=Array.isArray(l.exercises)?l.exercises:[];
+        const scored=details.filter(d=>d.completed).map(d=>exercisePerformanceScore(d.exercise,d.result)).filter(Number.isFinite);
+        const exerciseScore=scored.length?scored.reduce((a,b)=>a+b,0)/scored.length:null;
+        // Result quality matters most; completion and user session rating are supporting evidence.
+        const quality=exerciseScore===null ? (sessionRating*.65 + completion*100*.35) : (exerciseScore*.70 + completion*100*.20 + sessionRating*.10);
+        values.push({quality,weight:0.6+completion});
+      });
+      if(!values.length)return null;
+      const totalWeight=values.reduce((s,x)=>s+x.weight,0);
+      return values.reduce((s,x)=>s+x.quality*x.weight,0)/totalWeight;
+    }
+    function maybeRecalculateWeeklySkills(force=false){
+      const raw=localStorage.getItem('fn_user_skills'); if(!raw)return false;
+      let skills; try{skills=JSON.parse(raw);}catch(_){return false;}
+      const nowWeek=getWeekStart(new Date()).toISOString().slice(0,10);
+      const last=localStorage.getItem('fn_training_last_weekly_recalc');
+      if(!force && last===nowWeek)return false;
+      const previousWeek=new Date(getWeekStart(new Date())); previousWeek.setDate(previousWeek.getDate()-7);
+      const start=previousWeek.getTime(), end=getWeekStart(new Date()).getTime();
+      const weekLogs=readTrainingLogs().filter(l=>{const t=new Date(l.date).getTime();return t>=start&&t<end;});
+      if(!weekLogs.length){localStorage.setItem('fn_training_last_weekly_recalc',nowWeek);return false;}
+      const before={}; TRAINING_SUMMARY_SKILLS.forEach(x=>before[x.key]=Number(skills[x.key]??50));
+      TRAINING_SUMMARY_SKILLS.forEach(({key,category})=>{
+        const evidence=calculateWeeklyTrainingEvidence(weekLogs,category); if(evidence===null)return;
+        const old=Number(skills[key]??50);
+        // Conservative update: enough movement to reflect a full week, but no single week can rewrite the profile.
+        const confidence=Math.min(0.38,0.12+weekLogs.filter(l=>(l.type||l.category)===category).length*0.055);
+        const updated=old+(evidence-old)*confidence;
+        skills[key]=Number(clamp100(updated).toFixed(1));
+      });
+      localStorage.setItem('fn_user_skills',JSON.stringify(skills));
+      localStorage.setItem('fn_overall_skill_rating',String(getOverallSkillRating(skills)));
+      const snapshots=getTrainingSnapshots(); snapshots.push({date:new Date().toISOString(),weekStart:nowWeek,reason:'weekly',before,after:{...skills},sessions:weekLogs.length}); saveTrainingSnapshots(snapshots);
+      localStorage.setItem('fn_training_last_weekly_recalc',nowWeek);
+      return true;
+    }
+    function ensureTrainingBaselineSnapshot(){
+      const raw=localStorage.getItem('fn_user_skills'); if(!raw)return;
+      const snaps=getTrainingSnapshots(); if(snaps.length)return;
+      try{const skills=JSON.parse(raw);snaps.push({date:new Date().toISOString(),reason:'baseline',after:{...skills}});saveTrainingSnapshots(snaps);}catch(_){}
+    }
+    function getSummaryRange(period){const now=new Date(), end=now.getTime();let start=0;if(period==='week')start=end-7*86400000;else if(period==='month')start=end-30*86400000;return {start,end};}
+    function formatSigned(n){const x=Number(n||0);return `${x>0?'+':''}${x.toFixed(1)}`;}
+    function renderTrainingSummary(period=trainingSummaryPeriod){
+      trainingSummaryPeriod=period; const root=document.getElementById('trainingSummaryContent');if(!root)return;
+      const {start,end}=getSummaryRange(period), logs=readTrainingLogs().filter(l=>{const t=new Date(l.date).getTime();return t>=start&&t<=end;});
+      let current={};try{current=JSON.parse(localStorage.getItem('fn_user_skills')||'{}');}catch(_){}
+      const snaps=getTrainingSnapshots().filter(s=>new Date(s.date).getTime()<=end).sort((a,b)=>new Date(a.date)-new Date(b.date));
+      const beforeSnap=[...snaps].reverse().find(s=>new Date(s.date).getTime()<=start)||snaps[0]||null;
+      const startSkills=beforeSnap?.after||beforeSnap?.before||current;
+      const totalMinutes=logs.reduce((s,l)=>s+Math.max(0,Number(l.sessionTime||0)),0), completed=logs.reduce((s,l)=>s+(Number(l.completionRate||0)>=100?1:0),0);
+      const avgCompletion=logs.length?logs.reduce((s,l)=>s+Number(l.completionRate||0),0)/logs.length:0;
+      const avgRating=logs.length?logs.reduce((s,l)=>s+Number(l.rating||0),0)/logs.length:0;
+      const categoryCounts={};logs.forEach(l=>{const c=l.type||l.category;categoryCounts[c]=(categoryCounts[c]||0)+1;});
+      const rows=TRAINING_SUMMARY_SKILLS.map(({key,label,category})=>{const a=Number(startSkills[key]??current[key]??50),b=Number(current[key]??50),delta=b-a,prio=getPriorityLabel(b);return `<div style="padding:13px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.018);"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;"><b style="font-size:13px;">${label}</b><span class="tour-tag ${prio.class}">${b.toFixed(1)}/100</span></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);margin-top:8px;"><span>Zmiana: <b style="color:${delta>=0?'var(--cyan)':'var(--danger)'}">${formatSigned(delta)}</b></span><span>${categoryCounts[category]||0} sesji</span></div><div style="height:7px;background:rgba(255,255,255,.05);border-radius:7px;overflow:hidden;margin-top:8px;"><div style="height:100%;width:${Math.max(0,Math.min(100,b))}%;background:var(--grad-main);"></div></div></div>`;}).join('');
+      const weakest=TRAINING_SUMMARY_SKILLS.map(x=>({label:x.label,score:Number(current[x.key]??50)})).sort((a,b)=>a.score-b.score)[0];
+      const strongest=TRAINING_SUMMARY_SKILLS.map(x=>({label:x.label,score:Number(current[x.key]??50)})).sort((a,b)=>b.score-a.score)[0];
+      root.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px;"><div class="matches-card" style="padding:16px;"><small style="color:var(--text-dim);">Sesje</small><div style="font:800 26px 'Space Grotesk';">${logs.length}</div></div><div class="matches-card" style="padding:16px;"><small style="color:var(--text-dim);">Czas treningu</small><div style="font:800 26px 'Space Grotesk';">${Math.round(totalMinutes)} min</div></div><div class="matches-card" style="padding:16px;"><small style="color:var(--text-dim);">Śr. ukończenie</small><div style="font:800 26px 'Space Grotesk';">${Math.round(avgCompletion)}%</div></div><div class="matches-card" style="padding:16px;"><small style="color:var(--text-dim);">Śr. ocena sesji</small><div style="font:800 26px 'Space Grotesk';">${avgRating?avgRating.toFixed(1):'—'}/10</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;"><div class="matches-card" style="padding:18px;"><h3 style="margin:0 0 12px;font:700 16px 'Space Grotesk';">Progres sektorów</h3><div style="display:grid;gap:9px;">${rows}</div></div><div class="matches-card" style="padding:18px;"><h3 style="margin:0 0 12px;font:700 16px 'Space Grotesk';">Wnioski i priorytety</h3><div style="display:grid;gap:12px;font-size:12.5px;line-height:1.55;"><div><b>🎯 Aktualny priorytet:</b><br>${weakest?`${weakest.label} — ${weakest.score.toFixed(1)}/100. Program zwiększa udział tej kategorii w automatycznym planie.`:'Brak danych.'}</div><div><b>⭐ Najmocniejszy sektor:</b><br>${strongest?`${strongest.label} — ${strongest.score.toFixed(1)}/100.`:'Brak danych.'}</div><div><b>📅 Aktualizacja profilu:</b><br>Profil jest przeliczany po zakończeniu tygodnia na podstawie wyników ćwiczeń, ich ukończenia i jakości sesji. Pojedyncza sesja nie zmienia już bezpośrednio oceny.</div><div><b>✅ W pełni ukończone sesje:</b> ${completed}/${logs.length||0}</div></div></div></div>${!logs.length?'<div class="tour-empty" style="margin-top:16px;"><strong>Brak treningów w wybranym okresie</strong>Wybierz inny okres albo zapisz pierwszą sesję.</div>':''}`;
+    }
+
 function loadTrainingPage() {
       const user = auth.currentUser;
       if (!user) return;
+      ensureTrainingBaselineSnapshot();
+      maybeRecalculateWeeklySkills();
+      renderTrainingSummary(trainingSummaryPeriod);
       if (!customTrainingCatalogLoaded) {
         loadCustomTrainingExercises().then(() => { renderTrainingPlanBlocks(JSON.parse(localStorage.getItem('fn_user_skills')||'{}')); loadUserCustomBlocks().catch(()=>{}); }).catch(() => {});
       } else {
@@ -7332,20 +7445,25 @@ function loadTrainingPage() {
       const btnTrainingInfo = document.getElementById('btnTrainingTabInfo');
       const btnTrainingBlocks = document.getElementById('btnTrainingTabBlocks');
       const btnTrainingPlan = document.getElementById('btnTrainingTabPlan');
+      const btnTrainingSummary = document.getElementById('btnTrainingTabSummary');
       const contentTrainingInfo = document.getElementById('trainingTabContentInfo');
       const contentTrainingBlocks = document.getElementById('trainingTabContentBlocks');
       const contentTrainingPlan = document.getElementById('trainingTabContentPlan');
+      const contentTrainingSummary = document.getElementById('trainingTabContentSummary');
 
       const switchTrainingTab = (which) => {
-        [btnTrainingInfo, btnTrainingBlocks, btnTrainingPlan].forEach(b => b?.classList.remove('active'));
-        [contentTrainingInfo, contentTrainingBlocks, contentTrainingPlan].forEach(c => { if(c) c.style.display='none'; });
+        [btnTrainingInfo, btnTrainingBlocks, btnTrainingPlan, btnTrainingSummary].forEach(b => b?.classList.remove('active'));
+        [contentTrainingInfo, contentTrainingBlocks, contentTrainingPlan, contentTrainingSummary].forEach(c => { if(c) c.style.display='none'; });
         if(which==='info'){btnTrainingInfo?.classList.add('active'); if(contentTrainingInfo) contentTrainingInfo.style.display='block';}
         if(which==='blocks'){btnTrainingBlocks?.classList.add('active'); if(contentTrainingBlocks) contentTrainingBlocks.style.display='block'; loadTrainingPage();}
         if(which==='plan'){btnTrainingPlan?.classList.add('active'); if(contentTrainingPlan) contentTrainingPlan.style.display='block'; renderTrainingCalendar();}
+        if(which==='summary'){btnTrainingSummary?.classList.add('active'); if(contentTrainingSummary) contentTrainingSummary.style.display='block'; renderTrainingSummary(trainingSummaryPeriod);}
       };
       btnTrainingInfo?.addEventListener('click',()=>switchTrainingTab('info'));
       btnTrainingBlocks?.addEventListener('click',()=>switchTrainingTab('blocks'));
       btnTrainingPlan?.addEventListener('click',()=>switchTrainingTab('plan'));
+      btnTrainingSummary?.addEventListener('click',()=>switchTrainingTab('summary'));
+      document.getElementById('trainingSummaryPeriodTabs')?.querySelectorAll('[data-period]').forEach(btn=>btn.addEventListener('click',()=>{trainingSummaryPeriod=btn.dataset.period;document.querySelectorAll('#trainingSummaryPeriodTabs [data-period]').forEach(b=>b.classList.toggle('active',b===btn));renderTrainingSummary(trainingSummaryPeriod);}));
 
       // Unlock skills trigger
       const btnOpenUnlock = document.getElementById('btnOpenUnlockSkills');
@@ -7555,35 +7673,17 @@ function loadTrainingPage() {
           if (allLogs.length > 200) allLogs.length = 200;
           localStorage.setItem('fn_training_logs', JSON.stringify(allLogs));
 
-          // Adaptive Skill Improvement
-          const storedSkills = localStorage.getItem('fn_user_skills');
-          if (storedSkills) {
-            const skills = JSON.parse(storedSkills);
-            const affected = [];
-            if (selectedTrainingKey === 'building') affected.push('building');
-            else if (selectedTrainingKey === 'editing') affected.push('editing');
-            else if (selectedTrainingKey === 'aim') affected.push('aim');
-            else if (selectedTrainingKey === 'offspawn') affected.push('offspawn');
-            else if (selectedTrainingKey === 'midgame') affected.push('midgame');
-            else if (selectedTrainingKey === 'endgame') affected.push('lategame');
-
-            // Adaptive Skill Improvement on the new 1-100 scale.
-            // Sessions move the profile gradually; completion and session quality affect the gain.
-            const sessionQuality = Math.max(1, Math.min(10, rating));
-            const gain = ((0.35 + sessionQuality * 0.22) * (0.4 + 0.6 * completionRate));
-            affected.forEach(s => {
-              if (skills[s] !== undefined) {
-                skills[s] = clamp100(parseFloat((skills[s] + gain).toFixed(2)));
-              }
-            });
-            localStorage.setItem('fn_user_skills', JSON.stringify(skills));
-            localStorage.setItem('fn_overall_skill_rating', String(getOverallSkillRating(skills)));
-          }
+          // Weekly skill engine: sessions are stored as evidence. The profile is recalculated once per week,
+          // using measured exercise results, completion and session quality instead of blindly adding points now.
+          ensureTrainingBaselineSnapshot();
+          // If a new week has started, recalculate the completed previous week now.
+          maybeRecalculateWeeklySkills();
+          renderTrainingSummary(trainingSummaryPeriod);
 
           if (runOverlay) runOverlay.classList.add('hidden');
           saveTrainingLogForm.reset();
           loadTrainingPage();
-          alert(`✅ Sesja treningowa zapisana!\n\nUkończono ${Math.round(completionRate * 100)}% ćwiczeń.\nTwój profil umiejętności został zaktualizowany.`);
+          alert(`✅ Sesja treningowa zapisana!\n\nUkończono ${Math.round(completionRate * 100)}% ćwiczeń.\nWyniki zostały zapisane jako dane do cotygodniowej aktualizacji profilu umiejętności.`);
         });
       }
 
