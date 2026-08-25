@@ -3672,8 +3672,16 @@
                     <div class="field"><label for="adminTrainingDifficulty">Poziom trudności</label><select id="adminTrainingDifficulty" required><option value="easy">Łatwy</option><option value="medium" selected>Średni</option><option value="hard">Trudny</option></select></div>
                   </div>
                   <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
-                    <div class="field"><label for="adminTrainingDuration">Długość ćwiczenia</label><select id="adminTrainingDuration" required><option value="quick">Szybki</option><option value="medium" selected>Średni</option><option value="long">Długi</option></select></div>
+                    <div class="field"><label for="adminTrainingDuration">Podstawowa długość</label><select id="adminTrainingDuration" required><option value="quick" selected>Szybki</option><option value="medium">Średni</option><option value="long">Długi</option></select><div class="hint">Przy różnych długościach podstawą zawsze jest wariant Szybki.</div></div>
                     <div class="field"><label for="adminTrainingMetric">Rodzaj wyniku</label><select id="adminTrainingMetric" required><option value="time">Czas</option><option value="count">Ilość</option><option value="percent">Procent</option><option value="text">Tekst</option><option value="rating">Ocena (1–10)</option></select></div>
+                  </div>
+                  <div class="field"><label for="adminTrainingTaskLengthType">Czas / powtórzenia ćwiczenia</label><select id="adminTrainingTaskLengthType"><option value="time">Czas</option><option value="count">Powtórzenia</option><option value="none" selected>Brak</option></select></div>
+                  <div id="adminTrainingTaskLengthValueWrap" class="field" style="display:none;"><label id="adminTrainingTaskLengthValueLabel">Ile?</label><div id="adminTrainingTaskLengthTimeWrap" class="time-pair" style="display:none;"><input type="number" id="adminTrainingTaskLengthMinutes" min="0" max="999" step="1" inputmode="numeric" placeholder="min"><span>:</span><input type="number" id="adminTrainingTaskLengthSeconds" min="0" max="59" step="1" inputmode="numeric" placeholder="sek"></div><input type="number" id="adminTrainingTaskLengthCount" min="1" step="1" inputmode="numeric" placeholder="np. 10" style="display:none;"></div>
+                  <div class="field" style="padding:13px 14px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.018);"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin:0;"><input type="checkbox" id="adminTrainingDifferentLengths"> <span>Różne poziomy długości</span></label><div class="hint" style="margin-top:7px;">Tworzy warianty Szybki, Średni i Długi jako jedno ćwiczenie w bazie Admina. Dla Czasu i Ilości automatycznie mnoży czas/powtórzenia oraz progi wyniku.</div></div>
+                  <div id="adminTrainingLengthVariantsWrap" style="display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;">
+                    <div class="field" style="margin:0;padding:12px;border:1px solid var(--border-soft);border-radius:10px;"><label>Szybkie</label><input type="number" id="adminTrainingQuickMultiplier" value="1" min="1" step="0.1" readonly><div class="hint">Wariant podstawowy ×1</div></div>
+                    <div class="field" style="margin:0;padding:12px;border:1px solid var(--border-soft);border-radius:10px;"><label>Średnie — mnożnik</label><input type="number" id="adminTrainingMediumMultiplier" value="2" min="0.1" step="0.1"><div class="hint">np. 2 = 2× dłużej / więcej</div></div>
+                    <div class="field" style="margin:0;padding:12px;border:1px solid var(--border-soft);border-radius:10px;"><label>Długie — mnożnik</label><input type="number" id="adminTrainingLongMultiplier" value="4" min="0.1" step="0.1"><div class="hint">np. 4 = 4× dłużej / więcej</div></div>
                   </div>
                   <div class="field"><label for="adminTrainingName">Nazwa ćwiczenia</label><input type="text" id="adminTrainingName" maxlength="120" placeholder="np. Piece Control Tunnel #2 — 5 przejść" required autocomplete="off" /></div>
                   <div class="field full"><label for="adminTrainingDescription">Opis / instrukcja</label><textarea id="adminTrainingDescription" style="width:100%;min-height:140px;resize:vertical;font-family:inherit;line-height:1.55;box-sizing:border-box;" maxlength="3000" placeholder="Dokładnie opisz, co gracz ma zrobić, na jakiej mapie i jak zmierzyć wynik." required></textarea></div>
@@ -6636,6 +6644,10 @@
         resultHint,unit:resultHint,hint:resultHint,
         mapCode:String(raw.mapCode||raw.map||'').trim(),
         benchmarks:{ideal,veryGood,average,bad},pro:ideal,good:veryGood,ok:average,bad,
+        taskLength:(raw.taskLength&&['time','count'].includes(raw.taskLength.type)&&Number.isFinite(Number(raw.taskLength.value))?{type:raw.taskLength.type,value:Number(raw.taskLength.value)}:{type:'none',value:null}),
+        differentLengths:raw.differentLengths===true,
+        lengthMultipliers:{quick:1,medium:Number(raw.lengthMultipliers?.medium)||2,long:Number(raw.lengthMultipliers?.long)||4},
+        baseExerciseId:String(raw.baseExerciseId||raw.id||''),variantOf:raw.variantOf||null,
         aimDistances:Array.isArray(raw.aimDistances)?raw.aimDistances.filter(x=>['near','medium','far'].includes(x)):[],
         aimWeapons:Array.isArray(raw.aimWeapons)?raw.aimWeapons.filter(x=>['pump','mk','smg'].includes(x)):[],
         custom:true,createdAt:raw.createdAt||'',updatedAt:raw.updatedAt||'',createdBy:raw.createdBy||''
@@ -6652,7 +6664,22 @@
       let localDisabled=[]; try{localDisabled=JSON.parse(localStorage.getItem('fn_disabled_training_exercises')||'[]')}catch(_){}
       localDisabled.forEach(id=>disabledTrainingExerciseIds.add(String(id)));
       const map={}; list.forEach(x=>map[x.id]=x); local.forEach(x=>{if(x.disabled===true)disabledTrainingExerciseIds.add(String(x.id));else if(!map[x.id])map[x.id]=x;});
-      return Object.values(map).map(normalizeTrainingExercise).filter(Boolean).filter(x=>x.name);
+      return Object.values(map).map(normalizeTrainingExercise).filter(Boolean).filter(x=>x.name).flatMap(expandTrainingExerciseLengths);
+    }
+    function multiplyExerciseBenchmarks(ex,multiplier){
+      const shouldScale=['time','count'].includes(ex.metric);
+      const scale=v=>shouldScale?Number((Number(v)*multiplier).toFixed(4)):Number(v);
+      return {ideal:scale(ex.benchmarks.ideal),veryGood:scale(ex.benchmarks.veryGood),average:scale(ex.benchmarks.average),bad:scale(ex.benchmarks.bad)};
+    }
+    function expandTrainingExerciseLengths(ex){
+      if(!ex?.differentLengths)return [ex];
+      const variants=['quick','medium','long'];
+      return variants.map(duration=>{
+        const multiplier=duration==='quick'?1:Number(ex.lengthMultipliers?.[duration])||1;
+        const taskLength=ex.taskLength?.type==='none'?{type:'none',value:null}:{type:ex.taskLength.type,value:Number((Number(ex.taskLength.value)*multiplier).toFixed(4))};
+        const benchmarks=multiplyExerciseBenchmarks(ex,multiplier);
+        return {...ex,id:`${ex.baseExerciseId}::${duration}`,baseExerciseId:ex.baseExerciseId,variantOf:ex.baseExerciseId,duration,variantDuration:duration,variantMultiplier:multiplier,taskLength,benchmarks,pro:benchmarks.ideal,good:benchmarks.veryGood,ok:benchmarks.average,bad:benchmarks.bad};
+      });
     }
     async function loadCustomTrainingExercises(){
       const list=await getCustomTrainingExercisesFromDb(); customTrainingExercises=list; removeLoadedCustomTrainingExercises();
@@ -6704,7 +6731,46 @@
       if(!Number.isInteger(min)||min<0||min>999||!Number.isInteger(sec)||sec<0||sec>59)return NaN;
       return min*60+sec;
     }
-    function resetAdminTrainingExerciseForm(){const form=document.getElementById('adminTrainingExerciseForm');if(form)form.reset();document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='create';document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj ćwiczenie';document.getElementById('cancelTrainingEditBtn').style.display='none';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj edycję';document.getElementById('adminTrainingDifficulty').value='medium';document.getElementById('adminTrainingDuration').value='medium';document.getElementById('adminTrainingMetric').value='time';document.getElementById('adminTrainingResultHint').value='';document.getElementById('adminTrainingCountDirection').value='lower';['adminTrainingIdeal','adminTrainingVeryGood','adminTrainingAverage','adminTrainingBad'].forEach(id=>setTrainingTimeFields(id,0));document.getElementById('adminTrainingMapCode').value='';document.getElementById('adminTrainingCountDirectionWrap').style.display='none';document.getElementById('adminTrainingAimOptions').style.display='none';document.querySelectorAll('#adminTrainingDistances input,#adminTrainingWeapons input').forEach(i=>i.checked=false);syncTrainingBenchmarkInputs();}
+    function syncAdminTrainingTaskLengthInputs(){
+      const type=document.getElementById('adminTrainingTaskLengthType')?.value||'none';
+      const wrap=document.getElementById('adminTrainingTaskLengthValueWrap');
+      const timeWrap=document.getElementById('adminTrainingTaskLengthTimeWrap');
+      const count=document.getElementById('adminTrainingTaskLengthCount');
+      const label=document.getElementById('adminTrainingTaskLengthValueLabel');
+      if(wrap)wrap.style.display=type==='none'?'none':'block';
+      if(timeWrap)timeWrap.style.display=type==='time'?'flex':'none';
+      if(count)count.style.display=type==='count'?'block':'none';
+      if(label)label.textContent=type==='time'?'Czas ćwiczenia':type==='count'?'Liczba powtórzeń':'Ile?';
+    }
+    function syncAdminTrainingLengthVariants(){
+      const checked=!!document.getElementById('adminTrainingDifferentLengths')?.checked;
+      const wrap=document.getElementById('adminTrainingLengthVariantsWrap');
+      if(wrap)wrap.style.display=checked?'grid':'none';
+      const duration=document.getElementById('adminTrainingDuration');
+      if(duration){if(checked){duration.value='quick';duration.disabled=true;}else duration.disabled=false;}
+    }
+    function getAdminTaskLength(){
+      const type=document.getElementById('adminTrainingTaskLengthType')?.value||'none';
+      if(type==='none')return {type:'none',value:null};
+      if(type==='time'){
+        const min=Number(document.getElementById('adminTrainingTaskLengthMinutes')?.value),sec=Number(document.getElementById('adminTrainingTaskLengthSeconds')?.value);
+        if(!Number.isInteger(min)||min<0||min>999||!Number.isInteger(sec)||sec<0||sec>59||min*60+sec<=0)return null;
+        return {type:'time',value:min*60+sec};
+      }
+      const value=Number(document.getElementById('adminTrainingTaskLengthCount')?.value);
+      return Number.isFinite(value)&&value>0?{type:'count',value}:null;
+    }
+    function setAdminTaskLength(taskLength){
+      const t=taskLength&&['time','count'].includes(taskLength.type)?taskLength:{type:'none',value:null};
+      document.getElementById('adminTrainingTaskLengthType').value=t.type;
+      if(t.type==='time'){
+        const total=Math.max(0,Math.round(Number(t.value)||0));
+        document.getElementById('adminTrainingTaskLengthMinutes').value=Math.floor(total/60);
+        document.getElementById('adminTrainingTaskLengthSeconds').value=total%60;
+      }else if(t.type==='count')document.getElementById('adminTrainingTaskLengthCount').value=t.value??'';
+      syncAdminTrainingTaskLengthInputs();
+    }
+    function resetAdminTrainingExerciseForm(){const form=document.getElementById('adminTrainingExerciseForm');if(form)form.reset();document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='create';document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj ćwiczenie';document.getElementById('cancelTrainingEditBtn').style.display='none';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj edycję';document.getElementById('adminTrainingDifficulty').value='medium';document.getElementById('adminTrainingDuration').value='quick';document.getElementById('adminTrainingMetric').value='time';document.getElementById('adminTrainingTaskLengthType').value='none';document.getElementById('adminTrainingDifferentLengths').checked=false;document.getElementById('adminTrainingQuickMultiplier').value='1';document.getElementById('adminTrainingMediumMultiplier').value='2';document.getElementById('adminTrainingLongMultiplier').value='4';document.getElementById('adminTrainingResultHint').value='';document.getElementById('adminTrainingCountDirection').value='lower';['adminTrainingIdeal','adminTrainingVeryGood','adminTrainingAverage','adminTrainingBad'].forEach(id=>setTrainingTimeFields(id,0));document.getElementById('adminTrainingMapCode').value='';document.getElementById('adminTrainingCountDirectionWrap').style.display='none';document.getElementById('adminTrainingAimOptions').style.display='none';document.querySelectorAll('#adminTrainingDistances input,#adminTrainingWeapons input').forEach(i=>i.checked=false);syncAdminTrainingTaskLengthInputs();syncAdminTrainingLengthVariants();syncTrainingBenchmarkInputs();}
     function fillAdminTrainingExerciseForm(ex){
       if(!ex)return;
       const byId=id=>document.getElementById(id);
@@ -6712,51 +6778,28 @@
       const benchmarks=ex.benchmarks||{};
       const aimDistances=Array.isArray(ex.aimDistances)?ex.aimDistances:[];
       const aimWeapons=Array.isArray(ex.aimWeapons)?ex.aimWeapons:[];
-      set('adminTrainingEditId',ex.id);
-      set('adminTrainingCategory',ex.category);
-      set('adminTrainingDifficulty',ex.difficulty);
-      set('adminTrainingDuration',ex.duration);
-      set('adminTrainingMetric',ex.metric);
-      set('adminTrainingName',ex.name);
-      set('adminTrainingDescription',ex.desc||ex.description||'');
-      set('adminTrainingResultHint',ex.resultHint||ex.unit||ex.hint||'');
-      set('adminTrainingMapCode',ex.mapCode||ex.map||'');
-      syncTrainingBenchmarkInputs();
-      if(ex.metric==='time'){
-        setTrainingTimeFields('adminTrainingIdeal',benchmarks.ideal);
-        setTrainingTimeFields('adminTrainingVeryGood',benchmarks.veryGood);
-        setTrainingTimeFields('adminTrainingAverage',benchmarks.average);
-        setTrainingTimeFields('adminTrainingBad',benchmarks.bad);
-      }else{
-        set('adminTrainingIdeal',benchmarks.ideal);
-        set('adminTrainingVeryGood',benchmarks.veryGood);
-        set('adminTrainingAverage',benchmarks.average);
-        set('adminTrainingBad',benchmarks.bad);
-      }
-      set('adminTrainingCountDirection',ex.direction||'higher');
-      const countWrap=byId('adminTrainingCountDirectionWrap');
-      const aimWrap=byId('adminTrainingAimOptions');
-      if(countWrap)countWrap.style.display=ex.metric!=='text'?'block':'none';
-      if(aimWrap)aimWrap.style.display=ex.category==='aim'?'block':'none';
-      document.querySelectorAll('#adminTrainingDistances input').forEach(i=>i.checked=aimDistances.includes(i.value));
-      document.querySelectorAll('#adminTrainingWeapons input').forEach(i=>i.checked=aimWeapons.includes(i.value));
-      const saveBtn=byId('saveTrainingExerciseBtn');
-      const cancelBtn=byId('cancelTrainingEditBtn');
-      if(saveBtn)saveBtn.textContent='Zapisz zmiany';
-      if(cancelBtn)cancelBtn.style.display='inline-flex';
-      byId('adminTrainingName')?.scrollIntoView({behavior:'smooth',block:'center'});
-      byId('adminTrainingName')?.focus({preventScroll:true});
+      const sourceId=ex.baseExerciseId||String(ex.id||'').replace(/::(quick|medium|long)$/,'');
+      set('adminTrainingEditId',sourceId);set('adminTrainingCategory',ex.category);set('adminTrainingDifficulty',ex.difficulty);set('adminTrainingDuration',ex.differentLengths?'quick':ex.duration);set('adminTrainingMetric',ex.metric);set('adminTrainingName',ex.name);set('adminTrainingDescription',ex.desc||ex.description||'');set('adminTrainingResultHint',ex.resultHint||ex.unit||ex.hint||'');set('adminTrainingMapCode',ex.mapCode||ex.map||'');
+      document.getElementById('adminTrainingDifferentLengths').checked=!!ex.differentLengths;
+      document.getElementById('adminTrainingQuickMultiplier').value='1';document.getElementById('adminTrainingMediumMultiplier').value=Number(ex.lengthMultipliers?.medium)||2;document.getElementById('adminTrainingLongMultiplier').value=Number(ex.lengthMultipliers?.long)||4;
+      setAdminTaskLength(ex.taskLength);
+      if(ex.metric==='time')['adminTrainingIdeal','adminTrainingVeryGood','adminTrainingAverage','adminTrainingBad'].forEach((id,i)=>setTrainingTimeFields(id,[benchmarks.ideal,benchmarks.veryGood,benchmarks.average,benchmarks.bad][i]));else ['adminTrainingIdeal','adminTrainingVeryGood','adminTrainingAverage','adminTrainingBad'].forEach((id,i)=>set(id,[benchmarks.ideal,benchmarks.veryGood,benchmarks.average,benchmarks.bad][i]));
+      set('adminTrainingCountDirection',ex.direction|| (ex.metric==='time'?'lower':'higher'));
+      document.querySelectorAll('#adminTrainingDistances input').forEach(i=>i.checked=aimDistances.includes(i.value));document.querySelectorAll('#adminTrainingWeapons input').forEach(i=>i.checked=aimWeapons.includes(i.value));
+      document.getElementById('adminTrainingFormMode').value='edit';document.getElementById('saveTrainingExerciseBtn').textContent='Zapisz zmiany';document.getElementById('cancelTrainingEditBtn').style.display='inline-flex';syncAdminTrainingLengthVariants();syncTrainingBenchmarkInputs();
+      document.getElementById('adminTrainingCountDirectionWrap').style.display=ex.metric!=='text'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=ex.category==='aim'?'block':'none';
+      document.getElementById('adminTrainingName')?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('adminTrainingName')?.focus({preventScroll:true});
     }
     function renderAdminTrainingList(filterText=''){
       const container=document.getElementById('adminTrainingCategoryList'),count=document.getElementById('adminTrainingCount');if(!container)return;
-      const q=String(filterText||'').trim().toLowerCase(),list=adminTrainingExercisesCache.filter(ex=>!q||getTrainingExerciseSearchText(ex).includes(q)); if(count)count.textContent=String(list.length);
+      const q=String(filterText||'').trim().toLowerCase(); const unique=new Map();adminTrainingExercisesCache.forEach(ex=>{const key=String(ex.baseExerciseId||ex.id).replace(/::(quick|medium|long)$/,'');const prev=unique.get(key);if(!prev||ex.duration==='quick'||!prev.differentLengths)unique.set(key,ex);}); const list=[...unique.values()].filter(ex=>!q||getTrainingExerciseSearchText(ex).includes(q)); if(count)count.textContent=String(list.length);
       if(!list.length){container.innerHTML='<div class="tour-empty"><strong>Brak ćwiczeń</strong>Nie znaleziono ćwiczeń pasujących do wyszukiwania.</div>';return;}
       const groups={};list.forEach(ex=>(groups[ex.category]??=[]).push(ex));
       const collapsed=JSON.parse(localStorage.getItem('fn_admin_training_collapsed_categories')||'{}');
       container.innerHTML=Object.keys(groups).map(category=>{const items=groups[category].sort((a,b)=>a.name.localeCompare(b.name,'pl'));const isCollapsed=collapsed[category]===true;return `<div class="admin-collapsible-card" data-training-category="${escapeAttr(category)}"><button type="button" class="admin-training-category-toggle" data-category="${escapeAttr(category)}" aria-expanded="${!isCollapsed}" style="width:100%;border:0;background:transparent;color:inherit;cursor:pointer;padding:14px 16px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;text-align:left;"><h4 style="margin:0;font-family:'Space Grotesk';">${TRAINING_CATEGORY_LABELS[category]} <span class="admin-tour-count">${items.length}</span></h4><span class="admin-training-chevron" aria-hidden="true">${isCollapsed?'▶':'▼'}</span></button><div class="admin-training-category-content" style="padding:10px 14px;${isCollapsed?'display:none;':''}">${items.map(ex=>{
-        const metricLabels={time:'Czas',count:'Ilość',percent:'Procent',text:'Tekst',rating:'Ocena 1–10'}; const tags=[TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],metricLabels[ex.metric]||ex.metric]; if(ex.metric!=='text')tags.push(ex.direction==='lower'?'Mniej = lepiej':'Więcej = lepiej');
+        const metricLabels={time:'Czas',count:'Ilość',percent:'Procent',text:'Tekst',rating:'Ocena 1–10'}; const tags=[TRAINING_DIFFICULTY_LABELS[ex.difficulty],ex.differentLengths?'Szybki / Średni / Długi':TRAINING_DURATION_LABELS[ex.duration],metricLabels[ex.metric]||ex.metric]; if(ex.metric!=='text')tags.push(ex.direction==='lower'?'Mniej = lepiej':'Więcej = lepiej');
         if(category==='aim'){if(ex.aimDistances?.length)tags.push(ex.aimDistances.map(d=>AIM_DISTANCE_LABELS[d]).join(' + '));if(ex.aimWeapons?.length)tags.push(ex.aimWeapons.map(w=>AIM_WEAPON_LABELS[w]).join(' + '));}
-        return `<div style="padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:12px;align-items:flex-start;"><div style="flex:1;min-width:0;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><div style="font-weight:700;color:var(--text);font-size:13px;">${escapeHtml(ex.name)}</div><span class="tour-tag ${ex.custom?'purple':'accent'}" style="font-size:9px;">${ex.custom?'BAZA':'WBUDOWANE'}</span></div><div style="font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;white-space:pre-line;">${escapeHtml(ex.desc)}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">${tags.map(t=>`<span class="tour-tag accent" style="font-size:9px;">${escapeHtml(t)}</span>`).join('')}</div><div style="font-size:10.5px;color:var(--text-faint);margin-top:6px;">Idealny ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.ideal):ex.benchmarks.ideal} · Bardzo dobry ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.veryGood):ex.benchmarks.veryGood} · Przeciętny ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.average):ex.benchmarks.average} · Słaby ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.bad):ex.benchmarks.bad}</div>${ex.mapCode?`<div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">🗺️ Kod mapy: <b style="color:var(--text);">${escapeHtml(ex.mapCode)}</b></div>`:''}</div><div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;"><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="editTrainingExercise('${escapeAttr(ex.id)}')">✏️ Edytuj</button><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="copyTrainingExercise('${escapeAttr(ex.id)}')">📋 Kopiuj</button><button class="btn-danger-outline" type="button" style="width:auto;padding:7px 10px;font-size:10.5px;" onclick="deleteTrainingExercise('${escapeAttr(ex.id)}')">Usuń</button></div></div>`;}).join('')}</div></div>`;}).join('');
+        return `<div style="padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:12px;align-items:flex-start;"><div style="flex:1;min-width:0;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><div style="font-weight:700;color:var(--text);font-size:13px;">${escapeHtml(ex.name)}</div><span class="tour-tag ${ex.custom?'purple':'accent'}" style="font-size:9px;">${ex.custom?'BAZA':'WBUDOWANE'}</span></div><div style="font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;white-space:pre-line;">${escapeHtml(ex.desc)}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">${tags.map(t=>`<span class="tour-tag accent" style="font-size:9px;">${escapeHtml(t)}</span>`).join('')}</div><div style="font-size:10.5px;color:var(--text-faint);margin-top:6px;">Idealny ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.ideal):ex.benchmarks.ideal} · Bardzo dobry ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.veryGood):ex.benchmarks.veryGood} · Przeciętny ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.average):ex.benchmarks.average} · Słaby ${ex.metric==='time'?formatTrainingTime(ex.benchmarks.bad):ex.benchmarks.bad}</div>${ex.mapCode?`<div style="font-size:10.5px;color:var(--text-dim);margin-top:6px;">🗺️ Kod mapy: <b style="color:var(--text);">${escapeHtml(ex.mapCode)}</b></div>`:''}</div><div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;"><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="editTrainingExercise('${escapeAttr(ex.baseExerciseId||ex.id)}')">✏️ Edytuj</button><button class="btn-ghost" type="button" style="padding:7px 10px;font-size:10.5px;" onclick="copyTrainingExercise('${escapeAttr(ex.baseExerciseId||ex.id)}')">📋 Kopiuj</button><button class="btn-danger-outline" type="button" style="width:auto;padding:7px 10px;font-size:10.5px;" onclick="deleteTrainingExercise('${escapeAttr(ex.baseExerciseId||ex.id)}')">Usuń</button></div></div>`;}).join('')}</div></div>`;}).join('');
       container.querySelectorAll('.admin-training-category-toggle').forEach(btn=>btn.addEventListener('click',()=>{
         const category=btn.dataset.category;
         const state=JSON.parse(localStorage.getItem('fn_admin_training_collapsed_categories')||'{}');
@@ -6770,17 +6813,19 @@
       }));
     }
     async function loadAdminTrainingList(){const container=document.getElementById('adminTrainingCategoryList');if(container)container.innerHTML='<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie ćwiczeń…</div>';try{if(!customTrainingCatalogLoaded)await loadCustomTrainingExercises();adminTrainingExercisesCache=getAllTrainingExercises();renderAdminTrainingList(document.getElementById('adminTrainingSearchInput')?.value||'');}catch(err){if(container)container.innerHTML=`<div class="users-empty is-error"><span class="ue-ic">⚠️</span><div><div class="ue-title">Nie udało się wczytać ćwiczeń</div>${escapeHtml(err.message||'Błąd Firestore')}</div></div>`;}}
-    window.editTrainingExercise=id=>{const key=String(id);const ex=adminTrainingExercisesCache.find(x=>String(x.id)===key)||findTrainingExerciseById(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do edycji:',key);return;}document.getElementById('adminTrainingFormMode').value='edit';fillAdminTrainingExerciseForm(ex);};
+    window.editTrainingExercise=id=>{const key=String(id);const ex=adminTrainingExercisesCache.find(x=>String(x.id)===key||String(x.baseExerciseId||'')===key&&x.duration==='quick')||findTrainingExerciseById(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do edycji:',key);return;}document.getElementById('adminTrainingFormMode').value='edit';fillAdminTrainingExerciseForm(ex);};
     function getUniqueCopyName(baseName){const base=`Kopia — ${String(baseName||'Ćwiczenie').trim()}`;const names=new Set(adminTrainingExercisesCache.map(x=>String(x.name||'').trim().toLocaleLowerCase('pl-PL')));if(!names.has(base.toLocaleLowerCase('pl-PL')))return base;let n=2;while(names.has(`${base} (${n})`.toLocaleLowerCase('pl-PL')))n++;return `${base} (${n})`;}
-    window.copyTrainingExercise=id=>{const key=String(id);const ex=adminTrainingExercisesCache.find(x=>String(x.id)===key)||findTrainingExerciseById(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do skopiowania:',key);return;}resetAdminTrainingExerciseForm();document.getElementById('adminTrainingFormMode').value='copy';fillAdminTrainingExerciseForm(ex);document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='copy';document.getElementById('adminTrainingName').value=getUniqueCopyName(ex.name);document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj kopię';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj kopiowanie';document.getElementById('adminTrainingMsg').textContent='Tworzysz nowe ćwiczenie na podstawie wybranego ćwiczenia. Możesz zmienić dowolne dane przed zapisaniem.';document.getElementById('adminTrainingMsg').className='form-msg show';document.getElementById('adminTrainingName')?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('adminTrainingName')?.focus({preventScroll:true});};
+    window.copyTrainingExercise=id=>{const key=String(id);const ex=adminTrainingExercisesCache.find(x=>String(x.id)===key||String(x.baseExerciseId||'')===key&&x.duration==='quick')||findTrainingExerciseById(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do skopiowania:',key);return;}resetAdminTrainingExerciseForm();document.getElementById('adminTrainingFormMode').value='copy';fillAdminTrainingExerciseForm(ex);document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='copy';document.getElementById('adminTrainingName').value=getUniqueCopyName(ex.name);document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj kopię';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj kopiowanie';document.getElementById('adminTrainingMsg').textContent='Tworzysz nowe ćwiczenie na podstawie wybranego ćwiczenia. Możesz zmienić dowolne dane przed zapisaniem.';document.getElementById('adminTrainingMsg').className='form-msg show';document.getElementById('adminTrainingName')?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('adminTrainingName')?.focus({preventScroll:true});};
     window.deleteTrainingExercise=async id=>{const ex=adminTrainingExercisesCache.find(x=>String(x.id)===String(id))||findTrainingExerciseById(id);if(!ex||!confirm(`Usunąć ćwiczenie „${ex.name}”?`))return;const isBuiltin=String(id).startsWith('builtin:');let fsError=null;try{if(isBuiltin)await setDoc(doc(db,'training_exercises',String(id)),{id:String(id),disabled:true,updatedAt:new Date().toISOString(),updatedBy:auth.currentUser?.uid||''},{merge:true});else await deleteDoc(doc(db,'training_exercises',String(id)));}catch(err){fsError=err;}if(isBuiltin){const disabled=JSON.parse(localStorage.getItem('fn_disabled_training_exercises')||'[]').filter(x=>x!==String(id));disabled.push(String(id));localStorage.setItem('fn_disabled_training_exercises',JSON.stringify(disabled));disabledTrainingExerciseIds.add(String(id));}else{const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>String(x.id)!==String(id));localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));if(fsError){const disabled=JSON.parse(localStorage.getItem('fn_disabled_training_exercises')||'[]').filter(x=>x!==String(id));disabled.push(String(id));localStorage.setItem('fn_disabled_training_exercises',JSON.stringify(disabled));disabledTrainingExerciseIds.add(String(id));}}await loadCustomTrainingExercises();adminTrainingExercisesCache=getAllTrainingExercises();renderAdminTrainingList(document.getElementById('adminTrainingSearchInput')?.value||'');loadTrainingPage();if(fsError)alert(isBuiltin?'Ćwiczenie ukryto lokalnie, ale Firestore odrzucił zapis. Sprawdź reguły kolekcji training_exercises.':'Ćwiczenie usunięto lokalnie, ale Firestore odrzucił usunięcie. Sprawdź reguły kolekcji training_exercises.');};
     function normalizeExerciseName(name){return String(name||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('pl-PL');}
     function findDuplicateTrainingExerciseName(name, excludeId=''){const key=normalizeExerciseName(name);if(!key)return null;return adminTrainingExercisesCache.find(ex=>normalizeExerciseName(ex.name)===key&&String(ex.id)!==String(excludeId||''))||null;}
     function bindAdminTrainingUI(){
       const form=document.getElementById('adminTrainingExerciseForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';
       const metric=document.getElementById('adminTrainingMetric'),category=document.getElementById('adminTrainingCategory');
-      const sync=()=>{document.getElementById('adminTrainingCountDirectionWrap').style.display=metric.value!=='text'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=category.value==='aim'?'block':'none';};
+      const sync=()=>{document.getElementById('adminTrainingCountDirectionWrap').style.display=metric.value!=='text'?'block':'none';document.getElementById('adminTrainingAimOptions').style.display=category.value==='aim'?'block':'none';syncAdminTrainingTaskLengthInputs();syncAdminTrainingLengthVariants();};
       metric.addEventListener('change',()=>{if(metric.value==='time')document.getElementById('adminTrainingCountDirection').value='lower';else if(metric.value!=='text')document.getElementById('adminTrainingCountDirection').value='higher';syncTrainingBenchmarkInputs();sync();});category.addEventListener('change',sync);
+      document.getElementById('adminTrainingTaskLengthType')?.addEventListener('change',syncAdminTrainingTaskLengthInputs);
+      document.getElementById('adminTrainingDifferentLengths')?.addEventListener('change',syncAdminTrainingLengthVariants);
       document.getElementById('adminTrainingSearchInput')?.addEventListener('input',e=>renderAdminTrainingList(e.target.value));
       document.getElementById('cancelTrainingEditBtn')?.addEventListener('click',resetAdminTrainingExerciseForm);
       form.addEventListener('submit',async e=>{
@@ -6814,15 +6859,20 @@
         try{await loadCustomTrainingExercises();adminTrainingExercisesCache=getAllTrainingExercises();}catch(err){console.warn('Nie udało się odświeżyć bazy przed walidacją nazwy:',err);}
         const duplicate=findDuplicateTrainingExerciseName(name,editingId);
         if(duplicate){msg.textContent=`Ćwiczenie o nazwie „${duplicate.name}” już istnieje. Każde ćwiczenie musi mieć unikalną nazwę.`;msg.className='form-msg show error';document.getElementById('adminTrainingName')?.focus();return;}
-        const existing=adminTrainingExercisesCache.find(x=>String(x.id)===String(editingId));
-        const data={id,category:cat,difficulty:document.getElementById('adminTrainingDifficulty').value,duration:document.getElementById('adminTrainingDuration').value,metric:metricVal,resultHint:document.getElementById('adminTrainingResultHint').value.trim(),unit:document.getElementById('adminTrainingResultHint').value.trim(),hint:document.getElementById('adminTrainingResultHint').value.trim(),mapCode:document.getElementById('adminTrainingMapCode').value.trim().replace(/\s+/g,''),name,description:document.getElementById('adminTrainingDescription').value.trim(),direction:metricVal==='text'?null:document.getElementById('adminTrainingCountDirection').value,benchmarks:{ideal:benchmarkValues[0],veryGood:benchmarkValues[1],average:benchmarkValues[2],bad:benchmarkValues[3]},aimDistances:cat==='aim'?[...document.querySelectorAll('#adminTrainingDistances input:checked')].map(i=>i.value):[],aimWeapons:cat==='aim'?[...document.querySelectorAll('#adminTrainingWeapons input:checked')].map(i=>i.value):[],createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),createdBy:existing?.createdBy||auth.currentUser.uid};
+        const existing=adminTrainingExercisesCache.find(x=>String(x.baseExerciseId||x.id)===String(editingId));
+        const taskLength=getAdminTaskLength();
+        if(!taskLength){msg.textContent='Wpisz poprawny czas albo liczbę powtórzeń.';msg.className='form-msg show error';return;}
+        const differentLengths=!!document.getElementById('adminTrainingDifferentLengths').checked;
+        const lengthMultipliers={quick:1,medium:Number(document.getElementById('adminTrainingMediumMultiplier').value),long:Number(document.getElementById('adminTrainingLongMultiplier').value)};
+        if(differentLengths&&(!Number.isFinite(lengthMultipliers.medium)||lengthMultipliers.medium<=0||!Number.isFinite(lengthMultipliers.long)||lengthMultipliers.long<=0)){msg.textContent='Mnożniki dla Średniego i Długiego muszą być większe od 0.';msg.className='form-msg show error';return;}
+        const data={id,category:cat,difficulty:document.getElementById('adminTrainingDifficulty').value,duration:document.getElementById('adminTrainingDuration').value,metric:metricVal,resultHint:document.getElementById('adminTrainingResultHint').value.trim(),unit:document.getElementById('adminTrainingResultHint').value.trim(),hint:document.getElementById('adminTrainingResultHint').value.trim(),mapCode:document.getElementById('adminTrainingMapCode').value.trim().replace(/\s+/g,''),name,description:document.getElementById('adminTrainingDescription').value.trim(),direction:metricVal==='text'?null:document.getElementById('adminTrainingCountDirection').value,benchmarks:{ideal:benchmarkValues[0],veryGood:benchmarkValues[1],average:benchmarkValues[2],bad:benchmarkValues[3]},taskLength,differentLengths,lengthMultipliers,baseExerciseId:id,aimDistances:cat==='aim'?[...document.querySelectorAll('#adminTrainingDistances input:checked')].map(i=>i.value):[],aimWeapons:cat==='aim'?[...document.querySelectorAll('#adminTrainingWeapons input:checked')].map(i=>i.value):[],createdAt:existing?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),createdBy:existing?.createdBy||auth.currentUser.uid};
         if(!data.description){msg.textContent='Nazwa i opis są wymagane.';msg.className='form-msg show error';return;}
         const order=data.direction==='lower'?[data.benchmarks.ideal,data.benchmarks.veryGood,data.benchmarks.average,data.benchmarks.bad]:[data.benchmarks.bad,data.benchmarks.average,data.benchmarks.veryGood,data.benchmarks.ideal];
         if(!order.every(Number.isFinite)||!(order[0]<=order[1]&&order[1]<=order[2]&&order[2]<=order[3])){msg.textContent='Progi są niespójne. Ułóż je od najlepszego do najsłabszego wyniku.';msg.className='form-msg show error';return;}
         const btn=document.getElementById('saveTrainingExerciseBtn');btn.disabled=true;btn.textContent=mode==='copy'?'Dodawanie kopii…':(mode==='edit'?'Zapisywanie…':'Dodawanie…');
         try{
           await setDoc(doc(db,'training_exercises',id),data,{merge:true});
-          const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>String(x.id)!==String(id));local.unshift(data);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));
+          const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>String(x.id)!==String(id)&&String(x.baseExerciseId||x.id)!==String(id));local.unshift(data);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));
           msg.textContent=mode==='copy'?'Kopia ćwiczenia została dodana.':(mode==='edit'?'Ćwiczenie zostało zaktualizowane.':'Ćwiczenie zostało dodane.');msg.className='form-msg show ok';
           resetAdminTrainingExerciseForm();
           // Important: reload the exercise source, not only the rendered list. Otherwise the old cache
@@ -6832,7 +6882,7 @@
           renderAdminTrainingList(document.getElementById('adminTrainingSearchInput')?.value||'');
           await loadTrainingPage();
         }catch(err){
-          const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>String(x.id)!==String(id));local.unshift(data);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));
+          const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>String(x.id)!==String(id)&&String(x.baseExerciseId||x.id)!==String(id));local.unshift(data);localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));
           msg.textContent='Firestore odrzucił zapis. Zapisano lokalnie tylko w tej przeglądarce; reguły Firestore muszą dopuścić kolekcję training_exercises dla Admina/Moderatora.';msg.className='form-msg show error';console.error('Błąd zapisu ćwiczenia:',err);
         }finally{btn.disabled=false;btn.textContent='Dodaj ćwiczenie';}
       });
@@ -7076,7 +7126,7 @@
 
     function findTrainingExerciseById(id){
       if(!id)return null;
-      const custom=customTrainingExercises.find(x=>String(x.id)===String(id)); if(custom)return custom;
+      const custom=customTrainingExercises.find(x=>String(x.id)===String(id))||customTrainingExercises.find(x=>String(x.baseExerciseId||'')===String(id)&&x.duration==='quick'); if(custom)return custom;
       if(id.startsWith('builtin:')){
         if(disabledTrainingExerciseIds.has(String(id)))return null;
         const parts=id.split(':'); const cat=parts[1],diff=parts[2],dur=parts[3],idx=Number(parts[4]); const ex=TRAINING_EXERCISES[cat]?.[diff]?.[dur]?.[idx];
@@ -7787,6 +7837,8 @@ function loadTrainingPage() {
         const exName = typeof ex === 'object' ? ex.name : ex;
         const exDesc = typeof ex === 'object' ? ex.desc : '';
         const benchmarks = (typeof ex === 'object' && ex.benchmarks) ? ex.benchmarks : null;
+        const taskLength = (typeof ex === 'object' && ex.taskLength) ? ex.taskLength : null;
+        const taskLengthHtml = taskLength?.type==='time' ? `<div style="font-size:11px;color:var(--cyan);margin-top:7px;font-weight:700;">⏱️ Wykonuj przez: ${escapeHtml(formatTrainingTime(taskLength.value))}</div>` : taskLength?.type==='count' ? `<div style="font-size:11px;color:var(--cyan);margin-top:7px;font-weight:700;">🔁 Powtórzenia: ${escapeHtml(String(taskLength.value))}</div>` : '';
         let benchHtml = '';
         if (benchmarks) {
           benchHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
@@ -7804,6 +7856,7 @@ function loadTrainingPage() {
             <div style="flex:1;">
               <div style="font-size:13.5px; color:var(--text); font-weight:700; margin-bottom:3px;">${escapeHtml(exName)}</div>
               ${exDesc ? `<div style="font-size:12px;color:var(--text-dim);line-height:1.5;white-space:pre-line;">${escapeHtml(exDesc)}</div>` : ''}
+              ${taskLengthHtml}
               ${benchHtml}
               ${typeof ex === 'object' ? trainingMapCodeHtml(ex.mapCode) : ''}
             </div>
