@@ -2699,6 +2699,13 @@
   </style>
 <style>
 .time-pair{display:flex;align-items:center;gap:5px;margin-top:4px}.time-pair input{width:100%;min-width:0}.time-pair span{font-weight:700}.benchmark-value>input{width:100%}
+
+    /* Training exercise library + clearer admin form */
+    #adminTrainingExerciseForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:18px;border:1px solid var(--border-soft);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,.008));}
+    #adminTrainingExerciseForm>.settings-grid,#adminTrainingExerciseForm>.field.full,#adminTrainingExerciseForm>#adminTrainingLengthVariantsWrap,#adminTrainingExerciseForm>#adminTrainingAimOptions,#adminTrainingExerciseForm>.admin-section-label,#adminTrainingExerciseForm>div[style*="grid-template-columns:repeat(4"],#adminTrainingExerciseForm>.hint,#adminTrainingExerciseForm>div:last-child{grid-column:1/-1;}
+    #adminTrainingExerciseForm>.settings-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;margin:0;}
+    #adminTrainingExerciseForm>.field{margin:0;min-width:0;}#adminTrainingExerciseForm>.admin-section-label{margin:6px 0 0;padding:9px 12px;border-left:3px solid var(--cyan);background:rgba(84,210,255,.045);border-radius:8px;font-size:10px;letter-spacing:.11em;}#adminTrainingDifferentLengths{accent-color:var(--cyan);width:16px;height:16px;}#adminTrainingLengthVariantsWrap{padding:12px;border:1px dashed var(--border-soft);border-radius:14px;background:rgba(255,255,255,.012);}
+    .training-exercise-library-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;margin-bottom:16px;}.training-exercise-library-toolbar .search-input-wrap{margin:0;}.training-exercise-library-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}.training-exercise-library-card{border:1px solid var(--border-soft);border-radius:14px;padding:16px;background:linear-gradient(160deg,rgba(255,255,255,.025),rgba(255,255,255,.008));cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease;}.training-exercise-library-card:hover{transform:translateY(-2px);border-color:var(--cyan);background:rgba(84,210,255,.035);}.training-exercise-library-card h3{margin:0;font:700 15px 'Space Grotesk';color:var(--text);}.training-exercise-library-card p{margin:8px 0 0;color:var(--text-dim);font-size:11.5px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}.training-exercise-modal{width:min(760px,94vw);max-height:88vh;overflow:auto;}.exercise-detail-hero{padding:4px 4px 16px;border-bottom:1px solid var(--border-soft);margin-bottom:16px;}.exercise-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0;}.exercise-detail-box{padding:12px;border:1px solid var(--border-soft);border-radius:11px;background:rgba(255,255,255,.018);font-size:12px;color:var(--text-dim);}.exercise-detail-box b{display:block;color:var(--text);margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;}.exercise-duration-switch{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;}.exercise-duration-switch button{min-width:105px;}@media(max-width:760px){#adminTrainingExerciseForm{grid-template-columns:1fr;}#adminTrainingExerciseForm>.settings-grid{grid-template-columns:1fr!important;}#adminTrainingLengthVariantsWrap{grid-template-columns:1fr!important;}.training-exercise-library-toolbar{grid-template-columns:1fr;}.exercise-detail-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 
@@ -3288,6 +3295,9 @@
             <button type="button" class="tab-btn" id="btnTrainingTabPlan"
               style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">📅
               Plan Treningowy</button>
+            <button type="button" class="tab-btn" id="btnTrainingTabExercises"
+              style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">🔎
+              Ćwiczenia</button>
             <button type="button" class="tab-btn" id="btnTrainingTabSummary"
               style="padding: 10px 20px; font-size: 13.5px; font-weight: 700; border-radius: var(--radius-md);">📈
               Podsumowanie Treningu</button>
@@ -3409,6 +3419,14 @@
               <!-- dynamic blocks -->
             </div>
           </div>
+
+        <!-- ================= TRAINING EXERCISES TAB ================= -->
+        <div id="trainingTabContentExercises" class="training-subtab-panel" style="display:none;">
+          <div class="training-plan-page">
+            <div class="training-plan-head" style="margin-bottom:16px;"><div><div class="eyebrow">BAZA ĆWICZEŃ</div><h2 class="section-title" style="margin:0 0 6px;">🔎 Ćwiczenia</h2><p style="color:var(--text-dim);font-size:13px;margin:0;">Wyszukuj ćwiczenia, sprawdzaj instrukcje i wybieraj dostępny wariant długości.</p></div></div>
+            <div class="training-exercise-library-toolbar"><div class="search-input-wrap"><span class="search-ic">🔍</span><input id="trainingExercisesSearch" type="search" autocomplete="off" placeholder="Szukaj po nazwie, opisie, kategorii lub rodzaju wyniku…"></div><select id="trainingExercisesCategoryFilter"><option value="all">Wszystkie kategorie</option><option value="building">🔨 Budowanie</option><option value="editing">📐 Edytowanie</option><option value="aim">🎯 AIM</option><option value="offspawn">🪂 Offspawn</option><option value="midgame">⚔️ Midgame</option><option value="endgame">🌀 Endgame</option><option value="fight">🥊 Fight</option></select></div>
+            <div id="trainingExercisesLibraryList" class="training-exercise-library-grid"></div>
+          </div>
         </div>
 
         <!-- ================= TRAINING SUMMARY TAB ================= -->
@@ -3448,6 +3466,7 @@
               <p>Kliknij <b>Stwórz Plan</b>, aby program przygotował tygodniowy harmonogram.</p>
             </div>
           </div>
+        </div>
         </div>
 
         <div class="page hidden" id="page-admin">
@@ -3667,6 +3686,7 @@
                 <form id="adminTrainingExerciseForm">
                   <input type="hidden" id="adminTrainingEditId" value="" />
                   <input type="hidden" id="adminTrainingFormMode" value="create" />
+                  <div class="admin-section-label">1. PODSTAWOWE USTAWIENIA</div>
                   <div class="settings-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
                     <div class="field"><label for="adminTrainingCategory">Co ćwiczy</label><select id="adminTrainingCategory" required><option value="">Wybierz kategorię</option><option value="building">🔨 Budowanie</option><option value="editing">📐 Edytowanie</option><option value="aim">🎯 AIM</option><option value="offspawn">🪂 Offspawn</option><option value="midgame">⚔️ Midgame</option><option value="endgame">🌀 Endgame</option><option value="fight">🥊 Fight</option></select></div>
                     <div class="field"><label for="adminTrainingDifficulty">Poziom trudności</label><select id="adminTrainingDifficulty" required><option value="easy">Łatwy</option><option value="medium" selected>Średni</option><option value="hard">Trudny</option></select></div>
@@ -3675,6 +3695,7 @@
                     <div class="field"><label for="adminTrainingDuration">Podstawowa długość</label><select id="adminTrainingDuration" required><option value="quick" selected>Szybki</option><option value="medium">Średni</option><option value="long">Długi</option></select><div class="hint">Przy różnych długościach podstawą zawsze jest wariant Szybki.</div></div>
                     <div class="field"><label for="adminTrainingMetric">Rodzaj wyniku</label><select id="adminTrainingMetric" required><option value="time">Czas</option><option value="count">Ilość</option><option value="percent">Procent</option><option value="text">Tekst</option><option value="rating">Ocena (1–10)</option></select></div>
                   </div>
+                  <div class="admin-section-label">2. DŁUGOŚĆ I WARIANTY</div>
                   <div class="field"><label for="adminTrainingTaskLengthType">Czas / powtórzenia ćwiczenia</label><select id="adminTrainingTaskLengthType"><option value="time">Czas</option><option value="count">Powtórzenia</option><option value="none" selected>Brak</option></select></div>
                   <div id="adminTrainingTaskLengthValueWrap" class="field" style="display:none;"><label id="adminTrainingTaskLengthValueLabel">Ile?</label><div id="adminTrainingTaskLengthTimeWrap" class="time-pair" style="display:none;"><input type="number" id="adminTrainingTaskLengthMinutes" min="0" max="999" step="1" inputmode="numeric" placeholder="min"><span>:</span><input type="number" id="adminTrainingTaskLengthSeconds" min="0" max="59" step="1" inputmode="numeric" placeholder="sek"></div><input type="number" id="adminTrainingTaskLengthCount" min="1" step="1" inputmode="numeric" placeholder="np. 10" style="display:none;"></div>
                   <div class="field" style="padding:13px 14px;border:1px solid var(--border-soft);border-radius:12px;background:rgba(255,255,255,.018);"><label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin:0;"><input type="checkbox" id="adminTrainingDifferentLengths"> <span>Różne poziomy długości</span></label><div class="hint" style="margin-top:7px;">Tworzy warianty Szybki, Średni i Długi jako jedno ćwiczenie w bazie Admina. Dla Czasu i Ilości automatycznie mnoży czas/powtórzenia oraz progi wyniku.</div></div>
@@ -3683,10 +3704,12 @@
                     <div class="field" style="margin:0;padding:12px;border:1px solid var(--border-soft);border-radius:10px;"><label>Średnie — mnożnik</label><input type="number" id="adminTrainingMediumMultiplier" value="2" min="0.1" step="0.1"><div class="hint">np. 2 = 2× dłużej / więcej</div></div>
                     <div class="field" style="margin:0;padding:12px;border:1px solid var(--border-soft);border-radius:10px;"><label>Długie — mnożnik</label><input type="number" id="adminTrainingLongMultiplier" value="4" min="0.1" step="0.1"><div class="hint">np. 4 = 4× dłużej / więcej</div></div>
                   </div>
+                  <div class="admin-section-label">3. INFORMACJE DLA GRACZA</div>
                   <div class="field"><label for="adminTrainingName">Nazwa ćwiczenia</label><input type="text" id="adminTrainingName" maxlength="120" placeholder="np. Piece Control Tunnel #2 — 5 przejść" required autocomplete="off" /></div>
                   <div class="field full"><label for="adminTrainingDescription">Opis / instrukcja</label><textarea id="adminTrainingDescription" style="width:100%;min-height:140px;resize:vertical;font-family:inherit;line-height:1.55;box-sizing:border-box;" maxlength="3000" placeholder="Dokładnie opisz, co gracz ma zrobić, na jakiej mapie i jak zmierzyć wynik." required></textarea></div>
                   <div class="field"><label for="adminTrainingResultHint">Co wpisać do wyniku</label><input id="adminTrainingResultHint" maxlength="160" placeholder="np. wpisz średni wynik z rundy"></div>
                   <div class="field"><label for="adminTrainingMapCode">Kod mapy kreatywnej Fortnite</label><div style="display:flex;gap:8px;align-items:center;"><input id="adminTrainingMapCode" maxlength="32" inputmode="numeric" autocomplete="off" placeholder="np. 1234-5678-9012" style="flex:1;"><span class="hint" style="margin:0;white-space:nowrap;">Kliknięcie kodu u użytkownika skopiuje go do schowka.</span></div></div>
+                  <div class="admin-section-label">4. WYNIK I OCENA</div>
                   <div id="adminTrainingCountDirectionWrap" class="field" style="display:none;"><label for="adminTrainingCountDirection">Kierunek wyniku dla ilości</label><select id="adminTrainingCountDirection"><option value="higher">Więcej = lepiej</option><option value="lower">Mniej = lepiej</option></select><div class="hint">Dla Czas, Ilość, Procent i Ocena wybierz, czy większa czy mniejsza wartość oznacza lepszy wynik.</div></div>
                   <div class="admin-section-label">PROGI OCENY</div>
                   <div style="display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;">
@@ -3717,6 +3740,9 @@
     </div>
   </div>
 
+
+  <!-- ================= TRAINING EXERCISE DETAIL MODAL ================= -->
+  <div id="trainingExerciseModalOverlay" class="modal-overlay hidden"><div class="modal-card training-exercise-modal"><button class="modal-close" id="trainingExerciseModalClose" type="button">✕</button><div id="trainingExerciseModalContent"></div></div></div>
 
   <!-- ================= TOURNAMENT DETAIL MODAL ================= -->
   <div id="tournamentModalOverlay" class="modal-overlay tour-detail-overlay hidden">
@@ -6621,6 +6647,7 @@
     const AIM_DISTANCE_LABELS={near:'Bliski',medium:'Średni',far:'Daleki'};
     const AIM_WEAPON_LABELS={pump:'Pompa',mk:'MK',smg:'SMG'};
     let customTrainingExercises=[];
+    let customTrainingExerciseSources=[];
     let adminTrainingExercisesCache=[];
     let customTrainingCatalogLoaded=false;
     let disabledTrainingExerciseIds=new Set();
@@ -6664,7 +6691,7 @@
       let localDisabled=[]; try{localDisabled=JSON.parse(localStorage.getItem('fn_disabled_training_exercises')||'[]')}catch(_){}
       localDisabled.forEach(id=>disabledTrainingExerciseIds.add(String(id)));
       const map={}; list.forEach(x=>map[x.id]=x); local.forEach(x=>{if(x.disabled===true)disabledTrainingExerciseIds.add(String(x.id));else if(!map[x.id])map[x.id]=x;});
-      return Object.values(map).map(normalizeTrainingExercise).filter(Boolean).filter(x=>x.name).flatMap(expandTrainingExerciseLengths);
+      return Object.values(map).map(normalizeTrainingExercise).filter(Boolean).filter(x=>x.name);
     }
     function multiplyExerciseBenchmarks(ex,multiplier){
       const shouldScale=['time','count'].includes(ex.metric);
@@ -6682,9 +6709,12 @@
       });
     }
     async function loadCustomTrainingExercises(){
-      const list=await getCustomTrainingExercisesFromDb(); customTrainingExercises=list; removeLoadedCustomTrainingExercises();
-      list.forEach(ex=>{const cat=TRAINING_EXERCISES[ex.category],diff=TRAINING_DIFFICULTY_MAP[ex.difficulty];if(cat?.[diff]?.[ex.duration])cat[diff][ex.duration].push(ex);});
-      customTrainingCatalogLoaded=true; adminTrainingExercisesCache=getAllTrainingExercises(); return list;
+      const list=await getCustomTrainingExercisesFromDb();
+      customTrainingExerciseSources=list;
+      customTrainingExercises=list.flatMap(expandTrainingExerciseLengths);
+      removeLoadedCustomTrainingExercises();
+      customTrainingExercises.forEach(ex=>{const cat=TRAINING_EXERCISES[ex.category],diff=TRAINING_DIFFICULTY_MAP[ex.difficulty];if(cat?.[diff]?.[ex.duration])cat[diff][ex.duration].push(ex);});
+      customTrainingCatalogLoaded=true; adminTrainingExercisesCache=getAllTrainingExercises(); return customTrainingExercises;
     }
     function getTrainingExerciseSearchText(ex){return[ex.name,ex.desc,ex.mapCode||'',TRAINING_CATEGORY_LABELS[ex.category],TRAINING_DIFFICULTY_LABELS[ex.difficulty],TRAINING_DURATION_LABELS[ex.duration],...(ex.aimDistances||[]).map(x=>AIM_DISTANCE_LABELS[x]),...(ex.aimWeapons||[]).map(x=>AIM_WEAPON_LABELS[x])].join(' ').toLowerCase();}
     function parseTrainingTime(value){
@@ -6813,12 +6843,13 @@
       }));
     }
     async function loadAdminTrainingList(){const container=document.getElementById('adminTrainingCategoryList');if(container)container.innerHTML='<div class="users-loading"><span class="mini-spinner"></span> Wczytywanie ćwiczeń…</div>';try{if(!customTrainingCatalogLoaded)await loadCustomTrainingExercises();adminTrainingExercisesCache=getAllTrainingExercises();renderAdminTrainingList(document.getElementById('adminTrainingSearchInput')?.value||'');}catch(err){if(container)container.innerHTML=`<div class="users-empty is-error"><span class="ue-ic">⚠️</span><div><div class="ue-title">Nie udało się wczytać ćwiczeń</div>${escapeHtml(err.message||'Błąd Firestore')}</div></div>`;}}
-    window.editTrainingExercise=id=>{const key=String(id);const ex=adminTrainingExercisesCache.find(x=>String(x.id)===key||String(x.baseExerciseId||'')===key&&x.duration==='quick')||findTrainingExerciseById(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do edycji:',key);return;}document.getElementById('adminTrainingFormMode').value='edit';fillAdminTrainingExerciseForm(ex);};
+    function getTrainingExerciseSource(id){const key=String(id||'').replace(/::(quick|medium|long)$/,'');return customTrainingExerciseSources.find(x=>String(x.id)===key||String(x.baseExerciseId||x.id)===key)||adminTrainingExercisesCache.find(x=>String(x.id)===key||(String(x.baseExerciseId||x.id)===key&&x.duration==='quick'))||findTrainingExerciseById(key);}
+    window.editTrainingExercise=id=>{const key=String(id);const ex=getTrainingExerciseSource(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do edycji:',key);return;}document.getElementById('adminTrainingFormMode').value='edit';fillAdminTrainingExerciseForm(ex);};
     function getUniqueCopyName(baseName){const base=`Kopia — ${String(baseName||'Ćwiczenie').trim()}`;const names=new Set(adminTrainingExercisesCache.map(x=>String(x.name||'').trim().toLocaleLowerCase('pl-PL')));if(!names.has(base.toLocaleLowerCase('pl-PL')))return base;let n=2;while(names.has(`${base} (${n})`.toLocaleLowerCase('pl-PL')))n++;return `${base} (${n})`;}
-    window.copyTrainingExercise=id=>{const key=String(id);const ex=adminTrainingExercisesCache.find(x=>String(x.id)===key||String(x.baseExerciseId||'')===key&&x.duration==='quick')||findTrainingExerciseById(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do skopiowania:',key);return;}resetAdminTrainingExerciseForm();document.getElementById('adminTrainingFormMode').value='copy';fillAdminTrainingExerciseForm(ex);document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='copy';document.getElementById('adminTrainingName').value=getUniqueCopyName(ex.name);document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj kopię';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj kopiowanie';document.getElementById('adminTrainingMsg').textContent='Tworzysz nowe ćwiczenie na podstawie wybranego ćwiczenia. Możesz zmienić dowolne dane przed zapisaniem.';document.getElementById('adminTrainingMsg').className='form-msg show';document.getElementById('adminTrainingName')?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('adminTrainingName')?.focus({preventScroll:true});};
+    window.copyTrainingExercise=id=>{const key=String(id);const ex=getTrainingExerciseSource(key);if(!ex){console.warn('Nie znaleziono ćwiczenia do skopiowania:',key);return;}resetAdminTrainingExerciseForm();document.getElementById('adminTrainingFormMode').value='copy';fillAdminTrainingExerciseForm(ex);document.getElementById('adminTrainingEditId').value='';document.getElementById('adminTrainingFormMode').value='copy';document.getElementById('adminTrainingName').value=getUniqueCopyName(ex.name);document.getElementById('saveTrainingExerciseBtn').textContent='Dodaj kopię';document.getElementById('cancelTrainingEditBtn').textContent='Anuluj kopiowanie';document.getElementById('adminTrainingMsg').textContent='Tworzysz nowe ćwiczenie na podstawie wybranego ćwiczenia. Możesz zmienić dowolne dane przed zapisaniem.';document.getElementById('adminTrainingMsg').className='form-msg show';document.getElementById('adminTrainingName')?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('adminTrainingName')?.focus({preventScroll:true});};
     window.deleteTrainingExercise=async id=>{const ex=adminTrainingExercisesCache.find(x=>String(x.id)===String(id))||findTrainingExerciseById(id);if(!ex||!confirm(`Usunąć ćwiczenie „${ex.name}”?`))return;const isBuiltin=String(id).startsWith('builtin:');let fsError=null;try{if(isBuiltin)await setDoc(doc(db,'training_exercises',String(id)),{id:String(id),disabled:true,updatedAt:new Date().toISOString(),updatedBy:auth.currentUser?.uid||''},{merge:true});else await deleteDoc(doc(db,'training_exercises',String(id)));}catch(err){fsError=err;}if(isBuiltin){const disabled=JSON.parse(localStorage.getItem('fn_disabled_training_exercises')||'[]').filter(x=>x!==String(id));disabled.push(String(id));localStorage.setItem('fn_disabled_training_exercises',JSON.stringify(disabled));disabledTrainingExerciseIds.add(String(id));}else{const local=JSON.parse(localStorage.getItem('fn_local_training_exercises')||'[]').filter(x=>String(x.id)!==String(id));localStorage.setItem('fn_local_training_exercises',JSON.stringify(local));if(fsError){const disabled=JSON.parse(localStorage.getItem('fn_disabled_training_exercises')||'[]').filter(x=>x!==String(id));disabled.push(String(id));localStorage.setItem('fn_disabled_training_exercises',JSON.stringify(disabled));disabledTrainingExerciseIds.add(String(id));}}await loadCustomTrainingExercises();adminTrainingExercisesCache=getAllTrainingExercises();renderAdminTrainingList(document.getElementById('adminTrainingSearchInput')?.value||'');loadTrainingPage();if(fsError)alert(isBuiltin?'Ćwiczenie ukryto lokalnie, ale Firestore odrzucił zapis. Sprawdź reguły kolekcji training_exercises.':'Ćwiczenie usunięto lokalnie, ale Firestore odrzucił usunięcie. Sprawdź reguły kolekcji training_exercises.');};
     function normalizeExerciseName(name){return String(name||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('pl-PL');}
-    function findDuplicateTrainingExerciseName(name, excludeId=''){const key=normalizeExerciseName(name);if(!key)return null;return adminTrainingExercisesCache.find(ex=>normalizeExerciseName(ex.name)===key&&String(ex.id)!==String(excludeId||''))||null;}
+    function findDuplicateTrainingExerciseName(name, excludeId=''){const key=normalizeExerciseName(name),exclude=String(excludeId||'');if(!key)return null;return adminTrainingExercisesCache.find(ex=>normalizeExerciseName(ex.name)===key&&String(ex.baseExerciseId||ex.id)!==exclude)||null;}
     function bindAdminTrainingUI(){
       const form=document.getElementById('adminTrainingExerciseForm');if(!form||form.dataset.bound==='1')return;form.dataset.bound='1';
       const metric=document.getElementById('adminTrainingMetric'),category=document.getElementById('adminTrainingCategory');
@@ -7143,7 +7174,7 @@
       // zmienił kategorię, poziom lub długość.
       const builtinOverrides=new Map();
       customTrainingExercises.forEach(ex=>{
-        const id=String(ex?.id||'');
+        const id=String(ex?.baseExerciseId||ex?.id||'');
         if(id.startsWith('builtin:')) builtinOverrides.set(id,ex);
       });
 
@@ -7486,32 +7517,48 @@ function loadTrainingPage() {
       }
     }
 
+
+    // Public training exercise library
+    function getExerciseBaseId(ex){return String(ex?.baseExerciseId||ex?.id||'').replace(/::(quick|medium|long)$/,'');}
+    function getExerciseVariants(baseId){const key=String(baseId||''),order={quick:0,medium:1,long:2};return getAllTrainingExercises().filter(ex=>getExerciseBaseId(ex)===key).sort((a,b)=>(order[a.duration]??9)-(order[b.duration]??9));}
+    function getLibraryExercises(){const unique=new Map();getAllTrainingExercises().forEach(ex=>{const key=getExerciseBaseId(ex),prev=unique.get(key);if(!prev||ex.duration==='quick'||!prev.differentLengths)unique.set(key,ex);});return [...unique.values()].sort((a,b)=>String(a.name).localeCompare(String(b.name),'pl'));}
+    function formatExerciseTaskLength(t){if(!t||t.type==='none')return 'Brak określonej długości';return t.type==='time'?`⏱️ ${formatTrainingTime(t.value)}`:`🔁 ${Number(t.value)} powt.`;}
+    function formatExerciseBenchmark(metric,v){return metric==='time'?formatTrainingTime(v):String(v);}
+    function renderTrainingExercisesLibrary(){const list=document.getElementById('trainingExercisesLibraryList');if(!list)return;const q=(document.getElementById('trainingExercisesSearch')?.value||'').trim().toLowerCase(),cat=document.getElementById('trainingExercisesCategoryFilter')?.value||'all';const items=getLibraryExercises().filter(ex=>(cat==='all'||ex.category===cat)&&(!q||getTrainingExerciseSearchText(ex).includes(q)));if(!items.length){list.innerHTML='<div class="tour-empty"><strong>Brak ćwiczeń</strong>Spróbuj zmienić wyszukiwanie lub kategorię.</div>';return;}list.innerHTML=items.map(ex=>{const base=getExerciseBaseId(ex),has=ex.differentLengths&&getExerciseVariants(base).length>1;const m={time:'Czas',count:'Ilość',percent:'Procent',rating:'Ocena',text:'Tekst'}[ex.metric]||ex.metric;return `<article class="training-exercise-library-card" tabindex="0" role="button" onclick="openTrainingExerciseLibraryDetail('${escapeAttr(base)}')"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;"><h3>${escapeHtml(ex.name)}</h3><span class="tour-tag accent">${escapeHtml(TRAINING_CATEGORY_LABELS[ex.category]||ex.category)}</span></div><p>${escapeHtml(ex.desc||'Brak opisu.')}</p><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;"><span class="tour-tag">${escapeHtml(TRAINING_DIFFICULTY_LABELS[ex.difficulty]||ex.difficulty)}</span><span class="tour-tag">${escapeHtml(m)}</span>${has?'<span class="tour-tag purple">Szybki / Średni / Długi</span>':`<span class="tour-tag">${escapeHtml(TRAINING_DURATION_LABELS[ex.duration]||ex.duration)}</span>`}</div><div style="margin-top:11px;font-size:11px;color:var(--text-faint);">${escapeHtml(formatExerciseTaskLength(ex.taskLength))}${ex.mapCode?' · 🗺️ Mapa dostępna':''}</div></article>`;}).join('');}
+    window.openTrainingExerciseLibraryDetail=baseId=>{const variants=getExerciseVariants(baseId);if(!variants.length)return;const modal=document.getElementById('trainingExerciseModalOverlay'),content=document.getElementById('trainingExerciseModalContent');let selected=variants.find(x=>x.duration==='quick')||variants[0];const render=()=>{const ex=selected,b=ex.benchmarks||{},metricLabel={time:'Czas',count:'Ilość',percent:'Procent',text:'Tekst',rating:'Ocena 1–10'}[ex.metric]||ex.metric,has=ex.differentLengths&&variants.length>1;content.innerHTML=`<div class="exercise-detail-hero"><div class="eyebrow">${escapeHtml(TRAINING_CATEGORY_LABELS[ex.category]||'Ćwiczenie')}</div><h2 class="form-title" style="margin:5px 0 7px;">${escapeHtml(ex.name)}</h2><p class="form-sub" style="white-space:pre-line;margin:0;">${escapeHtml(ex.desc||'Brak szczegółowego opisu.')}</p></div>${has?`<div><div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);font-weight:700;">Długość ćwiczenia</div><div class="exercise-duration-switch">${variants.map(v=>`<button type="button" class="tab-btn ${v.duration===ex.duration?'active':''}" data-exercise-duration="${escapeAttr(v.duration)}">${escapeHtml(TRAINING_DURATION_LABELS[v.duration])}${v.variantMultiplier&&v.variantMultiplier!==1?` ×${escapeHtml(String(v.variantMultiplier))}`:''}</button>`).join('')}</div></div>`:''}<div class="exercise-detail-grid"><div class="exercise-detail-box"><b>Poziom</b>${escapeHtml(TRAINING_DIFFICULTY_LABELS[ex.difficulty]||ex.difficulty)}</div><div class="exercise-detail-box"><b>Rodzaj wyniku</b>${escapeHtml(metricLabel)}${ex.direction?' · '+(ex.direction==='lower'?'mniej = lepiej':'więcej = lepiej'):''}</div><div class="exercise-detail-box"><b>Długość zadania</b>${escapeHtml(formatExerciseTaskLength(ex.taskLength))}</div><div class="exercise-detail-box"><b>Co wpisać do wyniku</b>${escapeHtml(ex.resultHint||'Nie określono')}</div></div><div class="admin-section-label" style="margin:16px 0 10px;">PROGI OCENY</div><div class="exercise-detail-grid"><div class="exercise-detail-box"><b>Idealny</b>${escapeHtml(formatExerciseBenchmark(ex.metric,b.ideal))}</div><div class="exercise-detail-box"><b>Bardzo dobry</b>${escapeHtml(formatExerciseBenchmark(ex.metric,b.veryGood))}</div><div class="exercise-detail-box"><b>Przeciętny</b>${escapeHtml(formatExerciseBenchmark(ex.metric,b.average))}</div><div class="exercise-detail-box"><b>Słaby</b>${escapeHtml(formatExerciseBenchmark(ex.metric,b.bad))}</div></div>${ex.mapCode?`<div class="exercise-detail-box" style="margin-top:12px;"><b>🗺️ Kod mapy kreatywnej</b><span style="font-size:14px;color:var(--cyan);font-weight:700;">${escapeHtml(ex.mapCode)}</span></div>`:''}`;content.querySelectorAll('[data-exercise-duration]').forEach(btn=>btn.addEventListener('click',()=>{const next=variants.find(v=>v.duration===btn.dataset.exerciseDuration);if(next){selected=next;render();}}));};render();modal.classList.remove('hidden');};
+    function bindTrainingExercisesLibrary(){const search=document.getElementById('trainingExercisesSearch'),filter=document.getElementById('trainingExercisesCategoryFilter'),modal=document.getElementById('trainingExerciseModalOverlay'),close=document.getElementById('trainingExerciseModalClose');if(search&&!search.dataset.bound){search.dataset.bound='1';search.addEventListener('input',renderTrainingExercisesLibrary);}if(filter&&!filter.dataset.bound){filter.dataset.bound='1';filter.addEventListener('change',renderTrainingExercisesLibrary);}if(close&&!close.dataset.bound){close.dataset.bound='1';close.addEventListener('click',()=>modal?.classList.add('hidden'));}if(modal&&!modal.dataset.bound){modal.dataset.bound='1';modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.add('hidden');});}}
+
     // Modal triggers and save routines
     setTimeout(() => {
       // Bind training modals/plan controls immediately, not only after opening the Plan tab.
       // This is important because the "Stwórz Sam" card lives in Bloki Treningowe.
       initTrainingPlanUI();
+      bindTrainingExercisesLibrary();
 
       const btnTrainingInfo = document.getElementById('btnTrainingTabInfo');
       const btnTrainingBlocks = document.getElementById('btnTrainingTabBlocks');
       const btnTrainingPlan = document.getElementById('btnTrainingTabPlan');
+      const btnTrainingExercises = document.getElementById('btnTrainingTabExercises');
       const btnTrainingSummary = document.getElementById('btnTrainingTabSummary');
       const contentTrainingInfo = document.getElementById('trainingTabContentInfo');
       const contentTrainingBlocks = document.getElementById('trainingTabContentBlocks');
       const contentTrainingPlan = document.getElementById('trainingTabContentPlan');
+      const contentTrainingExercises = document.getElementById('trainingTabContentExercises');
       const contentTrainingSummary = document.getElementById('trainingTabContentSummary');
 
       const switchTrainingTab = (which) => {
-        [btnTrainingInfo, btnTrainingBlocks, btnTrainingPlan, btnTrainingSummary].forEach(b => b?.classList.remove('active'));
-        [contentTrainingInfo, contentTrainingBlocks, contentTrainingPlan, contentTrainingSummary].forEach(c => { if(c) c.style.display='none'; });
+        [btnTrainingInfo, btnTrainingBlocks, btnTrainingPlan, btnTrainingExercises, btnTrainingSummary].forEach(b => b?.classList.remove('active'));
+        [contentTrainingInfo, contentTrainingBlocks, contentTrainingPlan, contentTrainingExercises, contentTrainingSummary].forEach(c => { if(c) c.style.display='none'; });
         if(which==='info'){btnTrainingInfo?.classList.add('active'); if(contentTrainingInfo) contentTrainingInfo.style.display='block';}
         if(which==='blocks'){btnTrainingBlocks?.classList.add('active'); if(contentTrainingBlocks) contentTrainingBlocks.style.display='block'; loadTrainingPage();}
         if(which==='plan'){btnTrainingPlan?.classList.add('active'); if(contentTrainingPlan) contentTrainingPlan.style.display='block'; renderTrainingCalendar();}
+        if(which==='exercises'){btnTrainingExercises?.classList.add('active'); if(contentTrainingExercises) contentTrainingExercises.style.display='block'; renderTrainingExercisesLibrary();}
         if(which==='summary'){btnTrainingSummary?.classList.add('active'); if(contentTrainingSummary) contentTrainingSummary.style.display='block'; renderTrainingSummary(trainingSummaryPeriod);}
       };
       btnTrainingInfo?.addEventListener('click',()=>switchTrainingTab('info'));
       btnTrainingBlocks?.addEventListener('click',()=>switchTrainingTab('blocks'));
       btnTrainingPlan?.addEventListener('click',()=>switchTrainingTab('plan'));
+      btnTrainingExercises?.addEventListener('click',()=>switchTrainingTab('exercises'));
       btnTrainingSummary?.addEventListener('click',()=>switchTrainingTab('summary'));
       document.getElementById('trainingSummaryPeriodTabs')?.querySelectorAll('[data-period]').forEach(btn=>btn.addEventListener('click',()=>{trainingSummaryPeriod=btn.dataset.period;document.querySelectorAll('#trainingSummaryPeriodTabs [data-period]').forEach(b=>b.classList.toggle('active',b===btn));renderTrainingSummary(trainingSummaryPeriod);}));
 
